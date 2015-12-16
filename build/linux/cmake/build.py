@@ -44,7 +44,6 @@ def preserve_directory(directory):
 	return preserve_decorator
 
 class Builder:
-	call = subprocess.call
 	Threads = 9
 
 	def __init__(self):
@@ -65,8 +64,8 @@ class Builder:
 
 		os.chdir(Paths['build'])
 
-		Builder.call('cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
-		Builder.call('make -j' + str(Builder.Threads), shell=True)
+		subprocess.call('cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
+		subprocess.call('make -j' + str(Builder.Threads), shell=True)
 
 		self.copy_libs()
 
