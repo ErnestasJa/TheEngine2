@@ -1,12 +1,12 @@
-sudo: required
-
-language: python
+sudo: false
+language: cpp
 python:
   - "3.5"
-  
+compiler:
+  - gcc
+install:
+- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 script:
-  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
-  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-5 /usr/bin/g++
   - g++ --version
   - cd build/linux/cmake
   - python build.py
