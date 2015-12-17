@@ -12,6 +12,7 @@ script:
   - python build.py
   - cd ../../../ && cd test/
   - python build.py
+  - ./build/PathTest
 addons:
   apt:
     sources:
