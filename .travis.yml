@@ -1,3 +1,5 @@
 language: python
-python: "3.5"
-script: build/linux/cmake/build.py
+python:
+  - "3.5"
+script:
+  - python build/linux/cmake/build.py build_ext -i
