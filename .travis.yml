@@ -10,7 +10,7 @@ script:
   - g++ --version
   - cd build/linux/cmake
   - python build.py
-  - cd ~ && cd test
+  - cd ../../../ && cd test/
   - python build.py
 addons:
   apt:
