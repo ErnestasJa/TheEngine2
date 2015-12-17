@@ -67,8 +67,8 @@ class Builder:
 	def Compile(self):
 		self.CreateBuildDir()
 		os.chdir(Paths['build'])
-		subprocess.call('cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
-		subprocess.call('make -j' + str(Builder.Threads), shell=True)
+		subprocess.check_call('cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
+		subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
 
 #run
 Os.Init()
