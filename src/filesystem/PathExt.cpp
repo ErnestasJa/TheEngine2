@@ -11,7 +11,7 @@ namespace PathExt
 
 		while (true)
 		{
-			ind|ex = src.find(toReplace, index);
+			index = src.find(toReplace, index);
 		    if (index == std::string::npos) break;
 
 		    src.replace(index, replacement.size(), replacement);
