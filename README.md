@@ -1,7 +1,7 @@
 # TheEngine2
 
 ## Build status
-![Build status](https://codeship.com/projects/2b7fea80-8641-0133-61bf-72904bbe649c/status?branch=master)
+[![Build Status](https://travis-ci.org/serengeor/TheEngine2.svg?branch=master)](https://travis-ci.org/serengeor/TheEngine2)
 
 ## Info
 Rewrite of 'TheEngine'.
