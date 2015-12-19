@@ -1,0 +1,25 @@
+sudo: false
+language: cpp
+python:
+  - "3.5"
+compiler:
+  - gcc
+install:
+- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+script:
+  - set -e
+  - g++ --version
+  - cd build/linux/cmake
+  - python build.py
+  - cd ../../../ && cd test/
+  - python build.py
+  - ./build/PathTest
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-5
+    - g++-5
+    
+
