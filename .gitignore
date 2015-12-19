@@ -27,5 +27,7 @@
 *.out
 *.app
 
+.ycm_extra_conf.pyc
+*.sublime-workspace
 */build
 /build/linux/cmake/build
