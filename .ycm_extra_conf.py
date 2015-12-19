@@ -44,17 +44,19 @@ flags = [
 '-fexceptions',
 '-DNDEBUG',
 '-DUSE_CLANG_COMPLETER',
-'-std=c++11',
+'-std=c++14',
 '-x',
 'c++',
 
 # includes for project
 '-I',
-'src',
-'-I',
-'include'
-'-I',
-'third_party',
+'.',
+'-isystem',
+'./src',
+'-isystem',
+'./include'
+'-isystem',
+'./third_party',
 ]
 
 

@@ -69,7 +69,7 @@ class Builder:
 		os.chdir(Paths['build'])
 		subprocess.check_call('cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
 		subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
-
+		subprocess.check_call('./PathTest')
 #run
 Os.Init()
 Builder().Compile()

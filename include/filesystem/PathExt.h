@@ -5,8 +5,10 @@
 
 namespace PathExt
 {
-	const auto Separator = "/";
-	const auto WindowsSeparator = "\\";
+	const auto Separator = '/';
+	const std::string SeparatorStr{Separator};
+	const auto WindowsSeparator = '\\';
+	const std::string WindowsSeparatorStr{WindowsSeparator};
 	
 	std::string Append(const std::string & path, const std::string & pathToAppend);
 	std::string GetFileName(const std::string & path);

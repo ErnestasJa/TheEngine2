@@ -28,7 +28,9 @@ namespace PathExt
 
 		if(size > 0 && appendSize > 0)
 		{
-			if(path[size-1] == Separator[0] || pathToAppend[0] == Separator[0])
+			if(path[size-1] == Separator && pathToAppend[0] == Separator)
+				return std::string(path).append(pathToAppend, 1, std::string::npos);
+			if(path[size-1] == Separator || pathToAppend[0] == Separator)
 				return path + pathToAppend;
 			else
 				return path + Separator + pathToAppend; 
@@ -81,7 +83,23 @@ namespace PathExt
 	}
 
 	std::string ConvertToUnixPath(const std::string & path)
+	{ 
+		return Replace(path, WindowsSeparatorStr, SeparatorStr);
+	}
+
+	struct both_slashes {
+	    bool operator()(char a, char b) const {
+			return a == Separator && b == Separator;
+		}
+	};
+
+	std::string Normalize(const std::string & path)
 	{
-		return Replace(path, WindowsSeparator, Separator);
+		auto normalizedPath = ConvertToUnixPath(path);
+		auto bs = [](const char a, const char b) {return a == Separator && b == Separator;};
+
+		normalizedPath.erase(std::unique(normalizedPath.begin(), normalizedPath.end(), both_slashes()), normalizedPath.end());
+
+		return normalizedPath;
 	}
 }
