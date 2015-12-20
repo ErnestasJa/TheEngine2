@@ -108,9 +108,12 @@ TEST(PathExtensionTests, ReturnsEmptyStringForExtensionWhenNoExtension)
 TEST(PathNormalizationTests, DuplicatedDirSeparatorsAreNormalizedOnConstruction)
 {
 	std::string goodPath = "C:/SomeRelativePath/BlaBla/SomeFile.exec";
-	std::string badPath = "C://SomeRelativePath///////BlaBla//SomeFile.exec";
+	std::string badUnixSeparatorPath = "C://SomeRelativePath///////BlaBla//SomeFile.exec";
+	std::string badWinSeparatorPath = "C:\\\\SomeRelativePath\\\\\\\\BlaBla\\\\SomeFile.exec";
 	
-	Path normalizedPath(badPath);
+	Path normalizedUnixPath(badUnixSeparatorPath);
+	Path normalizedWinPath(badWinSeparatorPath);
 	
-	ASSERT_EQ(goodPath, normalizedPath.AsString());
+	ASSERT_EQ(goodPath, normalizedUnixPath.AsString());
+	ASSERT_EQ(goodPath, normalizedWinPath.AsString());
 }
