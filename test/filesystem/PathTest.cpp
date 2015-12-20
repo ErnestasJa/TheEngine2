@@ -4,116 +4,106 @@
 
 using namespace std::literals::string_literals;
 
-::std::ostream& operator<<(::std::ostream& os, const Path& path) {
+::std::ostream &operator<<(::std::ostream &os, const Path &path) {
   return os << std::string(path).c_str();
 }
 
-TEST(PathAppendTests, ReturnsAppendedPathWithFileNAme)
-{
-	Path path("/home/serengeor/Coding");
-	Path path2("TheEngine2");
-	Path correctPath("/home/serengeor/Coding/TheEngine2");
+class PathTest : public ::testing::Test {
+protected:
+  virtual void SetUp() 
+  {
+  	absolutePath = "/first/second/third/fourth"s;
+  	relativePath = "fifth/sixth"s;
+  	extension = ".ext"s;
+  	fileNameWithoutExtension = "File"s;
+  	fileNameWithExtension = "File.ext"s;
+  	unixRootPath = "/"s;
+  	winRootPath = "C:\\"s;
+  	emptyPath = ""s;
+  }
 
-	Path appendPathResult = path.Append(path2);
+protected:
+	std::string absolutePath,
+		relativePath,
+		emptyPath,
 
-	ASSERT_EQ(correctPath, appendPathResult);
+		unixRootPath,
+		winRootPath,
+		
+		fileNameWithExtension,
+		fileNameWithoutExtension,
+		extension;
+};
+
+TEST_F(PathTest, ReturnsAppendedPathWithFileName) {
+  Path correctPath(absolutePath+PathExt::Separator+fileNameWithExtension);
+
+  ASSERT_EQ(correctPath, Path(absolutePath).Append(fileNameWithExtension));
 }
 
-TEST(PathAppendTests, ReturnsAppendedPathWithoutAdditionalSeparators)
-{
-	//REFACTOR: Clarify this test
-	Path path("/home/serengeor/Coding");
-	Path pathS("/home/serengeor/Coding/");
-	Path path2("TheEngine2");
-	Path path2S("/TheEngine2");
-	Path correctPath("/home/serengeor/Coding/TheEngine2");
+TEST_F(PathTest, ReturnsAppendedPathWithoutAdditionalSeparators) {
+  Path absPathWithAppendedSeparator(absolutePath + PathExt::Separator);
+  Path relativePathWithPrependedSeparator(PathExt::Separator + relativePath);
+  Path correctPath = absolutePath + PathExt::Separator + relativePath;
 
-	Path appendPathResult1 = path.Append(path2);
-	Path appendPathResult2 = pathS.Append(path2);
-	Path appendPathResult3 = path.Append(path2S);
-	Path appendPathResult4 = pathS.Append(path2S);
-
-	ASSERT_EQ(correctPath, appendPathResult1);
-	ASSERT_EQ(correctPath, appendPathResult2);
-	ASSERT_EQ(correctPath, appendPathResult3);
-	ASSERT_EQ(correctPath, appendPathResult4);
+  ASSERT_EQ(correctPath, Path(absolutePath).Append(relativePath));
+  ASSERT_EQ(correctPath, Path(absolutePath).Append(relativePathWithPrependedSeparator));
+  ASSERT_EQ(correctPath, Path(absPathWithAppendedSeparator).Append(relativePath));
+  ASSERT_EQ(correctPath, Path(absPathWithAppendedSeparator).Append(relativePathWithPrependedSeparator));
 }
 
-TEST(PathFileNameTests, ReturnsFileNameWithoutPath)
-{
-	Path path("/home/serengeor/Coding/TheEngine2");
-	Path path2("/TheEngine2");
-
-	ASSERT_EQ("TheEngine2"s, path.GetFileName());
-	ASSERT_EQ("TheEngine2"s, path2.GetFileName());
+TEST_F(PathTest, ReturnsFileNameWithExtension) {
+  ASSERT_EQ(fileNameWithExtension, Path(fileNameWithExtension).GetFileName());
+  ASSERT_EQ(fileNameWithExtension, Path(PathExt::Separator + fileNameWithExtension).GetFileName());
+  ASSERT_EQ(fileNameWithExtension, Path(absolutePath).Append(fileNameWithExtension).GetFileName());
 }
 
-TEST(PathFileNameTests, ReturnsFileNameIfNotInDirectory)
-{
-	Path path("TheEngine2");
-
-	ASSERT_EQ("TheEngine2"s, path.GetFileName());
+TEST_F(PathTest, ReturnsFileNameWithoutExtension) {
+  ASSERT_EQ(fileNameWithoutExtension, Path(fileNameWithoutExtension).GetFileName());
+  ASSERT_EQ(fileNameWithoutExtension, Path(PathExt::Separator + fileNameWithoutExtension).GetFileName());
+  ASSERT_EQ(fileNameWithoutExtension, Path(absolutePath).Append(fileNameWithoutExtension).GetFileName());
 }
 
-TEST(PathFileNameTests, ReturnsFileNameWithExtension)
-{
-	Path path("/home/serengeor/Coding/TheEngine2.exe");
+TEST_F(PathTest, ReturnsEmptyForEmptyPath) {
+  Path path("");
 
-	ASSERT_EQ("TheEngine2.exe"s, path.GetFileName());
+  ASSERT_EQ(emptyPath, path.GetFileName());
+  ASSERT_EQ(emptyPath, path.GetExtension());
+  ASSERT_EQ(emptyPath, path.GetParentDirectory());
 }
 
-TEST(PathParentDirectoryTests, ReturnsParentDirWhenPathWithFile)
-{
-	std::string pathString = "/home/serengeor/Coding";
-	std::string fileString = "/TheEngine2";
-	Path path(pathString+fileString);
+TEST_F(PathTest, ReturnsParentDirWhenPathWithFile) {
+  Path path = Path(absolutePath).Append(fileNameWithoutExtension);
 
-	ASSERT_EQ(pathString, path.GetParentDirectory());
+  ASSERT_EQ(absolutePath, path.GetParentDirectory());
 }
 
-TEST(PathParentDirectoryTests, ReturnsParentDirWhenPathWithFileAndExtension)
-{
-	std::string pathString = "/home/serengeor/Coding";
-	std::string fileString = "/TheEngine2.exe";
-	Path path(pathString+fileString);
-
-	ASSERT_EQ(pathString, path.GetParentDirectory());
+TEST_F(PathTest, ReturnsParentDirWhenPathWithFileAndExtension) {
+  Path path = Path(absolutePath).Append(fileNameWithExtension);
+  ASSERT_EQ(absolutePath, path.GetParentDirectory());
 }
 
-TEST(PathExtensionTests, ReturnsExtensionWithDotWhenFileWithPath)
-{
-	std::string pathString = "/home/serengeor/Coding";
-	std::string fileString = "/TheEngine2.exe";
-	Path path(pathString+fileString);
-
-	ASSERT_EQ(".exe"s, path.GetExtension());
+TEST_F(PathTest, ReturnsExtension) {
+  ASSERT_EQ(extension, Path(fileNameWithExtension).GetExtension());
+  ASSERT_EQ(extension, Path(absolutePath).Append(fileNameWithExtension).GetExtension());
+  ASSERT_EQ(extension, Path(relativePath).Append(fileNameWithExtension).GetExtension());
 }
 
-TEST(PathExtensionTests, ReturnsExtensionWithDotWhenFileWithout)
-{
-	std::string fileString = "TheEngine2.exe";
-	Path path(fileString);
-
-	ASSERT_EQ(".exe"s, path.GetExtension());
+TEST_F(PathTest, ReturnsEmptyForExtension) {
+  ASSERT_EQ(emptyPath, Path().GetExtension());
+  ASSERT_EQ(emptyPath, Path(fileNameWithoutExtension).GetExtension());
+  ASSERT_EQ(emptyPath, Path(absolutePath).GetExtension());
+  ASSERT_EQ(emptyPath, Path(relativePath).GetExtension());
+  //Note: Do we need to handle unix hidden files?
 }
 
-TEST(PathExtensionTests, ReturnsEmptyStringForExtensionWhenNoExtension)
-{
-	std::string fileString = "TheEngine2";
-	Path path(fileString);
+TEST_F(PathTest, DirSeparatorsAreNormalizedOnConstruction) {
+  std::string goodPath = "C:/SomeRelativePath/BlaBla/SomeFile.exec";
+  std::string badUnixSeparatorPath =
+      "C://SomeRelativePath///////BlaBla//SomeFile.exec";
+  std::string badWinSeparatorPath =
+      "C:\\\\SomeRelativePath\\\\\\\\BlaBla\\\\SomeFile.exec";
 
-	ASSERT_EQ(""s, path.GetExtension());
-}
-
-TEST(PathNormalizationTests, DuplicatedDirSeparatorsAreNormalizedOnConstruction)
-{
-	std::string goodPath = "C:/SomeRelativePath/BlaBla/SomeFile.exec";
-	std::string badUnixSeparatorPath = "C://SomeRelativePath///////BlaBla//SomeFile.exec";
-	std::string badWinSeparatorPath = "C:\\\\SomeRelativePath\\\\\\\\BlaBla\\\\SomeFile.exec";
-	
-	Path normalizedUnixPath(badUnixSeparatorPath);
-	Path normalizedWinPath(badWinSeparatorPath);
-	
-	ASSERT_EQ(goodPath, normalizedUnixPath.AsString());
-	ASSERT_EQ(goodPath, normalizedWinPath.AsString());
+  ASSERT_EQ(goodPath, Path(badUnixSeparatorPath));
+  ASSERT_EQ(goodPath, Path(badWinSeparatorPath));
 }

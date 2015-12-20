@@ -4,7 +4,8 @@
 #include <string>
 
 //Warning: Meant for simple path handling.
-//Warning: Some platform specific things might be left out since we're dealing overall with relative paths.
+//Some platform specific things might be left out since we're dealing overall with relative paths.
+//All paths shall be considered as relative paths when doing operations on them.
 
 class Path
 {
