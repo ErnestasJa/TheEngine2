@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/serengeor/TheEngine2.png?label=ready&title=Ready)](https://waffle.io/serengeor/TheEngine2)
 # TheEngine2
 
 ## Build status
