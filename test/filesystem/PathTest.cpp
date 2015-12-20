@@ -104,3 +104,13 @@ TEST(PathExtensionTests, ReturnsEmptyStringForExtensionWhenNoExtension)
 
 	ASSERT_EQ(""s, path.GetExtension());
 }
+
+TEST(PathNormalizationTests, DuplicatedDirSeparatorsAreNormalizedOnConstruction)
+{
+	std::string goodPath = "C:/SomeRelativePath/BlaBla/SomeFile.exec";
+	std::string badPath = "C://SomeRelativePath///////BlaBla//SomeFile.exec";
+	
+	Path normalizedPath(badPath);
+	
+	ASSERT_EQ(goodPath, normalizedPath.AsString());
+}

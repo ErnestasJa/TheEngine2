@@ -16,6 +16,7 @@ namespace PathExt
 	std::string GetParentDirectory(const std::string & path);
 	bool HasFileName(const std::string & path);
 	std::string ConvertToUnixPath(const std::string & path);
+	std::string Normalize(const std::string & path);
 }
 
 #endif

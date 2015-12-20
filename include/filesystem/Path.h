@@ -29,9 +29,8 @@ private:
 #include "PathExt.h"
 
 Path::Path(const std::string & path)
-: m_path(path)
 {
-	
+	m_path = PathExt::Normalize(path);
 }
 
 Path::Path()

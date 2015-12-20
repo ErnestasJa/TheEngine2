@@ -30,4 +30,5 @@
 .ycm_extra_conf.pyc
 *.sublime-workspace
 */build
+flags
 /build/linux/cmake/build

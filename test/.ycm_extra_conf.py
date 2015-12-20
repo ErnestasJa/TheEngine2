@@ -16,13 +16,13 @@ flags = [
   
   # includes for project
   '-I',
-  '.',
+  'gtest/googletest/include',
   '-I',
-  'src',
+  '',
   '-I',
-  'include',
+  '../src',
   '-I',
-  'third_party',
+  '../include'
 ]
 
 
