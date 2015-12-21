@@ -57,14 +57,16 @@ class Builder:
 		if not self.CreateAndChDir(paths.Paths['build']):
 			raise Exception("Failed creatring dir.")
 
+		if not self.CreateAndChDir(paths.Paths['lib']):
+			raise Exception("Failed creatring dir.")
+
 		for key, value in paths.CMakePaths.items():
 			if not self.CreateAndChDir(join(paths.Paths['build'], key)):
 				raise Exception("Failed creatring dir.")
 
 			subprocess.check_call('cmake "' + value + '" -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
 			subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
-
-		self.copy_libs()
+			self.copy_libs()
 
 	def get_libs_from_dir(self, dir):
 		match = []
@@ -81,10 +83,11 @@ class Builder:
 		matches.extend(self.get_libs_from_dir(os.getcwd()))
 
 		for f in matches:
-			filename = os.path.join(paths.Paths["lib"], f[0])
+			moved_file_path = os.path.join(paths.Paths["lib"], f[0])
 			try:
-				shutil.move(f[1], filename)
+				shutil.move(f[1], moved_file_path)
 			except:
+				print("Failed to move: '" + f[1] + "', to: '" + moved_file_path + "'")
 				pass
 
 Builder().Compile()
