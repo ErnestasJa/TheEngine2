@@ -1,35 +1,12 @@
 import fnmatch
 import os, shutil, subprocess
 
-class Os:
-	OsDict = {}
-	CurrentOs = None
-	
-	def __init__(self, name, path):
-		self.name = name
-		self.path = path
-
-	@staticmethod
-	def Get(name):
-		return Os.OsDict[name]
-
-	@staticmethod
-	def Add(name, path):
-		Os.OsDict[name] = Os(name, path)
-
-	@staticmethod
-	def Init():
-		Os.Add("linux","linux")
-		Os.Add("windows", "win")
-
-		CurrentOs = Os.Get('linux')
-
-
 pdir = os.path.dirname
 
 Paths = {
-	"cmake" : os.getcwd(),
-	"lib" : pdir(pdir(os.getcwd())),
+	"cwd" : os.getcwd(),
+	"engine" : os.path.join(os.getcwd(), "linux")
+	"lib" : pdir(os.getcwd()),
 	"build" : "build"
 }
 
@@ -47,18 +24,18 @@ class Builder:
 	Threads = 9
 
 	def __init__(self):
-		return
+		pass
 
-	@preserve_directory(Paths['cmake'])
+	@preserve_directory(Paths['cwd'])
 	def CleanCompileDir(self):
-		shutil.rmtree(os.path.join(Paths['cmake'],Paths['build']))
+		shutil.rmtree(os.path.join(Paths['cwd'],Paths['build']))
 
-	@preserve_directory(Paths['cmake'])
+	@preserve_directory(Paths['cwd'])
 	def Compile(self):
 		if os.path.exists(Paths['build']) == False:
 			try:
 				os.mkdir(Paths['build'])
-			except OSError as e:	  
+			except OSError as e:
 				print('Failed creating build directory.')
 				return
 
@@ -79,7 +56,7 @@ class Builder:
 					
 		return match
 
-	@preserve_directory(Paths['cmake'])
+	@preserve_directory(Paths['cwd'])
 	def copy_libs(self):
 		matches = []
 		matches.extend(self.get_libs_from_dir(os.getcwd()))
@@ -90,8 +67,5 @@ class Builder:
 				shutil.move(f[1], filename)
 			except:
 				pass
-
-
-Os.Init()
 
 Builder().Compile()

@@ -9,10 +9,10 @@ install:
 script:
   - set -e
   - g++ --version
-  - cd build/linux/cmake
-  - python build.py
-  - cd ../../../ && cd test/
-  - python build.py
+  - cd build
+  - python build_engine.py
+  - cd ./bin/test
+  - exec PathTest
 addons:
   apt:
     sources:
