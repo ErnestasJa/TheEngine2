@@ -12,7 +12,7 @@ script:
   - cd build
   - python build_engine.py
   - cd ./bin/test
-  - exec PathTest
+  - exec ./PathTest
 addons:
   apt:
     sources:
