@@ -2,6 +2,8 @@
 #include "filesystem/Path.h"
 #include "physfs/src/physfs.h"
 
+namespace io
+{
 FileWriter::FileWriter(const Path& filePath)
 {
     m_fileHandle = PHYSFS_openWrite(filePath.AsString().c_str());
@@ -32,7 +34,8 @@ std::intmax_t FileWriter::WriteFile(const T& dataBuffer, std::uintmax_t size)
     return -1;
 }
 
-std::intmax_t FileWriter::Write(const TByteArray& array, std::intmax_t size)
+std::intmax_t FileWriter::Write(const core::TByteArray& array,
+                                std::intmax_t size)
 {
     return WriteFile(array, size);
 }
@@ -45,4 +48,5 @@ std::intmax_t FileWriter::Write(const std::string& string, std::uintmax_t size)
 bool FileWriter::Seek(std::uintmax_t position)
 {
     return PHYSFS_seek(m_fileHandle, position) != 0;
+}
 }

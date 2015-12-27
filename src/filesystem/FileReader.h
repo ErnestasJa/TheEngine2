@@ -4,14 +4,17 @@
 #include "filesystem/IFileReader.h"
 
 struct PHYSFS_File;
-class FileReader : public IFileReader {
+namespace io
+{
+class FileReader : public IFileReader
+{
 public:
     FileReader(const Path& filePath);
     virtual ~FileReader();
     virtual std::intmax_t GetLength() const;
     virtual std::intmax_t GetPosition() const;
     virtual std::intmax_t Read(
-        TByteArray& array,
+        core::TByteArray& array,
         std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max());
     virtual std::intmax_t Read(
         std::string& string,
@@ -25,5 +28,6 @@ private:
         std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max());
     PHYSFS_File* m_fileHandle;
 };
+}
 
 #endif

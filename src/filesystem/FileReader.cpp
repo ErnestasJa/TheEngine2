@@ -2,6 +2,8 @@
 #include "filesystem/Path.h"
 #include "physfs/src/physfs.h"
 
+namespace io
+{
 FileReader::FileReader(const Path& filePath)
 {
     m_fileHandle = PHYSFS_openRead(filePath.AsString().c_str());
@@ -47,7 +49,7 @@ std::intmax_t FileReader::ReadFile(T& dataBuffer, std::uintmax_t size)
     return -1;
 }
 
-std::intmax_t FileReader::Read(TByteArray& array, std::uintmax_t size)
+std::intmax_t FileReader::Read(core::TByteArray& array, std::uintmax_t size)
 {
     return ReadFile(array, size);
 }
@@ -60,4 +62,5 @@ std::intmax_t FileReader::Read(std::string& string, std::uintmax_t size)
 bool FileReader::Seek(std::uintmax_t position)
 {
     return PHYSFS_seek(m_fileHandle, position) != 0;
+}
 }

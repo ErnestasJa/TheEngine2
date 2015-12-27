@@ -4,14 +4,16 @@
 #include "filesystem/IFileWriter.h"
 
 struct PHYSFS_File;
-class FileWriter : public IFileWriter {
+namespace io
+{
+class FileWriter : public IFileWriter
+{
 public:
     FileWriter(const Path& filePath);
     virtual ~FileWriter();
-
     virtual std::intmax_t GetPosition() const;
     virtual std::intmax_t Write(
-        const TByteArray& array,
+        const core::TByteArray& array,
         std::intmax_t size = std::numeric_limits<std::uintmax_t>::max());
     virtual std::intmax_t Write(
         const std::string& string,
@@ -23,7 +25,9 @@ private:
     std::intmax_t WriteFile(
         const T& buffer,
         std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max());
+
     PHYSFS_File* m_fileHandle;
 };
+}
 
 #endif
