@@ -3,13 +3,16 @@
 
 #include "IFileWriter.h"
 #include "IFileReader.h"
+#include "Path.h"
 
 namespace io
 {
 class IFileSystem
 {
 public:
-    virtual ~IFileSystem();
+    virtual ~IFileSystem()
+    {
+    }
     virtual bool SetWriteDirectory(const Path& path) = 0;
     virtual Path GetWriteDirectory() = 0;
     virtual Path GetWorkingDirectory() = 0;

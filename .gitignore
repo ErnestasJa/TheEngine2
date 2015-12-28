@@ -32,3 +32,6 @@
 */build
 /build/bin
 flags
+
+#Python
+__pycache__/

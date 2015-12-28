@@ -15,14 +15,12 @@ flags = [
   'c++',
   
   # includes for project
-  '-I',
-  'gtest/googletest/include',
-  '-I',
-  '',
-  '-I',
-  '../src',
-  '-I',
-  '../include'
+  '-I', 'gtest/googletest/include',
+  '-I', '.',
+  '-I', '../src',
+  '-I', '../include',
+  '-I', '../third_party',
+  '-include', '../include/EngineInc.h'
 ]
 
 
@@ -39,7 +37,7 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
     return list( flags )
   new_flags = []
   make_next_absolute = False
-  path_flags = [ '-isystem', '-I', '-iquote', '--sysroot=' ]
+  path_flags = [ '-isystem', '-I', '-include', '-iquote', '--sysroot=' ]
   for flag in flags:
     new_flag = flag
 

@@ -14,77 +14,58 @@ namespace io
 class Path
 {
 public:
-    Path();
-    Path(const std::string& path);
-    ~Path();
+    Path(const std::string& path)
+    {
+        m_path = io::PathExt::Normalize(path);
+    }
 
-    Path Append(const Path& path);
-    Path GetFileName() const;
-    Path GetExtension() const;
-    Path GetParentDirectory() const;
-    bool HasFileName() const;
-    const std::string& AsString() const;
+    Path() : m_path("")
+    {
+    }
 
-    operator std::string() const;
-    Path& operator=(const Path& other);
+    ~Path()
+    {
+    }
+
+    Path Append(const Path& path)
+    {
+        return io::PathExt::Append(m_path, std::string(path));
+    }
+
+    Path GetFileName() const
+    {
+        return io::PathExt::GetFileName(m_path);
+    }
+    Path GetExtension() const
+    {
+        return io::PathExt::GetExtension(m_path);
+    }
+    Path GetParentDirectory() const
+    {
+        return io::PathExt::GetParentDirectory(m_path);
+    }
+
+    bool HasFileName() const
+    {
+        return io::PathExt::HasFileName(m_path);
+    }
+    const std::string& AsString() const
+    {
+        return m_path;
+    }
+    operator std::string() const
+    {
+        return m_path;
+    }
+    Path& operator=(const Path& other)
+    {
+        m_path = other.m_path;
+        return *this;
+    }
 
 private:
     std::string m_path;
 };
-
-Path::Path(const std::string& path)
-{
-    m_path = io::PathExt::Normalize(path);
-}
-
-Path::Path() : m_path("")
-{
-}
-
-Path::~Path()
-{
-}
-
-Path Path::Append(const Path& path)
-{
-    return io::PathExt::Append(m_path, std::string(path));
-}
-
-Path Path::GetFileName() const
-{
-    return io::PathExt::GetFileName(m_path);
-}
-
-Path Path::GetExtension() const
-{
-    return io::PathExt::GetExtension(m_path);
-}
-
-Path Path::GetParentDirectory() const
-{
-    return io::PathExt::GetParentDirectory(m_path);
-}
-
-bool Path::HasFileName() const
-{
-    return io::PathExt::HasFileName(m_path);
-}
-
-const std::string& Path::AsString() const
-{
-    return m_path;
-}
-
-Path::operator std::string() const
-{
-    return m_path;
-}
-
-Path& Path::operator=(const Path& other)
-{
-    m_path = other.m_path;
-    return *this;
-}
 
 inline bool operator==(const Path& lhs, const Path& rhs)
 {

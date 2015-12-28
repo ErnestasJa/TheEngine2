@@ -30,11 +30,8 @@ protected:
     }
 
 protected:
-    std::string absolutePath, relativePath, emptyPath,
-
-        unixRootPath, winRootPath,
-
-        fileNameWithExtension, fileNameWithoutExtension, extension;
+    std::string absolutePath, relativePath, emptyPath, unixRootPath,
+        winRootPath, fileNameWithExtension, fileNameWithoutExtension, extension;
 };
 
 TEST_F(PathTest, ReturnsAppendedPathWithFileName)

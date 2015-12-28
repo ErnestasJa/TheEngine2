@@ -18,6 +18,7 @@ FileSystem::FileSystem()
 
 FileSystem::~FileSystem()
 {
+    if (PHYSFS_isInit()) PHYSFS_deinit();
 }
 
 bool FileSystem::Init(const Path& argv0)

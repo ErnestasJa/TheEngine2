@@ -6,7 +6,9 @@ namespace io
 class IFileReader
 {
 public:
-    virtual ~IFileReader();
+    virtual ~IFileReader()
+    {
+    }
     virtual std::intmax_t GetLength() const = 0;
     virtual std::intmax_t GetPosition() const = 0;
     virtual std::intmax_t Read(

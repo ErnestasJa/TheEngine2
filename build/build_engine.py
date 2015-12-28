@@ -1,6 +1,7 @@
 import fnmatch
 import os, shutil, subprocess
 from collections import OrderedDict
+from test_runner import TestRunner
 
 pdir = os.path.dirname
 join = os.path.join
@@ -91,3 +92,4 @@ class Builder:
 				pass
 
 Builder().Compile()
+TestRunner().Run()

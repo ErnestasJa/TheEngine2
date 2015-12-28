@@ -4,7 +4,7 @@ project (BUILD_TESTS)
 add_subdirectory("${BUILD_TESTS_SOURCE_DIR}/gtest")
 enable_testing()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -w -Wfatal-errors -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -w -Wfatal-errors -std=c++14 -include EngineInc.h")
 set(ENGINE_PATH "${BUILD_TESTS_SOURCE_DIR}/../" )
 set(ENGINE_SRC_PATH "${ENGINE_PATH}/src" )
 set(ENGINE_INC_PATH "${ENGINE_PATH}/include" )
@@ -21,12 +21,23 @@ include_directories(
 	"${ENGINE_INC_PATH}"
 )
 
-add_executable(PathTest 
-	filesystem/PathTest.cpp
+set(TEST_SOURCES 
+	"filesystem/PathTest.cpp" 
+	"filesystem/FileSystemTest.cpp" 
 )
 
-target_link_libraries(PathTest
-	"${ENGINE_LIB_PATH}/libengine.a"
-	gtest
-	gtest_main
-)
+foreach(testsourcefile ${TEST_SOURCES})
+
+	get_filename_component(test_filename ${testsourcefile} NAME_WE)
+    
+    add_executable(${test_filename} ${testsourcefile})
+
+    target_link_libraries(${test_filename} 
+		"${ENGINE_LIB_PATH}/libengine.a"
+		"${ENGINE_LIB_PATH}/libphysfs.a"
+		gtest
+		gtest_main
+	)
+
+endforeach(testsourcefile ${TEST_SOURCES})
+
