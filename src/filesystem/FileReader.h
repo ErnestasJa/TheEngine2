@@ -9,8 +9,9 @@ namespace io
 class FileReader : public IFileReader
 {
 public:
-    FileReader(const Path& filePath);
+    FileReader();
     virtual ~FileReader();
+    bool Open(const Path& filePath);
     virtual std::intmax_t GetLength() const;
     virtual std::intmax_t GetPosition() const;
     virtual std::intmax_t Read(

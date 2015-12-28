@@ -4,14 +4,19 @@
 
 namespace io
 {
-FileWriter::FileWriter(const Path& filePath)
+FileWriter::FileWriter()
 {
-    m_fileHandle = PHYSFS_openWrite(filePath.AsString().c_str());
 }
 
 FileWriter::~FileWriter()
 {
     if (m_fileHandle != nullptr) PHYSFS_close(m_fileHandle);
+}
+
+bool FileWriter::Open(const Path& filePath)
+{
+    m_fileHandle = PHYSFS_openWrite(filePath.AsString().c_str());
+    return m_fileHandle != nullptr;
 }
 
 std::intmax_t FileWriter::GetPosition() const

@@ -4,14 +4,19 @@
 
 namespace io
 {
-FileReader::FileReader(const Path& filePath)
+FileReader::FileReader()
 {
-    m_fileHandle = PHYSFS_openRead(filePath.AsString().c_str());
 }
 
 FileReader::~FileReader()
 {
     if (m_fileHandle != nullptr) PHYSFS_close(m_fileHandle);
+}
+
+bool FileReader::Open(const Path& filePath)
+{
+    m_fileHandle = PHYSFS_openRead(filePath.AsString().c_str());
+    return m_fileHandle != nullptr;
 }
 
 std::intmax_t FileReader::GetLength() const

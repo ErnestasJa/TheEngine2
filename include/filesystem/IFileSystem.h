@@ -21,6 +21,8 @@ public:
     virtual core::SharedPtr<IFileReader> OpenRead(const Path& path) = 0;
     virtual core::Vector<Path> GetFilesInDirectory(const Path& directory) = 0;
 };
+
+core::SharedPtr<IFileSystem> CreateFileSystem(const Path& argv0);
 }
 
 #endif

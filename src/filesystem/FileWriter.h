@@ -9,8 +9,9 @@ namespace io
 class FileWriter : public IFileWriter
 {
 public:
-    FileWriter(const Path& filePath);
+    FileWriter();
     virtual ~FileWriter();
+    bool Open(const Path& filePath);
     virtual std::intmax_t GetPosition() const;
     virtual std::intmax_t Write(
         const core::TByteArray& array,
