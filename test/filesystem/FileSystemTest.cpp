@@ -174,6 +174,33 @@ TEST_F(FileSystemTest, ByteBufferContentsReadFromFileAreCorrect)
     ASSERT_EQ(correctArray, testByteArray);
 }
 
+TEST_F(FileSystemTest, CanRandomAccessFile)
+{
+    auto file = fileSystem->OpenRead(readFilePath);
+    ASSERT_NE(nullptr, file.get());
+
+    for (std::size_t i = 0; i < readFileContents.size(); i++) {
+        file->Seek(i);
+        ASSERT_EQ(file->GetPosition(), i);
+    }
+}
+
+TEST_F(FileSystemTest, CanRandomAccessAndReadFile)
+{
+    auto file = fileSystem->OpenRead(readFilePath);
+    ASSERT_NE(nullptr, file.get());
+
+    std::size_t readPos = 5, readLength = 8;
+    std::string correctSubContent =
+        readFileContents.substr(readPos, readLength);
+
+    std::string readBuffer;
+    file->Seek(readPos);
+    file->Read(readBuffer, readLength);
+
+    ASSERT_EQ(correctSubContent, readBuffer);
+}
+
 TEST_F(FileSystemTest,
        CanFindFileWithoutSpecifyingDirectoryAfterAddingSearchDirectory)
 {
