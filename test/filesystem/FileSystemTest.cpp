@@ -23,6 +23,7 @@ protected:
 
         writeFilePath = "TestWriteFile"s + Common::GetTimestampString();
         readFilePath = "testdata/TestReadFile.txt"s;
+        emptyReadFile = "testdata/EmptyReadFile.txt"s;
         directoryPath = "TestDirectory"s + Common::GetTimestampString();
         testExecutableName = "FileSystemTest"s;
         testDirectoryPath = io::Path(std::string(argv0));
@@ -46,16 +47,22 @@ protected:
     {
         if (fileSystem->FileExists(writeFilePath))
             ASSERT_TRUE(fileSystem->Delete(writeFilePath));
-        if (fileSystem->FileExists(directoryPath))
+        if (fileSystem->DirectoryExists(directoryPath))
             ASSERT_TRUE(fileSystem->Delete(directoryPath));
     }
 
 protected:
     io::Path testDirectoryPath, testPath, testExecutableName;
-    io::Path writeFilePath, readFilePath, directoryPath;
+    io::Path writeFilePath, readFilePath, directoryPath, emptyReadFile;
     std::string readFileContents;
     core::SharedPtr<io::IFileSystem> fileSystem;
 };
+
+TEST_F(FileSystemTest, WriteDirectoryIsSameAsApplicationPath)
+{
+    auto writeDirectory = fileSystem->GetWriteDirectory();
+    ASSERT_EQ(testDirectoryPath, writeDirectory);
+}
 
 TEST_F(FileSystemTest, CanFindSelf)
 {
@@ -72,6 +79,24 @@ TEST_F(FileSystemTest, CanCreateDirectory)
     ASSERT_FALSE(fileSystem->DirectoryExists(directoryPath));
     ASSERT_TRUE(fileSystem->CreateDirectory(directoryPath));
     ASSERT_TRUE(fileSystem->DirectoryExists(directoryPath));
+}
+
+TEST_F(FileSystemTest, CanCreateDirectoryWhenItAlreadyExists)
+{
+    ASSERT_FALSE(fileSystem->DirectoryExists(directoryPath));
+    ASSERT_TRUE(fileSystem->CreateDirectory(directoryPath));
+    ASSERT_TRUE(fileSystem->DirectoryExists(directoryPath));
+    ASSERT_TRUE(fileSystem->CreateDirectory(directoryPath));
+    ASSERT_TRUE(fileSystem->DirectoryExists(directoryPath));
+}
+
+TEST_F(FileSystemTest, CanDeleteCreatedDirectory)
+{
+    ASSERT_FALSE(fileSystem->DirectoryExists(directoryPath));
+    ASSERT_TRUE(fileSystem->CreateDirectory(directoryPath));
+    ASSERT_TRUE(fileSystem->DirectoryExists(directoryPath));
+    ASSERT_TRUE(fileSystem->Delete(directoryPath));
+    ASSERT_FALSE(fileSystem->DirectoryExists(directoryPath));
 }
 
 TEST_F(FileSystemTest, CanCreateWriteFile)
@@ -109,6 +134,16 @@ TEST_F(FileSystemTest, CanReadStringFromFile)
     ASSERT_TRUE(bytesRead > 0);
 }
 
+TEST_F(FileSystemTest, CanOpenReadEmptyFile)
+{
+    auto file = fileSystem->OpenRead(emptyReadFile);
+    ASSERT_NE(nullptr, file.get());
+
+    std::string testString;
+    auto bytesRead = file->Read(testString);
+    ASSERT_TRUE(bytesRead == 0);
+}
+
 TEST_F(FileSystemTest, StringContentsReadFromFileAreCorrect)
 {
     auto file = fileSystem->OpenRead(readFilePath);
@@ -137,4 +172,12 @@ TEST_F(FileSystemTest, ByteBufferContentsReadFromFileAreCorrect)
     ASSERT_TRUE(bytesRead > -1);
     ASSERT_TRUE(correctArray.size() == (std::size_t)bytesRead);
     ASSERT_EQ(correctArray, testByteArray);
+}
+
+TEST_F(FileSystemTest,
+       CanFindFileWithoutSpecifyingDirectoryAfterAddingSearchDirectory)
+{
+    ASSERT_FALSE(fileSystem->FileExists(readFilePath.GetFileName()));
+    fileSystem->AddSearchDirectory(readFilePath.GetParentDirectory());
+    ASSERT_TRUE(fileSystem->FileExists(readFilePath.GetFileName()));
 }
