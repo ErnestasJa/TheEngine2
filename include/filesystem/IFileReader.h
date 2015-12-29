@@ -13,11 +13,11 @@ public:
     virtual std::intmax_t GetPosition() const = 0;
     virtual std::intmax_t Read(
         core::TByteArray& array,
-        std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max()) = 0;
+        std::size_t size = std::numeric_limits<std::size_t>::max()) = 0;
     virtual std::intmax_t Read(
         std::string& string,
-        std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max()) = 0;
-    virtual bool Seek(std::uintmax_t position) = 0;
+        std::size_t size = std::numeric_limits<std::size_t>::max()) = 0;
+    virtual bool Seek(std::size_t position) = 0;
 };
 }
 
