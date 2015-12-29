@@ -77,6 +77,11 @@ bool FileSystem::CreateDirectory(const Path& path)
     return PHYSFS_mkdir(path.AsString().c_str());
 }
 
+bool FileSystem::Delete(const Path& path)
+{
+    return PHYSFS_delete(path.AsString().c_str());
+}
+
 core::SharedPtr<IFileWriter> FileSystem::OpenWrite(const Path& path)
 {
     auto fileWriter = std::make_shared<FileWriter>();

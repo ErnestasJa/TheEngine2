@@ -20,6 +20,7 @@ public:
     virtual bool DirectoryExists(const Path& path) = 0;
     virtual bool FileExists(const Path& path) = 0;
     virtual bool CreateDirectory(const Path& path) = 0;
+    virtual bool Delete(const Path& path) = 0;
     virtual core::SharedPtr<IFileWriter> OpenWrite(const Path& path) = 0;
     virtual core::SharedPtr<IFileReader> OpenRead(const Path& path) = 0;
     virtual core::Vector<Path> GetFilesInDirectory(const Path& directory) = 0;

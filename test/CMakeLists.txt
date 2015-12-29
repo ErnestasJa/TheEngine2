@@ -4,7 +4,7 @@ project (BUILD_TESTS)
 add_subdirectory("${BUILD_TESTS_SOURCE_DIR}/gtest")
 enable_testing()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -w -Wfatal-errors -std=c++14 -include EngineInc.h")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -Wfatal-errors -std=c++14 -include EngineInc.h")
 set(ENGINE_PATH "${BUILD_TESTS_SOURCE_DIR}/../" )
 set(ENGINE_SRC_PATH "${ENGINE_PATH}/src" )
 set(ENGINE_INC_PATH "${ENGINE_PATH}/include" )

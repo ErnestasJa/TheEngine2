@@ -37,7 +37,7 @@ std::intmax_t FileReader::ReadFile(T& dataBuffer, std::uintmax_t size)
         auto filePosition = GetPosition();
 
         if (filePosition > -1 && fileLength > -1) {
-            std::uintmax_t readSize = fileLength - filePosition;
+            std::size_t readSize = fileLength - filePosition;
             readSize = readSize > size ? readSize : size;
 
             dataBuffer.resize(readSize);

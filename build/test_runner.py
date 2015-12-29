@@ -7,8 +7,10 @@ join = os.path.join
 executable = stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH
 
 class TestRunner:
-	def Run(self):
+	def __init__(self):
+		shutil.copytree("../test/testdata", "./bin/test/testdata")
 		os.chdir('./bin/test')
+	def Run(self):
 		for filename in os.listdir('.'):
 			if os.path.isfile(filename):
 				st = os.stat(filename)
