@@ -26,6 +26,9 @@ protected:
         directoryPath = "TestDirectory"s + Common::GetTimestampString();
         testExecutableName = "FileSystemTest"s;
         testDirectoryPath = io::Path(std::string(argv0));
+        readFileContents =
+            "Hello?!\n"
+            "World!";
 
         if (testDirectoryPath.HasFileName() &&
             testDirectoryPath.GetFileName() == testExecutableName)
@@ -41,17 +44,16 @@ protected:
 
     virtual void TearDown() override
     {
-        // if (fileSystem->FileExists(writeFilePath))
-        // ASSERT_TRUE(fileSystem->Delete(writeFilePath));
-        // if (fileSystem->FileExists(readFilePath))
-        // ASSERT_TRUE(fileSystem->Delete(readFilePath));
-        // if (fileSystem->FileExists(directoryPath))
-        // ASSERT_TRUE(fileSystem->Delete(directoryPath));
+        if (fileSystem->FileExists(writeFilePath))
+            ASSERT_TRUE(fileSystem->Delete(writeFilePath));
+        if (fileSystem->FileExists(directoryPath))
+            ASSERT_TRUE(fileSystem->Delete(directoryPath));
     }
 
 protected:
     io::Path testDirectoryPath, testPath, testExecutableName;
     io::Path writeFilePath, readFilePath, directoryPath;
+    std::string readFileContents;
     core::SharedPtr<io::IFileSystem> fileSystem;
 };
 
@@ -103,7 +105,36 @@ TEST_F(FileSystemTest, CanReadStringFromFile)
     ASSERT_NE(nullptr, file.get());
 
     std::string testString;
-    testString = "ASDASDASDASDASDSADASDASDASDASSd"s;
     auto bytesRead = file->Read(testString);
     ASSERT_TRUE(bytesRead > 0);
+}
+
+TEST_F(FileSystemTest, StringContentsReadFromFileAreCorrect)
+{
+    auto file = fileSystem->OpenRead(readFilePath);
+    ASSERT_NE(nullptr, file.get());
+
+    std::string testString;
+    auto bytesRead = file->Read(testString);
+
+    ASSERT_TRUE(bytesRead > -1);
+    ASSERT_TRUE(readFileContents.size() == (std::size_t)bytesRead);
+    ASSERT_EQ(readFileContents, testString);
+    ASSERT_EQ(testString, readFileContents);
+}
+
+TEST_F(FileSystemTest, ByteBufferContentsReadFromFileAreCorrect)
+{
+    core::TByteArray correctArray(readFileContents.begin(),
+                                  readFileContents.end());
+
+    auto file = fileSystem->OpenRead(readFilePath);
+    ASSERT_NE(nullptr, file.get());
+
+    core::TByteArray testByteArray;
+    auto bytesRead = file->Read(testByteArray);
+
+    ASSERT_TRUE(bytesRead > -1);
+    ASSERT_TRUE(correctArray.size() == (std::size_t)bytesRead);
+    ASSERT_EQ(correctArray, testByteArray);
 }
