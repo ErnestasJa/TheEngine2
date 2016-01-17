@@ -1,5 +1,5 @@
 import fnmatch
-import os, shutil, subprocess
+import os, sys, shutil, subprocess
 from collections import OrderedDict
 from test_runner import TestRunner
 
@@ -26,13 +26,18 @@ class PathManager:
 
 		self.CMakePaths = OrderedDict()
 		self.CMakePaths["physfs"] = join(self.Paths["engine"],"third_party/physfs")
+		self.CMakePaths["glfw"] = join(self.Paths["engine"],"third_party/glfw")
 		self.CMakePaths["engine"] = join(self.Paths["engine"],"build/linux")
 		self.CMakePaths["test"] = join(self.Paths["engine"],"test")
+		self.CMakePaths["examples"] = join(self.Paths["engine"],"examples")
 
 paths = PathManager()
 
 class Builder:
 	Threads = 9
+
+	def __init__(self):
+		self.should_clean_compile_dir = len(sys.argv) == 2 and sys.argv[1] == "-clean"
 
 	def CleanCompileDir(self, dir):
 		try:
@@ -41,7 +46,8 @@ class Builder:
 			pass
 
 	def CreateAndChDir(self, dir):
-		self.CleanCompileDir(dir)
+		if self.should_clean_compile_dir:
+			self.CleanCompileDir(dir)
 
 		if os.path.exists(dir) == False:
 			try:

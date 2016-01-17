@@ -16,7 +16,9 @@ set(PHYSFS_INC_PATH "${ENGINE_PATH}/third_party/physfs/src" )
 #Let it build, let it build! :)
 include_directories("${ENGINE_INC_PATH}/"
 	"${ENGINE_INC_PATH}/filesystem"
-	"${LIB_PATH}"
+	"${LIB_PATH}",
+	"${LIB_PATH}/glm"
+	"${LIB_PATH}/glfw/include"
 )
 
 add_library(engine STATIC 
@@ -24,4 +26,7 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/filesystem/FileReader.cpp"
 	"${ENGINE_SRC_PATH}/filesystem/FileWriter.cpp"
 	"${ENGINE_SRC_PATH}/filesystem/FileSystem.cpp"
+
+	"${ENGINE_SRC_PATH}/window/GLFWWindow.cpp"
+	"${ENGINE_SRC_PATH}/window/DefaultWindowModule.cpp"
 )

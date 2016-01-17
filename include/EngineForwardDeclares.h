@@ -23,6 +23,10 @@ template <class T>
 using SharedPtr = std::shared_ptr<T>;
 template <class T>
 using WeakPtr = std::weak_ptr<T>;
+
+class GenericInputHandler;
+class IInputDevice;
+class IInputDeviceModule;
 }
 
 #endif

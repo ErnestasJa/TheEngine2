@@ -8,9 +8,19 @@ executable = stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH
 
 class TestRunner:
 	def __init__(self):
-		shutil.copytree("../test/testdata", "./bin/test/testdata")
+		pass
+
+	def InitTestData(self):
+		try:
+			shutil.copytree("../test/testdata", "./bin/test/testdata")
+		except FileExistsError:
+			pass
+
 		os.chdir('./bin/test')
+	
 	def Run(self):
+		self.InitTestData()
+
 		for filename in os.listdir('.'):
 			if os.path.isfile(filename):
 				st = os.stat(filename)

@@ -10,7 +10,7 @@ script:
   - set -e
   - g++ --version
   - cd build
-  - python build_engine.py
+  - python build_engine.py -clean
 addons:
   apt:
     sources:

@@ -16,12 +16,10 @@ flags = [
   
   # includes for project
   '-I', '.',
-  '-I', 'src',
-  '-I', 'include',
-  '-I', 'third_party',
-  '-I', 'third_party/glm',
-  '-I', 'third_party/glfw/include',
-  '-include', 'include/EngineInc.h'
+  '-I', '../src',
+  '-I', '../include',
+  '-I', '../third_party',
+  '-include', '../include/EngineInc.h'
 ]
 
 
