@@ -4,8 +4,9 @@ python:
   - "3.5"
 compiler:
   - gcc
+
 install:
-- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 script:
   - set -e
   - g++ --version
@@ -15,6 +16,8 @@ addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
+    - george-edison55-precise-backports
     packages:
+    - cmake
     - gcc-5
     - g++-5
