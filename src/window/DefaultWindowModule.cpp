@@ -14,6 +14,7 @@ public:
     virtual bool Initialize()
     {
         if (glfwInit() == false) return false;
+
         return true;
     }
 
@@ -26,12 +27,14 @@ public:
     virtual core::SharedPtr<IWindow> CreateWindow(
         const SWindowDefinition& windowDefinition)
     {
-        auto window = std::make_shared<GLFWWindow>();
+        auto window = core::MakeShared<GLFWWindow>();
 
         if (window->Init(windowDefinition)) return window;
 
         return nullptr;
     }
+
+private:
 };
 
 core::SharedPtr<IWindowModule> CreateDefaultWindowModule()

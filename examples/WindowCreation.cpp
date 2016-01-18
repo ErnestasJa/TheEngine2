@@ -8,9 +8,7 @@ int main(int argc, char const *argv[])
 
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
-    wDef.ForwardCompatible = false;
-    wDef.ContextMajorVersion = 3;
-    wDef.ContextMinorVersion = 2;
+    wDef.Title = "Window example application";
 
     auto window = wmodule->CreateWindow(wDef);
 

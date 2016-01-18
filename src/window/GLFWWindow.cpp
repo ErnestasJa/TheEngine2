@@ -1,5 +1,6 @@
 #include "GLFWWindow.h"
 #include "GLFW/glfw3.h"
+#include "GLFWInputDevice.h"
 
 namespace render
 {
@@ -39,6 +40,12 @@ bool GLFWWindow::Init(const SWindowDefinition& wDef)
         return false;
     }
 
+    m_inputDevice = GLFWInputDevice::Create(m_window);
+
+    if (m_inputDevice == nullptr) {
+        return false;
+    }
+
     return true;
 }
 
@@ -58,7 +65,9 @@ core::pod::Vec2<int32_t> GLFWWindow::GetPosition()
 
 bool GLFWWindow::PollEvents()
 {
+    m_inputDevice->PollEvents(0);
     glfwPollEvents();
+    return true;
 }
 
 void GLFWWindow::SwapBuffers()
@@ -69,5 +78,10 @@ void GLFWWindow::SwapBuffers()
 bool GLFWWindow::ShouldClose()
 {
     return m_window == nullptr || glfwWindowShouldClose(m_window);
+}
+
+core::WeakPtr<core::IInputDevice> GLFWWindow::GetInputDevice()
+{
+    return m_inputDevice;
 }
 }

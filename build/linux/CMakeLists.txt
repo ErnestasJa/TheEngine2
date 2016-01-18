@@ -29,4 +29,6 @@ add_library(engine STATIC
 
 	"${ENGINE_SRC_PATH}/window/GLFWWindow.cpp"
 	"${ENGINE_SRC_PATH}/window/DefaultWindowModule.cpp"
+	"${ENGINE_SRC_PATH}/window/GLFWInputDevice.cpp"
+	
 )

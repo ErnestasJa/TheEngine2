@@ -24,7 +24,13 @@ using SharedPtr = std::shared_ptr<T>;
 template <class T>
 using WeakPtr = std::weak_ptr<T>;
 
-class GenericInputHandler;
+template <class T, class... U>
+SharedPtr<T> MakeShared(U&&... u)
+{
+    return std::make_shared<T>(std::forward<U>(u)...);
+}
+
+class InputHandler;
 class IInputDevice;
 class IInputDeviceModule;
 }

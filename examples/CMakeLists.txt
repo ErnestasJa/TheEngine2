@@ -19,6 +19,7 @@ include_directories(
 
 set(BUILD_SOURCES 
 	"WindowCreation.cpp" 
+	"WindowInputHandler.cpp" 
 )
 
 set(SYSTEM_LINUX_LIBS

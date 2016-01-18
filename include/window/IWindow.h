@@ -15,6 +15,7 @@ public:
     virtual bool PollEvents() = 0;
     virtual void SwapBuffers() = 0;
     virtual bool ShouldClose() = 0;
+    virtual core::WeakPtr<core::IInputDevice> GetInputDevice() = 0;
 };
 }
 
