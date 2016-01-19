@@ -3,5 +3,6 @@
 
 #include "InputHandler.h"
 #include "IInputDevice.h"
+#include "InputMapping.h"
 
 #endif

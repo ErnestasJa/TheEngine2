@@ -17,6 +17,7 @@ class IFileReader;
 namespace core
 {
 using TByteArray = std::vector<uint8_t>;
+using String = std::string;
 template <class T>
 using Vector = std::vector<T>;
 template <class T>
