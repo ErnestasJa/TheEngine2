@@ -5,13 +5,14 @@
 class WindowInputHandler : public core::InputHandler
 {
 public:
-    static auto Create()
+    static auto Create(core::WeakPtr<render::IWindow> window)
     {
-        return core::MakeShared<WindowInputHandler>();
+        return core::MakeShared<WindowInputHandler>(window);
     }
 
 public:
-    WindowInputHandler() : m_quit(false)
+    WindowInputHandler(core::WeakPtr<render::IWindow> window)
+        : m_quit(false), m_window(window)
     {
     }
 
@@ -19,6 +20,19 @@ public:
     {
         if (key == core::Keys::Q) m_quit = true;
 
+        if (auto wnd = m_window.lock()) {
+            if (key == core::Keys::W) {
+                auto dims = wnd->GetDimensions();
+                dims.x += 20;
+                dims.y += 20;
+                wnd->SetDimensions(dims);
+            } else if (key == core::Keys::E) {
+                auto dims = wnd->GetDimensions();
+                dims.x -= 20;
+                dims.y -= 20;
+                wnd->SetDimensions(dims);
+            }
+        }
         return false;
     }
 
@@ -29,6 +43,7 @@ public:
 
 private:
     bool m_quit;
+    core::WeakPtr<render::IWindow> m_window;
 };
 
 int main(int argc, char const *argv[])
@@ -47,7 +62,7 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    auto handler = WindowInputHandler::Create();
+    auto handler = WindowInputHandler::Create(window);
     window->GetInputDevice().lock()->SetInputHandler(handler);
 
     while (window->ShouldClose() == false && handler->AppQuit() == false) {

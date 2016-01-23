@@ -15,7 +15,9 @@ public:
     virtual ~GLFWWindow();
     virtual bool Init(const SWindowDefinition& windowDefinition);
     virtual core::pod::Vec2<int32_t> GetDimensions();
+    virtual void SetDimensions(const core::pod::Vec2<int32_t>& dimensions);
     virtual core::pod::Vec2<int32_t> GetPosition();
+    virtual void SetPosition(const core::pod::Vec2<int32_t>& position);
     virtual bool PollEvents();
     virtual void SwapBuffers();
     virtual bool ShouldClose();

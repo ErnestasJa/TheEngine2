@@ -56,11 +56,21 @@ core::pod::Vec2<int32_t> GLFWWindow::GetDimensions()
     return dim;
 }
 
+void GLFWWindow::SetDimensions(const core::pod::Vec2<int32_t>& dimensions)
+{
+    glfwSetWindowSize(m_window, dimensions.x, dimensions.y);
+}
+
 core::pod::Vec2<int32_t> GLFWWindow::GetPosition()
 {
     core::pod::Vec2<int32_t> pos;
     glfwGetWindowPos(m_window, &pos.x, &pos.y);
     return pos;
+}
+
+void GLFWWindow::SetPosition(const core::pod::Vec2<int32_t>& position)
+{
+    glfwSetWindowPos(m_window, position.x, position.y);
 }
 
 bool GLFWWindow::PollEvents()
