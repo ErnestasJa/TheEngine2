@@ -1,5 +1,5 @@
 #include "GLFWInputDevice.h"
-#include "GLFW/glfw3.h"
+#include "GLFWInputKeyMap.h"
 #include "input/InputHandler.h"
 
 namespace
@@ -68,20 +68,21 @@ void GLFWInputDevice::SetInputHandler(
 
 void GLFWInputDevice::BindEventHandlers()
 {
-    auto keyHandler = [](GLFWwindow* window, int key, int scancode, int action,
-                         int mods) -> void {
+    auto keyHandler = [](GLFWwindow* window, int glfwKey, int scancode,
+                         int action, int mods) -> void {
         auto handler = SWindowUserData::GetInputHandler(window);
         if (!handler) return;
 
+        const core::Key& key = core::MapKey(glfwKey);
         switch (action) {
             case GLFW_PRESS:
-                handler->OnKeyDown(key, scancode, false);
+                handler->OnKeyDown(key, false);
                 break;
             case GLFW_RELEASE:
-                handler->OnKeyUp(key, scancode, false);
+                handler->OnKeyUp(key, false);
                 break;
             case GLFW_REPEAT:
-                handler->OnKeyDown(key, scancode, true);
+                handler->OnKeyDown(key, true);
                 break;
         }
     };

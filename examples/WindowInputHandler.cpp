@@ -15,11 +15,9 @@ public:
     {
     }
 
-    virtual bool OnKeyDown(const int32_t KeyCode, const uint32_t CharacterCode,
-                           const bool IsRepeated)
+    virtual bool OnKeyDown(const core::Key &key, const bool IsRepeated) override
     {
-        // magic number for Q key, need to implement key bindings.
-        if (KeyCode == 81) m_quit = true;
+        if (key == core::Keys::Q) m_quit = true;
 
         return false;
     }

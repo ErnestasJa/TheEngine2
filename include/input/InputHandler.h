@@ -3,6 +3,7 @@
 
 namespace core
 {
+class Key;
 class InputHandler
 {
 public:
@@ -10,13 +11,12 @@ public:
     {
     }
 
-    virtual bool OnKeyDown(const int32_t KeyCode, const uint32_t CharacterCode,
-                           const bool IsRepeated)
+    virtual bool OnKeyDown(const Key& key, const bool repeated)
     {
         return false;
     }
-    virtual bool OnKeyUp(const int32_t KeyCode, const uint32_t CharacterCode,
-                         const bool IsRepeated)
+
+    virtual bool OnKeyUp(const Key& key, const bool repeated)
     {
         return false;
     }
