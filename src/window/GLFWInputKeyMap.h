@@ -58,6 +58,8 @@ inline const Key& MapKey(int32_t key)
             return Keys::Y;
         case GLFW_KEY_Z:
             return Keys::Z;
+        case GLFW_KEY_ESCAPE:
+            return Keys::Esc;
         default:
             return Keys::Unknown;
     }

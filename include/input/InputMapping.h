@@ -57,6 +57,7 @@ struct Keys {
     static const Key X;
     static const Key Y;
     static const Key Z;
+    static const Key Esc;
     static const Key Unknown;
 };
 }

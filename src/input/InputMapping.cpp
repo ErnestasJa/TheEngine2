@@ -28,5 +28,6 @@ const Key Keys::W("W");
 const Key Keys::X("X");
 const Key Keys::Y("Y");
 const Key Keys::Z("Z");
+const Key Keys::Esc("Esc");
 const Key Keys::Unknown("Unknown");
 }

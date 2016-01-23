@@ -18,7 +18,7 @@ public:
 
     virtual bool OnKeyDown(const core::Key &key, const bool IsRepeated) override
     {
-        if (key == core::Keys::Q) m_quit = true;
+        if (key == core::Keys::Q || key == core::Keys::Esc) m_quit = true;
 
         if (auto wnd = m_window.lock()) {
             if (key == core::Keys::W) {
@@ -33,6 +33,8 @@ public:
                 wnd->SetDimensions(dims);
             }
         }
+
+        std::cout << "Key name:" << key.Name() << std::endl;
         return false;
     }
 
