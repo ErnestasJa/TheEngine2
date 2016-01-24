@@ -27,11 +27,17 @@
 *.out
 *.app
 
+#Extra files
 .ycm_extra_conf.pyc
 *.sublime-workspace
+
+#Extra directories
 */build
 /build/bin
 flags
+doc/*
+!doc/Doxyfile
+
 
 #Python
 __pycache__/
