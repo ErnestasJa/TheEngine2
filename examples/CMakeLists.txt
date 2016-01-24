@@ -20,6 +20,7 @@ include_directories(
 set(BUILD_SOURCES 
 	"WindowCreation.cpp" 
 	"WindowInputHandler.cpp" 
+	"BasicLogSample.cpp"
 )
 
 set(SYSTEM_LINUX_LIBS
