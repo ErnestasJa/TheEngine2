@@ -6,15 +6,15 @@ from test_runner import TestRunner
 pdir = os.path.dirname
 join = os.path.join
 
-def preserve_directory(directory):
-	def preserve_decorator(fn):
-		def wrapped(*args, **kwargs):
+def PreserveDirectory(directory):
+	def PreserveDecorator(fn):
+		def Wrapped(*args, **kwargs):
 			os.chdir(directory)
 			ret = fn(*args, **kwargs)
 			os.chdir(directory)
 			return ret
-		return wrapped
-	return preserve_decorator
+		return Wrapped
+	return PreserveDecorator
 
 class PathManager:
 	def __init__(self):
@@ -53,29 +53,24 @@ class Builder:
 			try:
 				os.mkdir(dir)
 			except OSError as e:
-				print('Failed creating build directory: "' + dir + '"')
-				return False
+				raise Exception('Failed creating build directory: "' + dir + '"')
 
 		os.chdir(dir)
 		return True
 
-	@preserve_directory(paths.Paths['cwd'])
+	@PreserveDirectory(paths.Paths['cwd'])
 	def Compile(self):
-		if not self.CreateAndChDir(paths.Paths['build']):
-			raise Exception("Failed creatring dir.")
-
-		if not self.CreateAndChDir(paths.Paths['lib']):
-			raise Exception("Failed creatring dir.")
+		self.CreateAndChDir(paths.Paths['build'])
+		self.CreateAndChDir(paths.Paths['lib'])
 
 		for key, value in paths.CMakePaths.items():
-			if not self.CreateAndChDir(join(paths.Paths['build'], key)):
-				raise Exception("Failed creatring dir.")
+			self.CreateAndChDir(join(paths.Paths['build'], key))
 
 			subprocess.check_call('cmake "' + value + '" -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
 			subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
-			self.copy_libs()
+			self.CopyLibs()
 
-	def get_libs_from_dir(self, dir):
+	def GetLibs(self, dir):
 		match = []
 
 		for root, dirnames, filenames in os.walk(dir):
@@ -85,9 +80,9 @@ class Builder:
 					
 		return match
 
-	def copy_libs(self):
+	def CopyLibs(self):
 		matches = []
-		matches.extend(self.get_libs_from_dir(os.getcwd()))
+		matches.extend(self.GetLibs(os.getcwd()))
 
 		for f in matches:
 			moved_file_path = os.path.join(paths.Paths["lib"], f[0])
