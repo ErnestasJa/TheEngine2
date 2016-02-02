@@ -1,48 +1,52 @@
 #ifndef ENGINE_LOG_H
 #define ENGINE_LOG_H
 
-#include "ILogPipe.h"
+#include "ILogStream.h"
 namespace log
 {
-class TLog
+class Logger
 {
 public:
-    static TLog& Get()
+    static Logger& Get()
     {
-        static TLog log;
+        static Logger log;
         return log;
     }
 
 public:
     void Log(const core::String& str)
     {
-        for (auto wlogPipe : m_logPipes) {
-            if (auto logPipe = wlogPipe.lock()) {
+        for (auto wlogStream : m_logStreams) {
+            if (auto logPipe = wlogStream.lock()) {
                 logPipe->Log(str);
             }
         }
     }
 
-    void AttachPipe(const core::WeakPtr<ILogPipe>& wlogPipe)
+    void AttachStream(const core::WeakPtr<ILogStream>& wlogStream)
     {
-        m_logPipes.push_back(wlogPipe);
+        m_logStreams.push_back(wlogStream);
     }
 
-    void CleanDeadPipes()
+    void CleanDeadStreams()
     {
-        auto it = std::begin(m_logPipes);
+        auto it = std::begin(m_logStreams);
 
-        while (it != std::end(m_logPipes)) {
+        while (it != std::end(m_logStreams)) {
             if (it->lock())
                 ++it;
             else
-                it = m_logPipes.erase(it);
+                it = m_logStreams.erase(it);
         }
     }
 
 private:
-    core::Vector<core::WeakPtr<ILogPipe> > m_logPipes;
+    core::Vector<core::WeakPtr<ILogStream> > m_logStreams;
 };
+
+void Log(const core::String &str ){
+    Logger::Get().Log( str );
+}
 }
 
 #endif

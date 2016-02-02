@@ -1,2 +1,2 @@
-#include "ILogPipe.h"
+#include "ILogStream.h"
 #include "Log.h"

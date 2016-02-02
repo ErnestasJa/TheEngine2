@@ -3,7 +3,7 @@
 
 namespace log
 {
-class ILogPipe
+class ILogStream
 {
 public:
     virtual void Log(const core::String& logString) = 0;

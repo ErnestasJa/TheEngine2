@@ -2,7 +2,9 @@
 #include "core/StringExt.h"
 #include <iostream>
 
-class CoutPipe : public log::ILogPipe
+namespace String = core::string;
+
+class CoutPipe : public log::ILogStream
 {
 public:
     void Log(const core::String &logStr)
@@ -13,22 +15,21 @@ public:
 
 int main(int argc, char const *argv[])
 {
-    using log = log::TLog;
-    namespace string = core::string;
+    using logger = log::Logger;
 
     for (int32_t i = 0; i < 10; i++) {
         auto coutPipe = core::MakeShared<CoutPipe>();
-        log::Get().AttachPipe(coutPipe);
-        log::Get().Log(string::CFormat("Test %d", i));
+        logger::Get().AttachStream(coutPipe);
+        log::Log(String::CFormat("Test %d", i));
     }
 
-    log::Get().Log("Should not be logged anywhere.");
-    log::Get().CleanDeadPipes();
-    log::Get().Log("Also should not be logged anywhere.");
+    log::Log("Should not be logged anywhere.");
+    logger::Get().CleanDeadStreams();
+    log::Log("Also should not be logged anywhere.");
 
     auto coutPipe = core::MakeShared<CoutPipe>();
-    log::Get().AttachPipe(coutPipe);
-    log::Get().Log("Last log to cout.");
+    logger::Get().AttachStream(coutPipe);
+    log::Log("Last log to cout.");
 
     return 0;
 }
