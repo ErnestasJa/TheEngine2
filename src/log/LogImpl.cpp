@@ -14,11 +14,12 @@ namespace
         }
 
     public:
-        void Log(const LogSource source, const core::String& str)
+        void Log(const LogSource source, const LogSeverity severity,
+                 const core::String& str)
         {
             for (auto wlogStream : m_logStreams) {
                 if (auto logPipe = wlogStream.lock()) {
-                    logPipe->Log(source, str);
+                    logPipe->Log(source, severity, str);
                 }
             }
         }
@@ -45,9 +46,10 @@ namespace
     };
 }
 
-void Log(const LogSource source, const core::String& log)
+void Log(const LogSource source, const LogSeverity severity,
+         const core::String& log)
 {
-    Logger::Get().Log(source, log);
+    Logger::Get().Log(source, severity, log);
 }
 
 void AddLogStream(const core::WeakPtr<ILogStream>& wlogStream)
