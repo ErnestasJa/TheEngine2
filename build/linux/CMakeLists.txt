@@ -32,5 +32,6 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/window/GLFWInputDevice.cpp"
 
 	"${ENGINE_SRC_PATH}/input/InputMapping.cpp"
-	
+
+	"${ENGINE_SRC_PATH}/log/LogImpl.cpp"
 )

@@ -4,32 +4,40 @@
 
 namespace String = core::string;
 
-class CoutPipe : public log::ILogStream
+class EngineCoutPipe : public log::ILogStream
 {
 public:
-    void Log(const core::String &logStr)
+    void Log(const log::LogSource source, const core::String &logStr)
     {
-        std::cout << logStr << std::endl;
+        if (source == log::LogSource::Engine)
+            std::cout << "Engine log: " << logStr << std::endl;
+    }
+};
+
+class OtherPipe : public log::ILogStream
+{
+public:
+    void Log(const log::LogSource source, const core::String &logStr)
+    {
+        if (source == log::LogSource::Other)
+            printf("Other: %s\n", logStr.c_str());
     }
 };
 
 int main(int argc, char const *argv[])
 {
-    using logger = log::Logger;
+    auto engineLogStream = core::MakeShared<EngineCoutPipe>();
+    auto otherLogStream = core::MakeShared<OtherPipe>();
+    log::AddLogStream(engineLogStream);
+    log::AddLogStream(otherLogStream);
 
     for (int32_t i = 0; i < 10; i++) {
-        auto coutPipe = core::MakeShared<CoutPipe>();
-        logger::Get().AttachStream(coutPipe);
-        log::Log(String::CFormat("Test %d", i));
+        log::Log(i % 2 ? log::LogSource::Other : log::LogSource::Engine,
+                 String::CFormat("Test %d", i));
+
+        if (i > 4)
+            engineLogStream = nullptr;  // stop logging engine things from now.2
     }
-
-    log::Log("Should not be logged anywhere.");
-    logger::Get().CleanDeadStreams();
-    log::Log("Also should not be logged anywhere.");
-
-    auto coutPipe = core::MakeShared<CoutPipe>();
-    logger::Get().AttachStream(coutPipe);
-    log::Log("Last log to cout.");
 
     return 0;
 }
