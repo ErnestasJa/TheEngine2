@@ -34,4 +34,6 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/input/InputMapping.cpp"
 
 	"${ENGINE_SRC_PATH}/log/LogImpl.cpp"
+
+	"${ENGINE_SRC_PATH}/core/StringExt.cpp"
 )

@@ -90,7 +90,7 @@ bool GLFWWindow::ShouldClose()
     return m_window == nullptr || glfwWindowShouldClose(m_window);
 }
 
-core::WeakPtr<core::IInputDevice> GLFWWindow::GetInputDevice()
+core::WeakPtr<input::IInputDevice> GLFWWindow::GetInputDevice()
 {
     return m_inputDevice;
 }

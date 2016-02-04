@@ -1,7 +1,7 @@
 #include "input/InputMapping.h"
 #include "GLFW/glfw3.h"
 
-namespace core
+namespace input
 {
 inline const Key& MapKey(int32_t key)
 {

@@ -5,10 +5,10 @@
 namespace
 {
 struct SWindowUserData {
-    core::WeakPtr<core::InputHandler> inputHandler;
+    core::WeakPtr<input::InputHandler> inputHandler;
 
     static void Bind(GLFWwindow* window,
-                     core::WeakPtr<core::InputHandler> inputHandler)
+                     core::WeakPtr<input::InputHandler> inputHandler)
     {
         glfwSetWindowUserPointer(window, new SWindowUserData{inputHandler});
     };
@@ -25,7 +25,7 @@ struct SWindowUserData {
         return (SWindowUserData*)glfwGetWindowUserPointer(window);
     }
 
-    static core::SharedPtr<core::InputHandler> GetInputHandler(
+    static core::SharedPtr<input::InputHandler> GetInputHandler(
         GLFWwindow* window)
     {
         auto ud = Get(window);
@@ -35,7 +35,7 @@ struct SWindowUserData {
 };
 }
 
-core::SharedPtr<core::IInputDevice> GLFWInputDevice::Create(GLFWwindow* window)
+core::SharedPtr<input::IInputDevice> GLFWInputDevice::Create(GLFWwindow* window)
 {
     auto ptr = core::MakeShared<GLFWInputDevice>(window);
     ptr->BindEventHandlers();
@@ -59,7 +59,7 @@ void GLFWInputDevice::PollEvents(float deltaTime)
 }
 
 void GLFWInputDevice::SetInputHandler(
-    const core::SharedPtr<core::InputHandler>& handler)
+    const core::SharedPtr<input::InputHandler>& handler)
 {
     m_handler = handler;
     SWindowUserData::Unbind(m_window);
@@ -73,7 +73,7 @@ void GLFWInputDevice::BindEventHandlers()
         auto handler = SWindowUserData::GetInputHandler(window);
         if (!handler) return;
 
-        const core::Key& key = core::MapKey(glfwKey);
+        const input::Key& key = input::MapKey(glfwKey);
         switch (action) {
             case GLFW_PRESS:
                 handler->OnKeyDown(key, false);

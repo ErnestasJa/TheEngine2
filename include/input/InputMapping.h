@@ -1,7 +1,7 @@
 #ifndef INPUTMAPPING_H
 #define INPUTMAPPING_H
 
-namespace core
+namespace input
 {
 class Key
 {
