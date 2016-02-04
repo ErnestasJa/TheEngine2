@@ -14,6 +14,9 @@ namespace string
         snprintf(buffer, BufferSize, fmt, t...);
         return buffer;
     }
+
+    std::string Replace(const std::string& source, const std::string& toReplace,
+                        const std::string& replacement);
 }
 }
 
