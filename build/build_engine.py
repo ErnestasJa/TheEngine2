@@ -37,7 +37,24 @@ class Builder:
 	Threads = 9
 
 	def __init__(self):
-		self.should_clean_compile_dir = len(sys.argv) == 2 and sys.argv[1] == "-clean"
+		self.clean_compile_directory = False
+		self.build_samples = True
+		self.__ParseArgs()
+
+	def __ParseArgs(self):
+		print("======= Arguments =======")
+		print(len(sys.argv))
+		
+		for i in range(1, len(sys.argv)):
+
+			print(sys.argv[i])
+			
+			if sys.argv[i] == "-clean":
+				self.clean_compile_directory = True
+			elif sys.argv[i] == "-nosamples":
+				self.build_samples = False
+
+		print("======= Arguments =======")
 
 	def CleanCompileDir(self, dir):
 		try:
@@ -46,7 +63,7 @@ class Builder:
 			pass
 
 	def CreateAndChDir(self, dir):
-		if self.should_clean_compile_dir:
+		if self.clean_compile_directory:
 			self.CleanCompileDir(dir)
 
 		if os.path.exists(dir) == False:
@@ -68,6 +85,9 @@ class Builder:
 			raise Exception("Failed creatring dir.")
 
 		for key, value in paths.CMakePaths.items():
+			if self.build_samples == False and key == "examples":
+				continue
+
 			if not self.CreateAndChDir(join(paths.Paths['build'], key)):
 				raise Exception("Failed creatring dir.")
 
