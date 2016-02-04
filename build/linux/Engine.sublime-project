@@ -2,21 +2,13 @@
 	"folders":
 	[
 		{
-			"path": "/home/serengeor/Coding/TheEngine2"
+			"path": "/home/serengeor/coding/TheEngine2"
 		}
 	],
-
-    "settings":
-    {
-         "sublimegdb_workingdir": "${project_path:./build/bin/examples}",
-         "sublimegdb_arguments": "",
-         "sublimegdb_commandline": "gdb --interpreter=mi --args ${project_path:./build/bin/examples/${file_base_name}}"
-    }
-
- //    "settings":
- //    {
- //         "sublimegdb_workingdir": "${project_path:./build/bin/test}",
- //         "sublimegdb_arguments": "",
- //         "sublimegdb_commandline": "gdb --interpreter=mi --args ${project_path:./build/bin/test/${file_base_name}}"
- //    }
+	"settings":
+	{
+		"sublimegdb_arguments": "",
+		"sublimegdb_commandline": "gdb --interpreter=mi --args ${project_path:./build/bin/examples/${file_base_name}}",
+		"sublimegdb_workingdir": "${project_path:./build/bin/examples}"
+	}
 }
