@@ -21,11 +21,11 @@ public:
     virtual bool PollEvents();
     virtual void SwapBuffers();
     virtual bool ShouldClose();
-    virtual core::WeakPtr<core::IInputDevice> GetInputDevice();
+    virtual core::WeakPtr<input::IInputDevice> GetInputDevice();
 
 private:
     GLFWwindow* m_window;
-    core::SharedPtr<core::IInputDevice> m_inputDevice;
+    core::SharedPtr<input::IInputDevice> m_inputDevice;
 };
 }
 

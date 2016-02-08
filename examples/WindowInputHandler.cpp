@@ -2,7 +2,7 @@
 #include "input/InputInc.h"
 #include <iostream>
 
-class WindowInputHandler : public core::InputHandler
+class WindowInputHandler : public input::InputHandler
 {
 public:
     static auto Create(core::WeakPtr<render::IWindow> window)
@@ -16,17 +16,18 @@ public:
     {
     }
 
-    virtual bool OnKeyDown(const core::Key &key, const bool IsRepeated) override
+    virtual bool OnKeyDown(const input::Key &key,
+                           const bool IsRepeated) override
     {
-        if (key == core::Keys::Q || key == core::Keys::Esc) m_quit = true;
+        if (key == input::Keys::Q || key == input::Keys::Esc) m_quit = true;
 
         if (auto wnd = m_window.lock()) {
-            if (key == core::Keys::W) {
+            if (key == input::Keys::W) {
                 auto dims = wnd->GetDimensions();
                 dims.x += 20;
                 dims.y += 20;
                 wnd->SetDimensions(dims);
-            } else if (key == core::Keys::E) {
+            } else if (key == input::Keys::E) {
                 auto dims = wnd->GetDimensions();
                 dims.x -= 20;
                 dims.y -= 20;

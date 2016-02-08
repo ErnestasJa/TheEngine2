@@ -1,6 +1,6 @@
 #include "input/InputMapping.h"
 
-namespace core
+namespace input
 {
 const Key Keys::A("A");
 const Key Keys::B("B");

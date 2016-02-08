@@ -1,7 +1,7 @@
 #ifndef GENERIC_INPUT_HANDLER_H
 #define GENERIC_INPUT_HANDLER_H
 
-namespace core
+namespace input
 {
 class Key;
 class InputHandler

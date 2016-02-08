@@ -1,28 +1,11 @@
 #include "filesystem/PathExt.h"
 #include <algorithm>
+#include "core/StringExt.h"
 
 namespace io
 {
 namespace PathExt
 {
-    // REFACTOR: Move to StringExt
-    std::string Replace(const std::string& source, const std::string& toReplace,
-                        const std::string& replacement)
-    {
-        std::size_t index = 0;
-        std::string src = source;
-
-        while (true) {
-            index = src.find(toReplace, index);
-            if (index == std::string::npos) break;
-
-            src.replace(index, replacement.size(), replacement);
-            index += replacement.size();
-        }
-
-        return src;
-    }
-
     std::string Append(const std::string& path, const std::string& pathToAppend)
     {
         auto size = path.size();
@@ -82,7 +65,7 @@ namespace PathExt
 
     std::string ConvertToUnixPath(const std::string& path)
     {
-        return Replace(path, WindowsSeparatorStr, SeparatorStr);
+        return core::string::Replace(path, WindowsSeparatorStr, SeparatorStr);
     }
 
     std::string Normalize(const std::string& path)
