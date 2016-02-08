@@ -17,6 +17,15 @@ namespace string
 
     std::string Replace(const std::string& source, const std::string& toReplace,
                         const std::string& replacement);
+
+    std::string trim_end(const std::string& s,
+                         const std::string& delimiters = " \f\n\r\t\v");
+
+    std::string trim_begin(const std::string& s,
+                           const std::string& delimiters = " \f\n\r\t\v");
+
+    std::string trim(const std::string& s,
+                     const std::string& delimiters = " \f\n\r\t\v");
 }
 }
 

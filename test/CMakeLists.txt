@@ -22,6 +22,8 @@ include_directories(
 )
 
 set(TEST_SOURCES 
+	"core/StringExtensionTests.cpp" 
+	
 	"filesystem/PathTest.cpp" 
 	"filesystem/FileSystemTest.cpp" 
 )
