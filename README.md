@@ -6,4 +6,5 @@
 
 ## Info
 Rewrite of 'TheEngine'.
-To build run python script in ./build/linux/cmake
+
+To build run python script that should be named 'build_engine.py'. (Can build linux only version for now).
