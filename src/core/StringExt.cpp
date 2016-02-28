@@ -34,20 +34,37 @@ namespace string
         return src;
     }
 
-    std::string trim_end(const std::string& s, const std::string& delimiters)
+    std::string TrimEnd(const std::string& s, const std::string& delimiters)
     {
-        return s.substr(0, s.find_last_not_of(delimiters) + 1);
+        if (s.size() == 0) return s;
+
+        auto pos = s.find_last_not_of(delimiters);
+
+        if (pos == core::String::npos) return core::String();
+
+        return s.substr(0, pos + 1);
     }
 
-    std::string trim_begin(const std::string& s, const std::string& delimiters)
+    std::string TrimBegin(const std::string& s, const std::string& delimiters)
     {
-        return s.substr(s.find_first_not_of(delimiters));
+        if (s.size() == 0) return s;
+
+        auto pos = s.find_first_not_of(delimiters);
+        if (pos == core::String::npos) return core::String();
+
+        return s.substr(pos);
     }
 
-    std::string trim(const std::string& s, const std::string& delimiters)
+    std::string Trim(const std::string& s, const std::string& delimiters)
     {
-        return s.substr(s.find_first_not_of(delimiters),
-                        s.find_last_not_of(delimiters) + 1);
+        if (s.size() == 0) return s;
+
+        auto posBegin = s.find_first_not_of(delimiters);
+        auto posEnd = s.find_last_not_of(delimiters);
+
+        if (posBegin == core::String::npos) return core::String();
+
+        return s.substr(posBegin, (posEnd + 1) - posBegin);
     }
 }
 }
