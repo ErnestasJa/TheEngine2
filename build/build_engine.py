@@ -16,6 +16,11 @@ def PreserveDirectory(directory):
 		return Wrapped
 	return PreserveDecorator
 
+class BuildMessage:
+	ArgumentsMsg = "======= Arguments ======="
+	FailedToCreateDirectory = 'Failed to create build directory: "{0}"'
+	FailedToMoveFile = 'Failed to move file "{0}" to "{1}".'
+
 class PathManager:
 	def __init__(self):
 		self.Paths = {}
@@ -42,11 +47,10 @@ class Builder:
 		self.__ParseArgs()
 
 	def __ParseArgs(self):
-		print("======= Arguments =======")
+		print(BuildMessage.ArgumentsMsg)
 		print(len(sys.argv))
 		
 		for i in range(1, len(sys.argv)):
-
 			print(sys.argv[i])
 			
 			if sys.argv[i] == "-clean":
@@ -54,7 +58,7 @@ class Builder:
 			elif sys.argv[i] == "-nosamples":
 				self.build_samples = False
 
-		print("======= Arguments =======")
+		print(BuildMessage.ArgumentsMsg)
 
 	def CleanCompileDir(self, dir):
 		try:
@@ -70,7 +74,8 @@ class Builder:
 			try:
 				os.mkdir(dir)
 			except OSError as e:
-				raise Exception('Failed creating build directory: "' + dir + '"')
+				print(BuildMessage.FailedToCreateDirectory.format(dir))
+				raise
 
 		os.chdir(dir)
 		return True
@@ -108,8 +113,8 @@ class Builder:
 			try:
 				shutil.move(f[1], moved_file_path)
 			except:
-				print("Failed to move: '" + f[1] + "', to: '" + moved_file_path + "'")
-				pass
+				print(BuildMessage.FailedToMoveFile.format(f[1], moved_file_path))
+				raise
 
 Builder().Compile()
 TestRunner().Run()
