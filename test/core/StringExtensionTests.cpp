@@ -48,6 +48,7 @@ TEST_F(StringExtensionTest, TrimBegin)
     };
 
     TrimTestCase testCases[] = {{""s, ""s},
+                                {core::string::Whitespace, ""s},
                                 {" "s, ""s},
                                 {"       "s, ""s},
                                 {"      \n \r\n"s, ""s},
@@ -56,7 +57,7 @@ TEST_F(StringExtensionTest, TrimBegin)
                                 {"    a long text     "s, "a long text     "s}};
 
     for (auto testCase : testCases) {
-        std::cout << "Test case: \"" << testCase.before << "\"" << std::endl;
+        // std::cout << "Test case: \"" << testCase.before << "\"" << std::endl;
         ASSERT_EQ(testCase.after, core::string::TrimBegin(testCase.before));
     }
 }
@@ -68,6 +69,7 @@ TEST_F(StringExtensionTest, TrimEnd)
     };
 
     TrimTestCase testCases[] = {{""s, ""s},
+                                {core::string::Whitespace, ""s},
                                 {" "s, ""s},
                                 {"       "s, ""s},
                                 {"      \n \r\n"s, ""s},
@@ -77,7 +79,7 @@ TEST_F(StringExtensionTest, TrimEnd)
                                 {"    a long text     "s, "    a long text"s}};
 
     for (auto testCase : testCases) {
-        std::cout << "Test case: \"" << testCase.before << "\"" << std::endl;
+        // std::cout << "Test case: \"" << testCase.before << "\"" << std::endl;
         ASSERT_EQ(testCase.after, core::string::TrimEnd(testCase.before));
     }
 }
@@ -89,6 +91,7 @@ TEST_F(StringExtensionTest, Trim)
     };
 
     TrimTestCase testCases[] = {{""s, ""s},
+                                {core::string::Whitespace, ""s},
                                 {" "s, ""s},
                                 {"       "s, ""s},
                                 {"      \n \r\n"s, ""s},
@@ -98,7 +101,7 @@ TEST_F(StringExtensionTest, Trim)
                                 {"    a long text     "s, "a long text"s}};
 
     for (auto testCase : testCases) {
-        std::cout << "Test case: \"" << testCase.before << "\"" << std::endl;
+        // std::cout << "Test case: \"" << testCase.before << "\"" << std::endl;
         ASSERT_EQ(testCase.after, core::string::Trim(testCase.before));
     }
 }

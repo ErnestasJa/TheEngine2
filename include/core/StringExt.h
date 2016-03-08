@@ -7,6 +7,8 @@ namespace core
 {
 namespace string
 {
+    static const String Whitespace = " \f\r\n\t\v";
+
     template <class... T, int32_t BufferSize = 4096>
     String CFormat(const char* fmt, const T&... t)
     {
@@ -19,13 +21,13 @@ namespace string
                         const std::string& replacement);
 
     std::string TrimEnd(const std::string& s,
-                        const std::string& delimiters = " \f\n\r\t\v");
+                        const std::string& delimiters = Whitespace);
 
     std::string TrimBegin(const std::string& s,
-                          const std::string& delimiters = " \f\n\r\t\v");
+                          const std::string& delimiters = Whitespace);
 
     std::string Trim(const std::string& s,
-                     const std::string& delimiters = " \f\n\r\t\v");
+                     const std::string& delimiters = Whitespace);
 }
 }
 

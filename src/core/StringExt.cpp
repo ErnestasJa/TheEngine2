@@ -6,7 +6,7 @@ namespace string
 {
     /*
     Some home grown functions to do basic string manipulation.
-    They are not supposed to be fast, just do their job.
+    They are not supposed to be fast.
     Should not be used in where high performance/memory usage matters.
     */
 
