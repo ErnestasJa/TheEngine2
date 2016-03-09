@@ -1,40 +1,9 @@
 import fnmatch
 import os, sys, shutil, subprocess
-from collections import OrderedDict
 from test_runner import TestRunner
+from build_config import *
+from build_common import *
 
-pdir = os.path.dirname
-join = os.path.join
-
-def PreserveDirectory(directory):
-	def PreserveDecorator(fn):
-		def Wrapped(*args, **kwargs):
-			os.chdir(directory)
-			ret = fn(*args, **kwargs)
-			os.chdir(directory)
-			return ret
-		return Wrapped
-	return PreserveDecorator
-
-class BuildMessage:
-	ArgumentsMsg = "======= Arguments ======="
-	FailedToCreateDirectory = 'Failed to create build directory: "{0}"'
-	FailedToMoveFile = 'Failed to move file "{0}" to "{1}".'
-
-class PathManager:
-	def __init__(self):
-		self.Paths = {}
-		self.Paths["cwd"] = os.getcwd()
-		self.Paths["engine"] = pdir(self.Paths["cwd"])
-		self.Paths["build"] = join(self.Paths["engine"], "build/bin")
-		self.Paths["lib"] = join(self.Paths["engine"], "build/lib")
-
-		self.CMakePaths = OrderedDict()
-		self.CMakePaths["physfs"] = join(self.Paths["engine"],"third_party/physfs")
-		self.CMakePaths["glfw"] = join(self.Paths["engine"],"third_party/glfw")
-		self.CMakePaths["engine"] = join(self.Paths["engine"],"build/linux")
-		self.CMakePaths["test"] = join(self.Paths["engine"],"test")
-		self.CMakePaths["examples"] = join(self.Paths["engine"],"examples")
 
 paths = PathManager()
 
@@ -90,7 +59,10 @@ class Builder:
 				continue
 
 			self.CreateAndChDir(join(paths.Paths['build'], key))
-			subprocess.check_call('cmake "' + value + '" -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
+			subprocess.check_call('cmake "' 
+				+ value + '"'
+				+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
+				+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
 			subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
 			self.CopyLibs()
 
@@ -115,6 +87,3 @@ class Builder:
 			except:
 				print(BuildMessage.FailedToMoveFile.format(f[1], moved_file_path))
 				raise
-
-Builder().Compile()
-TestRunner().Run()
