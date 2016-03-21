@@ -10,3 +10,6 @@
 [submodule "third_party/glfw"]
 	path = third_party/glfw
 	url = https://github.com/glfw/glfw
+[submodule "third_party/glxw"]
+	path = third_party/glxw
+	url = https://github.com/rikusalminen/glxw.git

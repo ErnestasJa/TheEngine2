@@ -19,6 +19,7 @@ include_directories("${ENGINE_INC_PATH}/"
 	"${LIB_PATH}",
 	"${LIB_PATH}/glm"
 	"${LIB_PATH}/glfw/include"
+	"${LIB_PATH}/glxw/include"
 )
 
 add_library(engine STATIC 
@@ -36,4 +37,8 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/log/LogImpl.cpp"
 
 	"${ENGINE_SRC_PATH}/core/StringExt.cpp"
+	
+	"${ENGINE_SRC_PATH}/render/GLExtensionLoader.cpp"
+	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessage.cpp"
+	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessageMonitor.cpp"
 )

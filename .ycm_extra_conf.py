@@ -21,6 +21,7 @@ flags = [
   '-I', 'third_party',
   '-I', 'third_party/glm',
   '-I', 'third_party/glfw/include',
+  '-I', 'third_party/glxw/include',
   '-include', 'include/EngineInc.h'
 ]
 

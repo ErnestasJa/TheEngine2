@@ -7,6 +7,7 @@ set(ENGINE_PATH "" CACHE PATH "Set this to directory which contains 'include', '
 set(ENGINE_SRC_PATH "${ENGINE_PATH}/src" )
 set(ENGINE_INC_PATH "${ENGINE_PATH}/include" )
 set(ENGINE_LIB_PATH "${ENGINE_PATH}/build/lib" )
+set(LIB_PATH "${ENGINE_PATH}/third_party" )
 
 message(STATUS "ENGINE_SRC_PATH: " ${ENGINE_SRC_PATH})
 message(STATUS "ENGINE_INC_PATH: " ${ENGINE_INC_PATH})
@@ -15,12 +16,16 @@ message(STATUS "ENGINE_LIB_PATH: " ${ENGINE_LIB_PATH})
 
 include_directories(
 	"${ENGINE_INC_PATH}"
+	"${LIB_PATH}/glm"
+	"${LIB_PATH}/glfw/include"
+	"${LIB_PATH}/glxw/include"
 )
 
 set(BUILD_SOURCES 
 	"WindowCreation.cpp" 
 	"WindowInputHandler.cpp" 
 	"BasicLogSample.cpp"
+	"ExtensionLoadingAndDebugOutput.cpp"
 )
 
 set(SYSTEM_LINUX_LIBS
@@ -49,6 +54,7 @@ foreach(testsourcefile ${BUILD_SOURCES})
 		"${ENGINE_LIB_PATH}/libengine.a"
 		"${ENGINE_LIB_PATH}/libphysfs.a"
 		"${ENGINE_LIB_PATH}/libglfw3.a"
+		"${ENGINE_LIB_PATH}/libglxw.a"
 	)
 
 endforeach(testsourcefile ${BUILD_SOURCES})

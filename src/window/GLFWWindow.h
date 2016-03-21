@@ -22,8 +22,10 @@ public:
     virtual void SwapBuffers();
     virtual bool ShouldClose();
     virtual core::WeakPtr<input::IInputDevice> GetInputDevice();
+    virtual const SWindowDefinition& GetWindowDefinition();
 
 private:
+    SWindowDefinition m_windowDefinition;
     GLFWwindow* m_window;
     core::SharedPtr<input::IInputDevice> m_inputDevice;
 };

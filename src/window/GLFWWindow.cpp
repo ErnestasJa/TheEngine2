@@ -1,6 +1,8 @@
 #include "GLFWWindow.h"
 #include "GLFW/glfw3.h"
 #include "GLFWInputDevice.h"
+#include "log/LogInc.h"
+#include "core/StringExt.h"
 
 namespace render
 {
@@ -15,10 +17,10 @@ GLFWWindow::~GLFWWindow()
 
 void SetWindowHints(const SWindowDefinition& wDef)
 {
-    glfwDefaultWindowHints();
+    // glfwDefaultWindowHints();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, wDef.ContextMajorVersion);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, wDef.ContextMinorVersion);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, wDef.ForwardCompatible);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, wDef.DebugContext);
     glfwWindowHint(GLFW_RED_BITS, wDef.ColorFramebufferBits.r);
@@ -29,16 +31,48 @@ void SetWindowHints(const SWindowDefinition& wDef)
     glfwWindowHint(GLFW_RESIZABLE, wDef.Resizeable);
 }
 
+void ReadBackContext(SWindowDefinition& def)
+{
+    int32_t flags = 0;
+    glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+    def.ForwardCompatible = flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT;
+    def.DebugContext = flags & GL_CONTEXT_FLAG_DEBUG_BIT;
+
+    glGetIntegerv(GL_MAJOR_VERSION, &def.ContextMajorVersion);
+    glGetIntegerv(GL_MINOR_VERSION, &def.ContextMinorVersion);
+}
+
+void LogContext(const SWindowDefinition& def)
+{
+    log::Log(
+        log::LogSource::Engine, log::LogSeverity::Info,
+        core::string::CFormat("\n\n"
+                              "==========================\n"
+                              "Context version: %u.%u\n"
+                              "Forward compatible: %s\n"
+                              "Debug enabled: %s\n"
+                              "==========================\n\n",
+                              def.ContextMajorVersion, def.ContextMinorVersion,
+                              def.ForwardCompatible ? "yes" : "no",
+                              def.DebugContext ? "yes" : "no"));
+}
+
 bool GLFWWindow::Init(const SWindowDefinition& wDef)
 {
-    SetWindowHints(wDef);
+    m_windowDefinition = wDef;
+    SetWindowHints(m_windowDefinition);
 
     m_window = glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y,
                                 wDef.Title.c_str(), NULL, NULL);
 
+    glfwMakeContextCurrent(m_window);
+
     if (m_window == nullptr) {
         return false;
     }
+
+    ReadBackContext(m_windowDefinition);
+    LogContext(m_windowDefinition);
 
     m_inputDevice = GLFWInputDevice::Create(m_window);
 
@@ -93,5 +127,10 @@ bool GLFWWindow::ShouldClose()
 core::WeakPtr<input::IInputDevice> GLFWWindow::GetInputDevice()
 {
     return m_inputDevice;
+}
+
+const SWindowDefinition& GLFWWindow::GetWindowDefinition()
+{
+    return m_windowDefinition;
 }
 }
