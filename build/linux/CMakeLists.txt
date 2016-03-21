@@ -41,4 +41,6 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/render/GLExtensionLoader.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessage.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessageMonitor.cpp"
+	"${ENGINE_SRC_PATH}/render/GLProgram.cpp"
+	"${ENGINE_SRC_PATH}/render/GLRenderer.cpp"
 )

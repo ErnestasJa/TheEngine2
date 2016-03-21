@@ -26,6 +26,7 @@ set(BUILD_SOURCES
 	"WindowInputHandler.cpp" 
 	"BasicLogSample.cpp"
 	"ExtensionLoadingAndDebugOutput.cpp"
+	"BasicShaderSample.cpp"
 )
 
 set(SYSTEM_LINUX_LIBS

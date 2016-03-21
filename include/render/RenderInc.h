@@ -3,5 +3,7 @@
 
 #include "IRenderExtensionLoader.h"
 #include "IRendererDebugMessageMonitor.h"
+#include "IProgram.h"
+#include "IRenderer.h"
 
 #endif
