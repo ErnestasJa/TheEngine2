@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 project (BUILD_SAMPLES)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -w -Wfatal-errors -std=c++14 -include EngineInc.h")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O -w -Wfatal-errors -std=c++14 -include EngineInc.h")
 set(ENGINE_PATH "" CACHE PATH "Set this to directory which contains 'include', 'src' directories for engine")
 set(ENGINE_SRC_PATH "${ENGINE_PATH}/src" )
 set(ENGINE_INC_PATH "${ENGINE_PATH}/include" )

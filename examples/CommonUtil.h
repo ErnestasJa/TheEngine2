@@ -36,6 +36,8 @@ void LogDebugMessagesAndFlush(
             log::Log(log::LogSource::Engine, log::LogSeverity::Debug,
                      msg->AsString());
         }
+
+    dbgMonitor->ClearMessages();
 }
 
 void LoadExtensions()

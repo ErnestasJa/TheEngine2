@@ -2,19 +2,20 @@
 #define GLPROGRAM_H
 
 #include "render/IProgram.h"
+#include "OpenGL.hpp"
 
 namespace render
 {
 class GLProgram : public IProgram
 {
 public:
-    GLProgram(uint32_t programObject);
+    GLProgram(const gl::gpu_shader_handle& handle);
     virtual ~GLProgram();
 
-    uint32_t GetProgramObject();
+    virtual void Bind();
 
 private:
-    uint32_t m_programObject;
+    gl::gpu_shader_handle m_handle;
 };
 }
 

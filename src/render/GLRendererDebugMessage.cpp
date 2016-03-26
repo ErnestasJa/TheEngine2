@@ -1,5 +1,4 @@
 #include "GLRendererDebugMessage.h"
-#include "render/OpenGL.h"
 
 namespace render
 {

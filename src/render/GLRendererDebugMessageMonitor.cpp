@@ -1,6 +1,6 @@
 #include "GLRendererDebugMessageMonitor.h"
 #include "GLRendererDebugMessage.h"
-#include "render/OpenGL.h"
+#include "OpenGL.hpp"
 #include <iostream>
 
 namespace render
@@ -33,7 +33,8 @@ void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id,
                             const GLchar *message, const void *userParam)
 {
     auto monitor = (GLRendererDebugMessageMonitor *)userParam;
-    auto msg = core::MakeShared<GLRendererDebugMessage>(core::String(message));
+    const auto &msg =
+        core::MakeShared<GLRendererDebugMessage>(core::String(message));
     monitor->AddMessage(msg);
 }
 

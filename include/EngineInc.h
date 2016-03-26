@@ -20,5 +20,6 @@
 /*Engine headers*/
 #include "EngineForwardDeclares.h"
 #include "core/POD.h"
+#include "core/StringExt.h"
 
 #endif

@@ -9,6 +9,8 @@ public:
     virtual ~IProgram()
     {
     }
+
+    virtual void Bind() = 0;
 };
 }
 

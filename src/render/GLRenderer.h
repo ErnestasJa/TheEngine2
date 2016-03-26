@@ -13,6 +13,9 @@ public:
         const core::String& fragSource = "",
         const core::String& geomSource = "");
 
+    virtual void SetClearColor(const Vec3i& color);
+    virtual void Clear();
+
 private:
 };
 }

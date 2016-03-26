@@ -1,6 +1,5 @@
 #include "window/WindowInc.h"
 #include "render/RenderInc.h"
-#include "render/OpenGL.h"
 #include "log/LogInc.h"
 #include <iostream>
 
@@ -52,10 +51,6 @@ int main(int argc, char const *argv[])
     } else {
         std::cout << "Failed to load debuging monitor" << std::endl;
     }
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(20);  // random value to see some debug output
-    glCullFace(20);
 
     if (debugMonitor) {
         for (const auto &msg : debugMonitor->GetMessages()) {

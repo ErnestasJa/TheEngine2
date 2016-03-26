@@ -1,7 +1,6 @@
 #include "GLRenderer.h"
 #include "GLProgram.h"
-#include "OpenGLRender.hpp"
-#include "render/OpenGL.h"
+#include "OpenGL.hpp"
 
 namespace render
 {
@@ -14,22 +13,20 @@ core::SharedPtr<IProgram> GLRenderer::CreateProgram(
     const core::String& vertSource, const core::String& fragSource,
     const core::String& geomSource)
 {
-    uint32_t vertObj = 0, fragObj = 0, geomObj = 0;
+    auto handle = gl::CreatePipelineFromShaderStrings(
+        vertSource.c_str(), fragSource.c_str(), geomSource.c_str());
 
-    if (vertSource.size())
-        vertObj =
-            gl::CreateShaderFromString(GL_VERTEX_SHADER, vertSource.c_str());
-
-    if (fragSource.size())
-        fragObj =
-            gl::CreateShaderFromString(GL_FRAGMENT_SHADER, fragSource.c_str());
-
-    if (geomSource.size())
-        geomObj =
-            gl::CreateShaderFromString(GL_GEOMETRY_SHADER, geomSource.c_str());
-
-    uint32_t programObj = gl::CreateProgramPipeline(vertObj, fragObj, geomObj);
-
-    return programObj ? core::MakeShared<GLProgram>(programObj) : nullptr;
+    if (gl::IsHandleValid(handle))
+        return core::MakeShared<GLProgram>(handle);
+    else
+        return nullptr;
+}
+void GLRenderer::SetClearColor(const Vec3i& color)
+{
+    gl::SetClearColor(color);
+}
+void GLRenderer::Clear()
+{
+    gl::Clear();
 }
 }

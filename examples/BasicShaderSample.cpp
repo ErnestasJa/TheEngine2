@@ -43,8 +43,34 @@ int main(int argc, char const *argv[])
     auto debugMonitor = GetDebugMessageMonitor();
     auto renderer = render::CreateRenderer();
     auto program = renderer->CreateProgram(vertSource, fragSource);
+    auto program2 = renderer->CreateProgram(core::String(vertSource) + "fail",
+                                            core::String(fragSource) + "fail");
+
+    if (!program) {
+        log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
+                 "Failed to load program2");
+    }
+
+    if (program) program->Bind();
+
+    if (!program2) {
+        log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
+                 "Failed to load program2");
+    }
+
+    uint32_t color = 0;
 
     while (window->ShouldClose() == false) {
+        render::Vec3i colorv;
+
+        colorv.r = color % 255;
+        colorv.g = (color / 2) % 255;
+        colorv.b = (color / 3) % 255;
+
+        renderer->SetClearColor(colorv);
+        renderer->Clear();
+        color++;
+
         LogDebugMessagesAndFlush(debugMonitor);
 
         window->SwapBuffers();

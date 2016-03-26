@@ -1,17 +1,19 @@
 #include "GLProgram.h"
+#include "OpenGL.hpp"
 
 namespace render
 {
-GLProgram::GLProgram(uint32_t programObject) : m_programObject(programObject)
+GLProgram::GLProgram(const gl::gpu_shader_handle& handle) : m_handle(handle)
 {
 }
 
 GLProgram::~GLProgram()
 {
+    gl::FreeHandle(m_handle);
 }
 
-uint32_t GLProgram::GetProgramObject()
+void GLProgram::Bind()
 {
-    return m_programObject;
+    gl::BindHandle(m_handle);
 }
 }
