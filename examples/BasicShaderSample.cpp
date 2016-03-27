@@ -48,10 +48,10 @@ int main(int argc, char const *argv[])
 
     if (!program) {
         log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
-                 "Failed to load program2");
+                 "Failed to load program");
+    } else {
+        program->Bind();
     }
-
-    if (program) program->Bind();
 
     if (!program2) {
         log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
