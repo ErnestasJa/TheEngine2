@@ -33,6 +33,12 @@ SharedPtr<T> MakeShared(U&&... u)
     return std::make_shared<T>(std::forward<U>(u)...);
 }
 
+template <class T, class... U>
+UniquePtr<T> MakeUnique(U&&... u)
+{
+    return std::make_unique<T>(std::forward<U>(u)...);
+}
+
 class InputHandler;
 class IInputDevice;
 class IInputDeviceModule;

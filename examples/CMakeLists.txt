@@ -27,6 +27,7 @@ set(BUILD_SOURCES
 	"BasicLogSample.cpp"
 	"ExtensionLoadingAndDebugOutput.cpp"
 	"BasicShaderSample.cpp"
+	"BasicMeshSample.cpp"
 )
 
 set(SYSTEM_LINUX_LIBS

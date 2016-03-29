@@ -12,7 +12,8 @@ public:
         const core::String& vertSource = "",
         const core::String& fragSource = "",
         const core::String& geomSource = "");
-
+    virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
+        BufferDescriptor* descriptors, uint32_t count);
     virtual void SetClearColor(const Vec3i& color);
     virtual void Clear();
 
