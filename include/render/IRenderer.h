@@ -23,7 +23,7 @@ public:
         const core::String& fragSource = "",
         const core::String& geomSource = "") = 0;
     virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
-        BufferDescriptor* descriptors, uint32_t count) = 0;
+        const core::Vector<BufferDescriptor>& descriptors) = 0;
     virtual void SetClearColor(const Vec3i& color) = 0;
     virtual void Clear() = 0;
 };

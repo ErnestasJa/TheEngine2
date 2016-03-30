@@ -13,11 +13,13 @@ namespace gl
 
     struct gpu_buffer_object_handle {
         core::generic_data_access_handle data;
-        uint32_t bytes;
-        uint32_t count;
+        uint32_t component_size;
+        uint32_t component_count;
+        uint32_t component_type;
+        uint32_t buffer_size;
         uint32_t buffer_id;
-        uint32_t type;
-        uint32_t data_type;
+        uint32_t buffer_type;
+        uint32_t index;
     };
 
     struct gpu_vertex_array_object_handle {
@@ -64,7 +66,7 @@ namespace gl
 
     inline void BindHandle(const gpu_buffer_object_handle& handle)
     {
-        glBindBuffer(handle.type, handle.buffer_id);
+        glBindBuffer(handle.buffer_type, handle.buffer_id);
     }
 
     inline void BindHandle(const gpu_vertex_array_object_handle& handle)
@@ -89,6 +91,7 @@ namespace gl
 
     inline uint32_t CreateShaderFromString(uint32_t type, const char* source)
     {
+        printf("Shader source:\n'\n%s\n'\n", source);
         if (source && source[0] != core::string::NullTerminator)
             return glCreateShaderProgramv(type, 1, (const char**)&source);
         else
@@ -122,21 +125,37 @@ namespace gl
                 CreateShaderFromString(GL_GEOMETRY_SHADER, geomSource))};
     }
 
-    inline void CreateGpuStorage(gpu_buffer_object_handle* handles,
-                                 uint32_t count)
+    inline core::Vector<gpu_buffer_object_handle> CreateGpuStorages(
+        uint32_t count)
     {
+        auto handles = core::Vector<gpu_buffer_object_handle>();
         auto buffers = core::UniquePtr<uint32_t[]>(new uint32_t[count]);
         glGenBuffers(count, buffers.get());
 
         for (uint32_t i = 0; i < count; i++) {
-            handles[i].buffer_id = buffers.get()[i];
+            gpu_buffer_object_handle handle;
+            handle.buffer_id = buffers[i];
+            handles.push_back(handle);
         }
+
+        return handles;
     }
 
     inline void UpdateBufferObject(const gpu_buffer_object_handle& handle)
     {
-        glBufferData(handle.type, handle.count * handle.bytes,
-                     (void*)handle.data.ptr, GL_STATIC_DRAW);
+        glBufferData(
+            handle.buffer_type,
+            handle.buffer_size * handle.component_count * handle.component_size,
+            (void*)handle.data.ptr, GL_STATIC_DRAW);
+    }
+
+    inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle)
+    {
+        if (handle.buffer_type == GL_ARRAY_BUFFER) {
+            glEnableVertexAttribArray(handle.index);
+            glVertexAttribPointer(handle.index, handle.buffer_size,
+                                  handle.component_type, GL_FALSE, 0, 0);
+        }
     }
 
     inline gpu_vertex_array_object_handle CreateVertexArrayObject()
@@ -144,6 +163,12 @@ namespace gl
         gpu_vertex_array_object_handle handle;
         glGenVertexArrays(1, &handle.vao_id);
         return handle;
+    }
+
+    inline void Render(const gpu_buffer_object_handle& handle)
+    {
+        glDrawElements(GL_TRIANGLES, handle.buffer_size, handle.component_type,
+                       0);
     }
 
     inline void SetClearColor(const core::pod::Vec3<int32_t>& color)

@@ -11,16 +11,19 @@ class GLGpuBufferObject;
 class GLGpuBufferArrayObject : public IGpuBufferArrayObject
 {
 public:
-    GLGpuBufferArrayObject(const gl::gpu_vertex_array_object_handle& handle);
+    GLGpuBufferArrayObject(
+        const gl::gpu_vertex_array_object_handle& handle,
+        core::Vector<core::UniquePtr<GLGpuBufferObject>>&& bufferObjects);
     virtual ~GLGpuBufferArrayObject();
 
     virtual void Bind();
     virtual IGpuBufferObject* GetBufferObject(uint32_t index);
     virtual uint32_t GetBufferObjectCount();
-    virtual void UpdateBuffer(const BufferDescriptor& desc, uint32_t index);
+    virtual void Render();
 
 public:
-    bool CreateBufferObjects(BufferDescriptor* descriptors, uint32_t count);
+    void EnableBuffers();
+    GLGpuBufferObject* GetIndexBuffer();
 
 private:
     gl::gpu_vertex_array_object_handle m_handle;

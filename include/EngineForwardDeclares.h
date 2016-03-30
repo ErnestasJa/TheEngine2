@@ -39,6 +39,15 @@ UniquePtr<T> MakeUnique(U&&... u)
     return std::make_unique<T>(std::forward<U>(u)...);
 }
 
+template <class U, typename Pred>
+bool Each(const core::Vector<U>& container, Pred p)
+{
+    for (const U& t : container) {
+        if (p(t) == false) return false;
+    }
+    return true;
+}
+
 class InputHandler;
 class IInputDevice;
 class IInputDeviceModule;

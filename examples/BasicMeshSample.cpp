@@ -5,46 +5,49 @@
 core::SharedPtr<render::IWindow> CreateWindow(
     const core::SharedPtr<render::IWindowModule> &wmodule);
 
-const char *vertSource =
-    R"(#version 330
+// clang-format off
+#define MULTILINE "#version 330\n\n"
 
-void main(void)
-{
-    gl_Position = vec4(1,1,1,1);
-}
-)";
+const char *quadVertSource = MULTILINE 
+"layout(location = 0) in vec3 pos;      \n"
+"                                       \n"
+"void main(void)                        \n"
+"{                                      \n"
+"    gl_Position = vec4(pos, 1);        \n"
+"}                                      \n";
 
-const char *fragSource =
-    R"(#version 330
-out vec4 FragColor;
-
-void main()
-{
-    FragColor = vec4(1,1,1,1);
-}
-)";
+const char *quadFragSource = MULTILINE 
+"out vec4 FragColor;                    \n"
+"                                       \n"
+"void main()                            \n"
+"{                                      \n"
+"    FragColor = vec4(1, 1, 1, 1);      \n"
+"}                                      \n";
+// clang-format on
 
 struct Mesh {
-    render::BufferDescriptor BufferDescriptors[2];
+    std::vector<render::BufferDescriptor> BufferDescriptors;
     core::Vector<render::Vec3f> VertexBuffer;
     core::Vector<uint32_t> IndexBuffer;
     core::SharedPtr<render::IGpuBufferArrayObject> vao;
 
     Mesh()
     {
-        BufferDescriptors[0] = render::BufferDescriptor{
-            3, render::BufferObjectType::vertex,
-            render::BufferComponentDataType::float32,
-            (uint8_t *)VertexBuffer.data(), (uint32_t)VertexBuffer.size()};
-
-        BufferDescriptors[1] = render::BufferDescriptor{
-            1, render::BufferObjectType::index,
-            render::BufferComponentDataType::uint32,
-            (uint8_t *)IndexBuffer.data(), (uint32_t)IndexBuffer.size()};
     }
 
     void UploadBuffers()
     {
+        BufferDescriptors.clear();
+
+        BufferDescriptors.push_back(render::BufferDescriptor{
+            1, render::BufferObjectType::index,
+            render::BufferComponentDataType::uint32,
+            (uint8_t *)IndexBuffer.data(), (uint32_t)IndexBuffer.size()});
+
+        BufferDescriptors.push_back(render::BufferDescriptor{
+            3, render::BufferObjectType::vertex,
+            render::BufferComponentDataType::float32,
+            (uint8_t *)VertexBuffer.data(), (uint32_t)VertexBuffer.size()});
     }
 };
 
@@ -68,7 +71,7 @@ int main(int argc, char const *argv[])
     LoadExtensions();
     auto debugMonitor = GetDebugMessageMonitor();
     auto renderer = render::CreateRenderer();
-    auto program = renderer->CreateProgram(vertSource, fragSource);
+    auto program = renderer->CreateProgram(quadVertSource, quadFragSource);
 
     if (!program) {
         log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
@@ -77,8 +80,9 @@ int main(int argc, char const *argv[])
         program->Bind();
     }
 
+    LogDebugMessagesAndFlush(debugMonitor);
+
     Mesh m = SetupQuad(renderer);
-    m.vao->Bind();
 
     uint32_t color = 0;
 
@@ -91,9 +95,8 @@ int main(int argc, char const *argv[])
 
         renderer->SetClearColor(colorv);
         renderer->Clear();
+        m.vao->Render();
         color++;
-
-        LogDebugMessagesAndFlush(debugMonitor);
 
         window->SwapBuffers();
         window->PollEvents();
@@ -118,12 +121,12 @@ core::SharedPtr<render::IWindow> CreateWindow(
 Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer)
 {
     Mesh mesh;
-    mesh.VertexBuffer = {{-1, 1, -1}, {-1, -1, -1}, {1, 1, -1}};
-    mesh.IndexBuffer = {0, 1, 2};
-    mesh.vao = renderer->CreateBufferArrayObject(mesh.BufferDescriptors, 2);
-    mesh.vao->Bind();
+    mesh.VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}};
+    mesh.IndexBuffer = {0, 1, 2, 2, 1, 0};
+    mesh.UploadBuffers();
+
+    mesh.vao = renderer->CreateBufferArrayObject(mesh.BufferDescriptors);
     mesh.vao->GetBufferObject(0)->UpdateBuffer(mesh.BufferDescriptors[0]);
     mesh.vao->GetBufferObject(1)->UpdateBuffer(mesh.BufferDescriptors[1]);
-
     return mesh;
 }

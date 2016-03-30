@@ -15,8 +15,9 @@ public:
     virtual void Bind();
     virtual void UpdateBuffer(const BufferDescriptor& desc);
 
-private:
-    virtual void UpdateHandle(const BufferDescriptor& desc);
+public:
+    void Enable();
+    const gl::gpu_buffer_object_handle& GetHandle();
 
 private:
     gl::gpu_buffer_object_handle m_handle;
