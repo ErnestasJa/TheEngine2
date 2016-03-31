@@ -34,6 +34,7 @@ core::SharedPtr<IProgram> GLRenderer::CreateProgram(
 core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
     const core::Vector<BufferDescriptor>& descriptors)
 {
+    // setup buffers
     auto handles = gl::CreateGpuStorages(descriptors.size());
     auto IsValid = [](const gl::gpu_buffer_object_handle& h) {
         return gl::IsHandleValid(h);

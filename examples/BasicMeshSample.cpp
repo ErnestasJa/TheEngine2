@@ -10,18 +10,19 @@ core::SharedPtr<render::IWindow> CreateWindow(
 
 const char *quadVertSource = MULTILINE 
 "layout(location = 0) in vec3 pos;      \n"
-"                                       \n"
+"smooth out vec3 posx;                  \n"
 "void main(void)                        \n"
 "{                                      \n"
 "    gl_Position = vec4(pos, 1);        \n"
+"    posx = pos;                        \n"
 "}                                      \n";
 
 const char *quadFragSource = MULTILINE 
 "out vec4 FragColor;                    \n"
-"                                       \n"
+"in vec3 posx;                          \n"
 "void main()                            \n"
 "{                                      \n"
-"    FragColor = vec4(1, 1, 1, 1);      \n"
+"    FragColor = vec4(sin(posx.x), sin(posx.y), sin(posx.z), 1);      \n"
 "}                                      \n";
 // clang-format on
 
@@ -103,7 +104,7 @@ Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer)
 {
     Mesh mesh;
     mesh.VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}};
-    mesh.IndexBuffer = {0, 1, 2, 2, 1, 0};
+    mesh.IndexBuffer = {0, 1, 2};
 
     mesh.BufferDescriptors.push_back(
         render::BufferDescriptor{1, render::BufferObjectType::index,
