@@ -17,7 +17,7 @@ void GLGpuBufferObject::Bind()
     gl::BindHandle(m_handle);
 }
 
-void GLGpuBufferObject::UpdateBuffer(const BufferDescriptor& desc)
+void GLGpuBufferObject::UpdateBuffer()
 {
     gl::BindHandle(m_handle);
     gl::UpdateBufferObject(m_handle);

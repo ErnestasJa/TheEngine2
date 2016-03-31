@@ -24,6 +24,7 @@ struct BufferDescriptor {
     BufferComponentDataType component_type;
     core::generic_data_access_handle data;
     uint32_t size;
+    uint32_t layout_location;
 };
 }
 

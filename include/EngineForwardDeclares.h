@@ -40,10 +40,10 @@ UniquePtr<T> MakeUnique(U&&... u)
 }
 
 template <class U, typename Pred>
-bool Each(const core::Vector<U>& container, Pred p)
+bool Any(const U& container, Pred predicate)
 {
-    for (const U& t : container) {
-        if (p(t) == false) return false;
+    for (const auto& value : container) {
+        if (predicate(value) == false) return false;
     }
     return true;
 }

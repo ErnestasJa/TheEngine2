@@ -13,7 +13,7 @@ public:
     }
 
     virtual void Bind() = 0;
-    virtual void UpdateBuffer(const BufferDescriptor& desc) = 0;
+    virtual void UpdateBuffer() = 0;
 };
 }
 

@@ -28,6 +28,7 @@ set(BUILD_SOURCES
 	"ExtensionLoadingAndDebugOutput.cpp"
 	"BasicShaderSample.cpp"
 	"BasicMeshSample.cpp"
+	"TemplateUtilitiesSamples.cpp"
 )
 
 set(SYSTEM_LINUX_LIBS

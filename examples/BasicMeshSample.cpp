@@ -30,25 +30,6 @@ struct Mesh {
     core::Vector<render::Vec3f> VertexBuffer;
     core::Vector<uint32_t> IndexBuffer;
     core::SharedPtr<render::IGpuBufferArrayObject> vao;
-
-    Mesh()
-    {
-    }
-
-    void UploadBuffers()
-    {
-        BufferDescriptors.clear();
-
-        BufferDescriptors.push_back(render::BufferDescriptor{
-            1, render::BufferObjectType::index,
-            render::BufferComponentDataType::uint32,
-            (uint8_t *)IndexBuffer.data(), (uint32_t)IndexBuffer.size()});
-
-        BufferDescriptors.push_back(render::BufferDescriptor{
-            3, render::BufferObjectType::vertex,
-            render::BufferComponentDataType::float32,
-            (uint8_t *)VertexBuffer.data(), (uint32_t)VertexBuffer.size()});
-    }
 };
 
 Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer);
@@ -123,10 +104,21 @@ Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer)
     Mesh mesh;
     mesh.VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}};
     mesh.IndexBuffer = {0, 1, 2, 2, 1, 0};
-    mesh.UploadBuffers();
+
+    mesh.BufferDescriptors.push_back(
+        render::BufferDescriptor{1, render::BufferObjectType::index,
+                                 render::BufferComponentDataType::uint32,
+                                 (uint8_t *)mesh.IndexBuffer.data(),
+                                 (uint32_t)mesh.IndexBuffer.size(), 0});
+
+    mesh.BufferDescriptors.push_back(
+        render::BufferDescriptor{3, render::BufferObjectType::vertex,
+                                 render::BufferComponentDataType::float32,
+                                 (uint8_t *)mesh.VertexBuffer.data(),
+                                 (uint32_t)mesh.VertexBuffer.size(), 0});
 
     mesh.vao = renderer->CreateBufferArrayObject(mesh.BufferDescriptors);
-    mesh.vao->GetBufferObject(0)->UpdateBuffer(mesh.BufferDescriptors[0]);
-    mesh.vao->GetBufferObject(1)->UpdateBuffer(mesh.BufferDescriptors[1]);
+    mesh.vao->GetBufferObject(0)->UpdateBuffer();
+    mesh.vao->GetBufferObject(1)->UpdateBuffer();
     return mesh;
 }

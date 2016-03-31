@@ -13,7 +13,7 @@ public:
     virtual ~GLGpuBufferObject();
 
     virtual void Bind();
-    virtual void UpdateBuffer(const BufferDescriptor& desc);
+    virtual void UpdateBuffer();
 
 public:
     void Enable();
