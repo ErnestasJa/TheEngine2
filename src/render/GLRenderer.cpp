@@ -42,7 +42,7 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
 
     if (core::Any(handles, IsValid) == false) return nullptr;
 
-    core::Vector<core::UniquePtr<GLGpuBufferObject>> buffers;
+    core::Vector<core::UniquePtr<IGpuBufferObject>> buffers;
     for (uint32_t i = 0; i < handles.size(); i++) {
         gl::ProcessHandle(descriptors[i], handles[i]);
         buffers.push_back(core::MakeUnique<GLGpuBufferObject>(handles[i]));

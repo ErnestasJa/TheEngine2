@@ -13,7 +13,7 @@ public:
     virtual ~GLGpuBufferObject();
 
     virtual void Bind();
-    virtual void UpdateBuffer();
+    virtual void UpdateBuffer(uint32_t count, void* data);
 
 public:
     void Enable();

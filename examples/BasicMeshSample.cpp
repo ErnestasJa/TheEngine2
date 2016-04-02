@@ -22,7 +22,7 @@ const char *quadFragSource = MULTILINE
 "in vec3 posx;                          \n"
 "void main()                            \n"
 "{                                      \n"
-"    FragColor = vec4(sin(posx.x), sin(posx.y), sin(posx.z), 1);      \n"
+"    FragColor = vec4(sin(posx.y-posx.x), sin(posx.x+posx.y), sin(posx.x-posx.y), 1);      \n"
 "}                                      \n";
 // clang-format on
 
@@ -31,6 +31,32 @@ struct Mesh {
     core::Vector<render::Vec3f> VertexBuffer;
     core::Vector<uint32_t> IndexBuffer;
     core::SharedPtr<render::IGpuBufferArrayObject> vao;
+
+    void Init(const core::SharedPtr<render::IRenderer> &ptr)
+    {
+        BufferDescriptors.push_back(render::BufferDescriptor{
+            1, render::BufferObjectType::index,
+            render::BufferComponentDataType::uint32, 0});
+
+        BufferDescriptors.push_back(render::BufferDescriptor{
+            3, render::BufferObjectType::vertex,
+            render::BufferComponentDataType::float32, 0});
+
+        vao = ptr->CreateBufferArrayObject(BufferDescriptors);
+    }
+
+    void UploadBuffers()
+    {
+        vao->GetBufferObject(0)
+            ->UpdateBuffer(IndexBuffer.size(), IndexBuffer.data());
+        vao->GetBufferObject(1)
+            ->UpdateBuffer(VertexBuffer.size(), VertexBuffer.data());
+    }
+
+    void Render()
+    {
+        vao->Render(IndexBuffer.size());
+    }
 };
 
 Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer);
@@ -77,7 +103,7 @@ int main(int argc, char const *argv[])
 
         renderer->SetClearColor(colorv);
         renderer->Clear();
-        m.vao->Render();
+        m.Render();
         color++;
 
         window->SwapBuffers();
@@ -103,23 +129,11 @@ core::SharedPtr<render::IWindow> CreateWindow(
 Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer)
 {
     Mesh mesh;
-    mesh.VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}};
-    mesh.IndexBuffer = {0, 1, 2};
+    mesh.Init(renderer);
 
-    mesh.BufferDescriptors.push_back(
-        render::BufferDescriptor{1, render::BufferObjectType::index,
-                                 render::BufferComponentDataType::uint32,
-                                 (uint8_t *)mesh.IndexBuffer.data(),
-                                 (uint32_t)mesh.IndexBuffer.size(), 0});
+    mesh.VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
+    mesh.IndexBuffer = {0, 1, 2, 1, 2, 3};
+    mesh.UploadBuffers();
 
-    mesh.BufferDescriptors.push_back(
-        render::BufferDescriptor{3, render::BufferObjectType::vertex,
-                                 render::BufferComponentDataType::float32,
-                                 (uint8_t *)mesh.VertexBuffer.data(),
-                                 (uint32_t)mesh.VertexBuffer.size(), 0});
-
-    mesh.vao = renderer->CreateBufferArrayObject(mesh.BufferDescriptors);
-    mesh.vao->GetBufferObject(0)->UpdateBuffer();
-    mesh.vao->GetBufferObject(1)->UpdateBuffer();
     return mesh;
 }

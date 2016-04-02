@@ -17,10 +17,10 @@ void GLGpuBufferObject::Bind()
     gl::BindHandle(m_handle);
 }
 
-void GLGpuBufferObject::UpdateBuffer()
+void GLGpuBufferObject::UpdateBuffer(uint32_t count, void* data)
 {
     gl::BindHandle(m_handle);
-    gl::UpdateBufferObject(m_handle);
+    gl::UpdateBufferObject(m_handle, count, data);
 }
 
 void GLGpuBufferObject::Enable()

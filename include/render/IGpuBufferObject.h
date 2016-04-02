@@ -13,7 +13,7 @@ public:
     }
 
     virtual void Bind() = 0;
-    virtual void UpdateBuffer() = 0;
+    virtual void UpdateBuffer(uint32_t count, void* data) = 0;
 };
 }
 

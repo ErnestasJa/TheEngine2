@@ -5,7 +5,7 @@ namespace render
 {
 GLGpuBufferArrayObject::GLGpuBufferArrayObject(
     const gl::gpu_vertex_array_object_handle& handle,
-    core::Vector<core::UniquePtr<GLGpuBufferObject>>&& bufferObjects)
+    core::Vector<core::UniquePtr<IGpuBufferObject>>&& bufferObjects)
     : m_handle(handle)
 {
     m_gpuBufferObjects = std::move(bufferObjects);
@@ -21,6 +21,12 @@ void GLGpuBufferArrayObject::Bind()
     gl::BindHandle(m_handle);
 }
 
+const core::Vector<core::UniquePtr<IGpuBufferObject>>&
+GLGpuBufferArrayObject::GetBuffers()
+{
+    return m_gpuBufferObjects;
+}
+
 IGpuBufferObject* GLGpuBufferArrayObject::GetBufferObject(uint32_t index)
 {
     return m_gpuBufferObjects[index].get();
@@ -31,27 +37,30 @@ uint32_t GLGpuBufferArrayObject::GetBufferObjectCount()
     return m_gpuBufferObjects.size();
 }
 
-GLGpuBufferObject* GLGpuBufferArrayObject::GetIndexBuffer()
+IGpuBufferObject* GLGpuBufferArrayObject::GetIndexBuffer()
 {
     for (const auto& buffer : m_gpuBufferObjects) {
-        if (buffer->GetHandle().buffer_type == GL_ELEMENT_ARRAY_BUFFER)
+        if (static_cast<GLGpuBufferObject*>(buffer.get())
+                ->GetHandle()
+                .buffer_type == GL_ELEMENT_ARRAY_BUFFER)
             return buffer.get();
     }
     return nullptr;
 }
 
-void GLGpuBufferArrayObject::Render()
+void GLGpuBufferArrayObject::Render(uint32_t count)
 {
     gl::BindHandle(m_handle);
     GetIndexBuffer()->Bind();
-    gl::Render(GetIndexBuffer()->GetHandle());
+    gl::Render(static_cast<GLGpuBufferObject*>(GetIndexBuffer())->GetHandle(),
+               count);
 }
 
 void GLGpuBufferArrayObject::EnableBuffers()
 {
     gl::BindHandle(m_handle);
     for (const auto& buf : m_gpuBufferObjects) {
-        buf->Enable();
+        static_cast<GLGpuBufferObject*>(buf.get())->Enable();
     }
 }
 }

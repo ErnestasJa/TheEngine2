@@ -12,11 +12,9 @@ namespace gl
     };
 
     struct gpu_buffer_object_handle {
-        core::generic_data_access_handle data;
         uint32_t component_size;
         uint32_t component_count;
         uint32_t component_type;
-        uint32_t buffer_size;
         uint32_t buffer_id;
         uint32_t buffer_type;
         uint32_t index;
@@ -141,19 +139,19 @@ namespace gl
         return handles;
     }
 
-    inline void UpdateBufferObject(const gpu_buffer_object_handle& handle)
+    inline void UpdateBufferObject(const gpu_buffer_object_handle& handle,
+                                   uint32_t buffer_size, void* data)
     {
-        glBufferData(
-            handle.buffer_type,
-            handle.buffer_size * handle.component_count * handle.component_size,
-            (void*)handle.data.ptr, GL_STATIC_DRAW);
+        glBufferData(handle.buffer_type, buffer_size * handle.component_count *
+                                             handle.component_size,
+                     data, GL_STATIC_DRAW);
     }
 
     inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle)
     {
         if (handle.buffer_type == GL_ARRAY_BUFFER) {
             glEnableVertexAttribArray(handle.index);
-            glVertexAttribPointer(handle.index, handle.buffer_size,
+            glVertexAttribPointer(handle.index, handle.component_count,
                                   handle.component_type, GL_FALSE, 0, 0);
         }
     }
@@ -165,10 +163,9 @@ namespace gl
         return handle;
     }
 
-    inline void Render(const gpu_buffer_object_handle& handle)
+    inline void Render(const gpu_buffer_object_handle& handle, uint32_t count)
     {
-        glDrawElements(GL_TRIANGLES, handle.buffer_size, handle.component_type,
-                       0);
+        glDrawElements(GL_TRIANGLES, count, handle.component_type, 0);
     }
 
     inline void SetClearColor(const core::pod::Vec3<int32_t>& color)
@@ -228,14 +225,12 @@ namespace gl
             }
         };
 
-        handle.buffer_size = desc.size;
         handle.buffer_type = desc.type == BufferObjectType::index
                                  ? GL_ELEMENT_ARRAY_BUFFER
                                  : GL_ARRAY_BUFFER;
         handle.component_size = GetByteCount();
         handle.component_type = GetDataType();
         handle.component_count = desc.component_count;
-        handle.data = desc.data;
         handle.index = desc.layout_location;
     }
 }
