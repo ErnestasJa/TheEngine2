@@ -7,24 +7,32 @@ core::SharedPtr<render::IWindow> CreateWindow(
     const core::SharedPtr<render::IWindowModule> &wmodule);
 
 // clang-format off
-#define MULTILINE "#version 330\n\n"
 
-const char *quadVertSource = MULTILINE 
-"layout(location = 0) in vec3 pos;      \n"
-"smooth out vec3 posx;                  \n"
-"void main(void)                        \n"
-"{                                      \n"
-"    gl_Position = vec4(pos, 1);        \n"
-"    posx = pos;                        \n"
-"}                                      \n";
+const char *quadVertSource = R"V0G0N(
+#version 330
 
-const char *quadFragSource = MULTILINE 
-"out vec4 FragColor;                    \n"
-"in vec3 posx;                          \n"
-"void main()                            \n"
-"{                                      \n"
-"    FragColor = vec4(sin(posx.y-posx.x), sin(posx.x+posx.y), sin(posx.x-posx.y), 1);      \n"
-"}                                      \n";
+layout(location = 0) in vec3 pos;
+smooth out vec3 posx;
+
+void main(void)                  
+{                                
+    gl_Position = vec4(pos, 1);  
+    posx = pos;                  
+}
+)V0G0N";
+
+const char *quadFragSource = R"V0G0N(
+#version 330
+
+uniform vec4 colorOffset;
+out vec4 FragColor;
+in vec3 posx;
+
+void main()               
+{                         
+    FragColor = vec4(sin(posx.y-posx.x+colorOffset.x), cos(posx.x+posx.y+colorOffset.y), sin(posx.x-posx.y+colorOffset.z), 1) +vec4(0.5,0.5,0.5,0.5);
+};
+)V0G0N";
 // clang-format on
 
 struct Mesh {
@@ -92,6 +100,10 @@ public:
             m_mesh->VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}};
             m_mesh->IndexBuffer = {0, 1, 2};
             m_mesh->UploadBuffers();
+        } else if (key == input::Keys::Y) {
+            m_mesh->VertexBuffer = {{-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
+            m_mesh->IndexBuffer = {0, 1, 2};
+            m_mesh->UploadBuffers();
         }
         return false;
     }
@@ -119,33 +131,41 @@ int main(int argc, char const *argv[])
     if (!program) {
         log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
                  "Failed to load program");
-    } else {
-        program->Bind();
+        return -1;
     }
 
-    LogDebugMessagesAndFlush(debugMonitor);
+    program->Bind();
 
-    auto m = core::MakeShared<Mesh>(renderer);
-
-    auto handler = WindowInputHandler::Create(window, m);
+    auto mesh = core::MakeShared<Mesh>(renderer);
+    auto handler = WindowInputHandler::Create(window, mesh);
     window->GetInputDevice().lock()->SetInputHandler(handler);
 
     uint32_t color = 0;
+    core::pod::Vec4<float> uniform = {0, 0, 0, 0};
+    core::pod::Vec3<int> colorv;
 
     while (window->ShouldClose() == false) {
-        render::Vec3i colorv;
-
         colorv.r = color % 255;
         colorv.g = (color / 2) % 255;
         colorv.b = (color / 3) % 255;
+        color++;
+
+        uniform.x += 0.01;
+        uniform.y += 0.02;
+        uniform.z += 0.03;
+
+        const auto &uniforms = program->GetUniforms();
+        if (uniforms.size()) {
+            uniforms[0]->Set(uniform);
+        }
 
         renderer->SetClearColor(colorv);
         renderer->Clear();
-        m->Render();
-        color++;
+        mesh->Render();
 
         window->SwapBuffers();
         window->PollEvents();
+        LogDebugMessagesAndFlush(debugMonitor);
     }
 
     wmodule->Finalize();

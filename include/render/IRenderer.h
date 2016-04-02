@@ -3,6 +3,9 @@
 
 namespace render
 {
+// Note: remove these
+using Vec2i = core::pod::Vec2<int32_t>;
+using Vec2f = core::pod::Vec2<float>;
 using Vec3i = core::pod::Vec3<int32_t>;
 using Vec3f = core::pod::Vec3<float>;
 using Vec4i = core::pod::Vec4<int32_t>;

@@ -25,7 +25,7 @@ core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(
     auto handle = gl::CreatePipelineFromShaderStrings(
         vertSource.c_str(), fragSource.c_str(), geomSource.c_str());
 
-    if (gl::IsHandleValid(handle))
+    if (gl::IsHandleValid(handle) && gl::IsProgramPipelineLinked(handle))
         return core::MakeShared<GLGpuShaderProgram>(handle);
     else
         return nullptr;
@@ -53,7 +53,7 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
     if (gl::IsHandleValid(handle) == false) return nullptr;
 
     auto vao =
-        core::MakeShared<GLGpuBufferArrayObject>(handle, std::move(buffers));
+        core::MakeShared<GLGpuBufferArrayObject>(handle, core::Move(buffers));
 
     vao->EnableBuffers();
 

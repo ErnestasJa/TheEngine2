@@ -8,7 +8,7 @@ GLGpuBufferArrayObject::GLGpuBufferArrayObject(
     core::Vector<core::UniquePtr<IGpuBufferObject>>&& bufferObjects)
     : m_handle(handle)
 {
-    m_gpuBufferObjects = std::move(bufferObjects);
+    m_gpuBufferObjects = core::Move(bufferObjects);
 }
 
 GLGpuBufferArrayObject::~GLGpuBufferArrayObject()

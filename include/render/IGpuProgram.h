@@ -1,5 +1,7 @@
-#ifndef IGPU_PROGRAM_H
-#define IGPU_PROGRAM_H
+#ifndef IGPUPROGRAM_H
+#define IGPUPROGRAM_H
+
+#include "IGpuProgramUniform.h"
 
 namespace render
 {
@@ -11,6 +13,8 @@ public:
     }
 
     virtual void Bind() = 0;
+    virtual const core::Vector<core::UniquePtr<IGpuProgramUniform>>&
+    GetUniforms() = 0;
 };
 }
 

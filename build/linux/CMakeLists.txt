@@ -42,6 +42,7 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessage.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessageMonitor.cpp"
 	"${ENGINE_SRC_PATH}/render/GLGpuShaderProgram.cpp"
+	"${ENGINE_SRC_PATH}/render/GLGpuShaderProgramUniform.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRenderer.cpp"
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferObject.cpp"
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferArrayObject.cpp"
