@@ -10,7 +10,7 @@ class GLRenderer : public IRenderer
 public:
     GLRenderer();
     virtual ~GLRenderer();
-    virtual core::SharedPtr<IProgram> CreateProgram(
+    virtual core::SharedPtr<IGpuProgram> CreateProgram(
         const core::String& vertSource = "",
         const core::String& fragSource = "",
         const core::String& geomSource = "");

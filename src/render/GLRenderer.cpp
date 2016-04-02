@@ -1,5 +1,5 @@
 #include "GLRenderer.h"
-#include "GLProgram.h"
+#include "GLGpuShaderProgram.h"
 #include "GLGpuBufferObject.h"
 #include "GLGpuBufferArrayObject.h"
 #include "OpenGL.hpp"
@@ -18,7 +18,7 @@ GLRenderer::~GLRenderer()
 {
 }
 
-core::SharedPtr<IProgram> GLRenderer::CreateProgram(
+core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(
     const core::String& vertSource, const core::String& fragSource,
     const core::String& geomSource)
 {
@@ -26,7 +26,7 @@ core::SharedPtr<IProgram> GLRenderer::CreateProgram(
         vertSource.c_str(), fragSource.c_str(), geomSource.c_str());
 
     if (gl::IsHandleValid(handle))
-        return core::MakeShared<GLProgram>(handle);
+        return core::MakeShared<GLGpuShaderProgram>(handle);
     else
         return nullptr;
 }

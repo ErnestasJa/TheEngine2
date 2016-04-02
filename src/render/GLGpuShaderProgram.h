@@ -1,16 +1,16 @@
 #ifndef GLPROGRAM_H
 #define GLPROGRAM_H
 
-#include "render/IProgram.h"
+#include "render/IGpuProgram.h"
 #include "OpenGL.hpp"
 
 namespace render
 {
-class GLProgram : public IProgram
+class GLGpuShaderProgram : public IGpuProgram
 {
 public:
-    GLProgram(const gl::gpu_shader_handle& handle);
-    virtual ~GLProgram();
+    GLGpuShaderProgram(const gl::gpu_shader_handle& handle);
+    virtual ~GLGpuShaderProgram();
 
     virtual void Bind();
 

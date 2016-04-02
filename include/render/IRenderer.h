@@ -8,7 +8,7 @@ using Vec3f = core::pod::Vec3<float>;
 using Vec4i = core::pod::Vec4<int32_t>;
 using Vec4f = core::pod::Vec4<float>;
 
-class IProgram;
+class IGpuProgram;
 class IGpuBufferObject;
 class IGpuBufferArrayObject;
 struct BufferDescriptor;
@@ -18,7 +18,7 @@ public:
     virtual ~IRenderer()
     {
     }
-    virtual core::SharedPtr<IProgram> CreateProgram(
+    virtual core::SharedPtr<IGpuProgram> CreateProgram(
         const core::String& vertSource = "",
         const core::String& fragSource = "",
         const core::String& geomSource = "") = 0;

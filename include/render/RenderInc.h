@@ -3,7 +3,7 @@
 
 #include "IRenderExtensionLoader.h"
 #include "IRendererDebugMessageMonitor.h"
-#include "IProgram.h"
+#include "IGpuProgram.h"
 #include "IRenderer.h"
 #include "IGpuBufferObject.h"
 #include "IGpuBufferArrayObject.h"
