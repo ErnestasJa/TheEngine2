@@ -1,5 +1,6 @@
 #include "window/WindowInc.h"
 #include "render/RenderInc.h"
+#include "input/InputInc.h"
 #include "CommonUtil.h"
 
 core::SharedPtr<render::IWindow> CreateWindow(
@@ -63,7 +64,42 @@ struct Mesh {
     }
 };
 
-Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer);
+class WindowInputHandler : public input::InputHandler
+{
+public:
+    static auto Create(core::WeakPtr<render::IWindow> window,
+                       core::SharedPtr<Mesh> mesh)
+    {
+        return core::MakeShared<WindowInputHandler>(window, mesh);
+    }
+
+public:
+    WindowInputHandler(core::WeakPtr<render::IWindow> window,
+                       core::SharedPtr<Mesh> mesh)
+        : m_mesh(mesh), m_window(window)
+    {
+    }
+
+    virtual bool OnKeyDown(const input::Key &key,
+                           const bool IsRepeated) override
+    {
+        if (key == input::Keys::Q) {
+            m_mesh->VertexBuffer = {
+                {-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
+            m_mesh->IndexBuffer = {0, 1, 2, 1, 2, 3};
+            m_mesh->UploadBuffers();
+        } else if (key == input::Keys::T) {
+            m_mesh->VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}};
+            m_mesh->IndexBuffer = {0, 1, 2};
+            m_mesh->UploadBuffers();
+        }
+        return false;
+    }
+
+private:
+    core::SharedPtr<Mesh> m_mesh;
+    core::WeakPtr<render::IWindow> m_window;
+};
 
 int main(int argc, char const *argv[])
 {
@@ -74,11 +110,6 @@ int main(int argc, char const *argv[])
     wmodule->Initialize();
 
     auto window = CreateWindow(wmodule);
-
-    if (!window) {
-        std::cout << "Failed to create window" << std::endl;
-        return -1;
-    }
 
     LoadExtensions();
     auto debugMonitor = GetDebugMessageMonitor();
@@ -94,7 +125,10 @@ int main(int argc, char const *argv[])
 
     LogDebugMessagesAndFlush(debugMonitor);
 
-    Mesh m = SetupQuad(renderer);
+    auto m = core::MakeShared<Mesh>(renderer);
+
+    auto handler = WindowInputHandler::Create(window, m);
+    window->GetInputDevice().lock()->SetInputHandler(handler);
 
     uint32_t color = 0;
 
@@ -107,7 +141,7 @@ int main(int argc, char const *argv[])
 
         renderer->SetClearColor(colorv);
         renderer->Clear();
-        m.Render();
+        m->Render();
         color++;
 
         window->SwapBuffers();
@@ -124,18 +158,8 @@ core::SharedPtr<render::IWindow> CreateWindow(
 {
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
-    wDef.Title = "Window example application";
+    wDef.Title = "Q - quad, T - trangle";
     wDef.DebugContext = true;
 
     return wmodule->CreateWindow(wDef);
-}
-
-Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer)
-{
-    Mesh mesh(renderer);
-    mesh.VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
-    mesh.IndexBuffer = {0, 1, 2, 1, 2, 3};
-    mesh.UploadBuffers();
-
-    return mesh;
 }
