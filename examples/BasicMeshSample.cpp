@@ -32,7 +32,11 @@ struct Mesh {
     core::Vector<uint32_t> IndexBuffer;
     core::SharedPtr<render::IGpuBufferArrayObject> vao;
 
-    void Init(const core::SharedPtr<render::IRenderer> &ptr)
+    Mesh()
+    {
+    }
+
+    Mesh(const core::SharedPtr<render::IRenderer> &ptr)
     {
         BufferDescriptors.push_back(render::BufferDescriptor{
             1, render::BufferObjectType::index,
@@ -128,9 +132,7 @@ core::SharedPtr<render::IWindow> CreateWindow(
 
 Mesh SetupQuad(const core::SharedPtr<render::IRenderer> &renderer)
 {
-    Mesh mesh;
-    mesh.Init(renderer);
-
+    Mesh mesh(renderer);
     mesh.VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
     mesh.IndexBuffer = {0, 1, 2, 1, 2, 3};
     mesh.UploadBuffers();
