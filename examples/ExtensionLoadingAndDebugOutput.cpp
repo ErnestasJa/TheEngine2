@@ -3,13 +3,13 @@
 #include "log/LogInc.h"
 #include <iostream>
 
-class EngineCoutPipe : public log::ILogStream
+class EngineCoutPipe : public logging::ILogStream
 {
 public:
-    void Log(const log::LogSource source, const log::LogSeverity severity,
-             const core::String &logStr)
+    void Log(const logging::LogSource source,
+             const logging::LogSeverity severity, const core::String &logStr)
     {
-        if (source == log::LogSource::Engine)
+        if (source == logging::LogSource::Engine)
             std::cout << "Engine log: " << logStr << std::endl;
     }
 };
@@ -17,7 +17,7 @@ public:
 int main(int argc, char const *argv[])
 {
     auto engineLogStream = core::MakeShared<EngineCoutPipe>();
-    log::AddLogStream(engineLogStream);
+    logging::AddLogStream(engineLogStream);
 
     auto wmodule = render::CreateDefaultWindowModule();
     wmodule->Initialize();

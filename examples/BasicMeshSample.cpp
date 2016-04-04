@@ -2,6 +2,13 @@
 #include "render/RenderInc.h"
 #include "input/InputInc.h"
 #include "CommonUtil.h"
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/matrix_inverse.hpp"
+#include "glm/gtx/rotate_vector.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include <algorithm>
 
 core::SharedPtr<render::IWindow> CreateWindow(
     const core::SharedPtr<render::IWindowModule> &wmodule);
@@ -12,12 +19,16 @@ const char *quadVertSource = R"V0G0N(
 #version 330
 
 layout(location = 0) in vec3 pos;
-smooth out vec3 posx;
+smooth out vec4 posx;
+
+uniform mat4 mvp;
+uniform float someFloat;
 
 void main(void)                  
-{                                
-    gl_Position = vec4(pos, 1);  
-    posx = pos;                  
+{                     
+    vec3 newp = pos+vec3(someFloat,someFloat,someFloat);     
+    posx = mvp * vec4(newp,1);
+    gl_Position = posx;
 }
 )V0G0N";
 
@@ -25,12 +36,14 @@ const char *quadFragSource = R"V0G0N(
 #version 330
 
 uniform vec4 colorOffset;
+
 out vec4 FragColor;
-in vec3 posx;
+in vec4 posx;
 
 void main()               
-{                         
-    FragColor = vec4(sin(posx.y-posx.x+colorOffset.x), cos(posx.x+posx.y+colorOffset.y), sin(posx.x-posx.y+colorOffset.z), 1) +vec4(0.5,0.5,0.5,0.5);
+{                 
+    FragColor = vec4(sin(posx.y-posx.x+colorOffset.x), cos(posx.x+posx.y+colorOffset.y), sin(posx.x-posx.y+colorOffset.z), 1);
+
 };
 )V0G0N";
 // clang-format on
@@ -84,7 +97,7 @@ public:
 public:
     WindowInputHandler(core::WeakPtr<render::IWindow> window,
                        core::SharedPtr<Mesh> mesh)
-        : m_mesh(mesh), m_window(window)
+        : m_mesh(mesh), m_window(window), m_mvp(glm::mat4(1.0f))
     {
     }
 
@@ -104,19 +117,35 @@ public:
             m_mesh->VertexBuffer = {{-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
             m_mesh->IndexBuffer = {0, 1, 2};
             m_mesh->UploadBuffers();
+        } else if (key == input::Keys::I) {
+            m_mvp = glm::translate(m_mvp, glm::vec3(0, 0, +1));
+        } else if (key == input::Keys::K) {
+            m_mvp = glm::translate(m_mvp, glm::vec3(0, 0, -1));
+        } else if (key == input::Keys::J) {
+            m_mvp = glm::translate(m_mvp, glm::vec3(-1, 0, 0));
+        } else if (key == input::Keys::L) {
+            m_mvp = glm::translate(m_mvp, glm::vec3(+1, 0, 0));
         }
+
         return false;
     }
 
+    glm::mat4 GetMvp()
+    {
+        return m_mvp;
+    }
+
 private:
+    glm::mat4 m_mvp;
     core::SharedPtr<Mesh> m_mesh;
     core::WeakPtr<render::IWindow> m_window;
 };
+void LogShaderUniforms(core::SharedPtr<render::IGpuProgram> const &program);
 
 int main(int argc, char const *argv[])
 {
     auto engineLogStream = core::MakeShared<EngineCoutPipe>();
-    log::AddLogStream(engineLogStream);
+    logging::AddLogStream(engineLogStream);
 
     auto wmodule = render::CreateDefaultWindowModule();
     wmodule->Initialize();
@@ -129,8 +158,8 @@ int main(int argc, char const *argv[])
     auto program = renderer->CreateProgram(quadVertSource, quadFragSource);
 
     if (!program) {
-        log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
-                 "Failed to load program");
+        logging::Log(logging::LogSource::Engine, logging::LogSeverity::Warn,
+                     "Failed to load program");
         return -1;
     }
 
@@ -143,6 +172,9 @@ int main(int argc, char const *argv[])
     uint32_t color = 0;
     core::pod::Vec4<float> uniform = {0, 0, 0, 0};
     core::pod::Vec3<int> colorv;
+    glm::mat4 R(1.0f);
+
+    LogShaderUniforms(program);
 
     while (window->ShouldClose() == false) {
         colorv.r = color % 255;
@@ -154,9 +186,38 @@ int main(int argc, char const *argv[])
         uniform.y += 0.02;
         uniform.z += 0.03;
 
-        const auto &uniforms = program->GetUniforms();
-        if (uniforms.size()) {
-            uniforms[0]->Set(uniform);
+        const auto &transform = std::find_if(
+            program->GetUniforms().begin(), program->GetUniforms().end(),
+            [](const auto &uniform) { return uniform->GetName() == "mvp"; });
+
+        if (transform != program->GetUniforms().end()) {
+            R = glm::rotate(R, 0.01f, glm::vec3(1.f, 0.f, 0.f));
+            R = glm::rotate(R, 0.02f, glm::vec3(0.f, 1.f, 0.f));
+            R = glm::rotate(R, 0.03f, glm::vec3(0.f, 0.f, 1.f));
+            auto mvp = R * handler->GetMvp();
+
+            (*transform)->SetMat4(glm::value_ptr(mvp));
+            // LogEngine("Setting mat4");
+        }
+
+        const auto &colorUniform =
+            std::find_if(program->GetUniforms().begin(),
+                         program->GetUniforms().end(), [](const auto &uniform) {
+                             return uniform->GetName() == "colorOffset";
+                         });
+
+        if (colorUniform != program->GetUniforms().end()) {
+            (*colorUniform)->Set(uniform);
+        }
+
+        const auto &someFloat =
+            std::find_if(program->GetUniforms().begin(),
+                         program->GetUniforms().end(), [](const auto &uniform) {
+                             return uniform->GetName() == "someFloat";
+                         });
+
+        if (someFloat != program->GetUniforms().end()) {
+            (*someFloat)->Set(0.7f);
         }
 
         renderer->SetClearColor(colorv);
@@ -171,6 +232,14 @@ int main(int argc, char const *argv[])
     wmodule->Finalize();
 
     return 0;
+}
+
+void LogShaderUniforms(core::SharedPtr<render::IGpuProgram> const &program)
+{
+    for (const auto &uniform : program->GetUniforms()) {
+        LogEngine(
+            core::string::CFormat("Uniform [%s]", uniform->GetName().c_str()));
+    }
 }
 
 core::SharedPtr<render::IWindow> CreateWindow(

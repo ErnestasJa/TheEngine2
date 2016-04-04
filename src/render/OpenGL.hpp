@@ -9,6 +9,9 @@ namespace gl
 {
     struct gpu_shader_handle {
         uint32_t pipeline;
+        uint32_t vertex_program_id;
+        uint32_t fragment_program_id;
+        uint32_t geometry_program_id;
     };
 
     struct gpu_shader_uniform_handle {
@@ -79,7 +82,7 @@ namespace gl
     inline uint32_t CreateShaderFromString(uint32_t type, const char* source)
     {
         if (source && source[0] != core::string::NullTerminator)
-            return glCreateShaderProgramv(type, 1, (const char**)&source);
+            return glCreateShaderProgramv(type, 1, &source);
         else
             return 0;
     }
@@ -90,6 +93,7 @@ namespace gl
     {
         uint32_t ppo;
         glCreateProgramPipelines(1, &ppo);
+        glBindProgramPipeline(ppo);
 
         if (vert_program)
             glUseProgramStages(ppo, GL_VERTEX_SHADER_BIT, vert_program);
@@ -104,11 +108,14 @@ namespace gl
     inline gpu_shader_handle CreatePipelineFromShaderStrings(
         const char* vertSource, const char* fragSource, const char* geomSource)
     {
-        return gpu_shader_handle{
-            .pipeline = CreateProgramPipeline(
-                CreateShaderFromString(GL_VERTEX_SHADER, vertSource),
-                CreateShaderFromString(GL_FRAGMENT_SHADER, fragSource),
-                CreateShaderFromString(GL_GEOMETRY_SHADER, geomSource))};
+        uint32_t vs = CreateShaderFromString(GL_VERTEX_SHADER, vertSource);
+        uint32_t fs = CreateShaderFromString(GL_FRAGMENT_SHADER, fragSource);
+        uint32_t gs = CreateShaderFromString(GL_GEOMETRY_SHADER, geomSource);
+
+        return gpu_shader_handle{.pipeline = CreateProgramPipeline(vs, fs, gs),
+                                 .vertex_program_id = vs,
+                                 .fragment_program_id = fs,
+                                 .geometry_program_id = gs};
     }
 
     inline bool IsProgramPipelineLinked(const gpu_shader_handle& handle)
@@ -118,30 +125,27 @@ namespace gl
         return isLinked != 0;
     }
 
-    inline uint32_t GetUniformCount(const gpu_shader_handle& handle)
+    inline uint32_t GetUniformCount(uint32_t id)
     {
         int32_t count = 0;
-        glGetProgramInterfaceiv(handle.pipeline, GL_UNIFORM,
-                                GL_ACTIVE_RESOURCES, &count);
+        glGetProgramInterfaceiv(id, GL_UNIFORM, GL_ACTIVE_RESOURCES, &count);
         return count < 0 ? 0 : count;
     }
 
-    inline gpu_shader_uniform_handle GetUniform(const gpu_shader_handle& handle,
-                                                uint32_t index)
+    inline gpu_shader_uniform_handle GetUniform(uint32_t id, uint32_t index)
     {
         const uint32_t properties[4] = {GL_BLOCK_INDEX, GL_TYPE, GL_NAME_LENGTH,
                                         GL_LOCATION};
 
         char name[100];
         int32_t values[4];
-        glGetProgramResourceiv(handle.pipeline, GL_UNIFORM, index, 4,
-                               properties, 4, NULL, values);
+        glGetProgramResourceiv(id, GL_UNIFORM, index, 4, properties, 4, NULL,
+                               values);
 
-        glGetProgramResourceName(handle.pipeline, GL_UNIFORM, index, 100, NULL,
-                                 name);
+        glGetProgramResourceName(id, GL_UNIFORM, index, 100, NULL, name);
 
         return gpu_shader_uniform_handle{.id = (uint32_t)values[3],
-                                         .program_id = handle.pipeline,
+                                         .program_id = id,
                                          .type = (uint32_t)values[1],
                                          .name = name};
     }
@@ -167,6 +171,13 @@ namespace gl
                            const core::pod::Vec4<float>& value)
     {
         glProgramUniform4fv(handle.program_id, handle.id, 1, &value.x);
+    }
+
+    inline void SetUniformMat4(const gpu_shader_uniform_handle& handle,
+                               float* value, bool transpose = false)
+    {
+        glProgramUniformMatrix4fv(handle.program_id, handle.id, 1, transpose,
+                                  value);
     }
 
     inline core::Vector<gpu_buffer_object_handle> CreateGpuStorages(

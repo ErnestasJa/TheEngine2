@@ -36,4 +36,9 @@ const void GLGpuShaderProgramUniform::Set(const core::pod::Vec4<float>& value)
 {
     gl::SetUniform(m_handle, value);
 }
+
+const void GLGpuShaderProgramUniform::SetMat4(float* value)
+{
+    gl::SetUniformMat4(m_handle, value);
+}
 }

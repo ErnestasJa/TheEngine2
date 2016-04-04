@@ -27,7 +27,7 @@ void main()
 int main(int argc, char const *argv[])
 {
     auto engineLogStream = core::MakeShared<EngineCoutPipe>();
-    log::AddLogStream(engineLogStream);
+    logging::AddLogStream(engineLogStream);
 
     auto wmodule = render::CreateDefaultWindowModule();
     wmodule->Initialize();
@@ -47,15 +47,15 @@ int main(int argc, char const *argv[])
                                             core::String(fragSource) + "fail");
 
     if (!program) {
-        log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
-                 "Failed to load program");
+        logging::Log(logging::LogSource::Engine, logging::LogSeverity::Warn,
+                     "Failed to load program");
     } else {
         program->Bind();
     }
 
     if (!program2) {
-        log::Log(log::LogSource::Engine, log::LogSeverity::Warn,
-                 "Failed to load program2");
+        logging::Log(logging::LogSource::Engine, logging::LogSeverity::Warn,
+                     "Failed to load program2");
     }
 
     uint32_t color = 0;

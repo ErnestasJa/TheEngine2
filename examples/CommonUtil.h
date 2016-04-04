@@ -4,13 +4,13 @@
 #include "log/LogInc.h"
 #include <iostream>
 
-class EngineCoutPipe : public log::ILogStream
+class EngineCoutPipe : public logging::ILogStream
 {
 public:
-    void Log(const log::LogSource source, const log::LogSeverity severity,
-             const core::String &logStr)
+    void Log(const logging::LogSource source,
+             const logging::LogSeverity severity, const core::String &logStr)
     {
-        if (source == log::LogSource::Engine)
+        if (source == logging::LogSource::Engine)
             std::cout << "Engine log: " << logStr << std::endl;
     }
 };
@@ -28,13 +28,19 @@ core::SharedPtr<render::IRendererDebugMessageMonitor> GetDebugMessageMonitor()
     return debugMonitor;
 }
 
+void LogEngine(const core::String &message)
+{
+    logging::Log(logging::LogSource::Engine, logging::LogSeverity::Debug,
+                 message);
+}
+
 void LogDebugMessagesAndFlush(
     const core::SharedPtr<render::IRendererDebugMessageMonitor> &dbgMonitor)
 {
     if (dbgMonitor)
         for (auto msg : dbgMonitor->GetMessages()) {
-            log::Log(log::LogSource::Engine, log::LogSeverity::Debug,
-                     msg->AsString());
+            logging::Log(logging::LogSource::Engine,
+                         logging::LogSeverity::Debug, msg->AsString());
         }
 
     dbgMonitor->ClearMessages();

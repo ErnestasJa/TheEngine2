@@ -4,6 +4,7 @@
 #include "log/LogInc.h"
 #include "core/StringExt.h"
 
+namespace log = logging;
 namespace render
 {
 GLFWWindow::GLFWWindow() : m_window(nullptr)
@@ -44,7 +45,7 @@ void ReadBackContext(SWindowDefinition& def)
 
 void LogContext(const SWindowDefinition& def)
 {
-    log::Log(
+    logging::Log(
         log::LogSource::Engine, log::LogSeverity::Info,
         core::string::CFormat("\n\n"
                               "==========================\n"

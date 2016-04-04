@@ -4,7 +4,7 @@
 #include "ELogSeverity.h"
 #include "ELogSource.h"
 
-namespace log
+namespace logging
 {
 class ILogStream
 {

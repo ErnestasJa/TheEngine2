@@ -1,6 +1,6 @@
 #include "log/Log.h"
 
-namespace log
+namespace logging
 {
 namespace
 {

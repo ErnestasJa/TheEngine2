@@ -1,7 +1,7 @@
 #ifndef ELOG_SEVERITY_H
 #define ELOG_SEVERITY_H
 
-namespace log
+namespace logging
 {
 enum class LogSeverity { Info = 0, Warn, Error, Critical, Debug };
 }
