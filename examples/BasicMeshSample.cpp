@@ -14,21 +14,18 @@ core::SharedPtr<render::IWindow> CreateWindow(
     const core::SharedPtr<render::IWindowModule> &wmodule);
 
 // clang-format off
-
 const char *quadVertSource = R"V0G0N(
 #version 330
 
 layout(location = 0) in vec3 pos;
-smooth out vec4 posx;
+smooth out vec4 vertPos;
 
 uniform mat4 mvp;
-uniform float someFloat;
 
 void main(void)                  
-{                     
-    vec3 newp = pos+vec3(someFloat,someFloat,someFloat);     
-    posx = mvp * vec4(newp,1);
-    gl_Position = posx;
+{                         
+    vertPos = mvp * vec4(pos,1);
+    gl_Position = vertPos;
 }
 )V0G0N";
 
@@ -36,13 +33,12 @@ const char *quadFragSource = R"V0G0N(
 #version 330
 
 uniform vec4 colorOffset;
-
 out vec4 FragColor;
-in vec4 posx;
+in vec4 vertPos;
 
 void main()               
 {                 
-    FragColor = vec4(sin(posx.y-posx.x+colorOffset.x), cos(posx.x+posx.y+colorOffset.y), sin(posx.x-posx.y+colorOffset.z), 1);
+    FragColor = vec4(sin(vertPos.y-vertPos.x+colorOffset.x), cos(vertPos.x+vertPos.y+colorOffset.y), sin(vertPos.x-vertPos.y+colorOffset.z), 1);
 
 };
 )V0G0N";
@@ -104,17 +100,36 @@ public:
     virtual bool OnKeyDown(const input::Key &key,
                            const bool IsRepeated) override
     {
-        if (key == input::Keys::Q) {
+        if (key == input::Keys::C) {
+            // clang-format off
+            m_mesh->VertexBuffer = {
+                {-1, +1, -1}, {-1, +1, +1}, {+1, +1, +1}, {+1, +1, -1},   // top
+                {-1, -1, -1}, {-1, -1, +1}, {+1, -1, +1}, {+1, -1, -1},  // bot
+            };
+
+            m_mesh->IndexBuffer = {
+            //begin cube
+            0,1,2,0,2,3, //top face
+            4,5,6,4,6,7, //top face
+            4,0,3,4,3,7, //front face
+            5,1,2,5,2,6, //back face
+            4,0,5,0,5,1, //front face
+            7,3,6,6,3,2, //back face
+            };
+
+            // clang-format on
+            m_mesh->UploadBuffers();
+        } else if (key == input::Keys::Q) {
+            // clang-format off
             m_mesh->VertexBuffer = {
                 {-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
+
             m_mesh->IndexBuffer = {0, 1, 2, 1, 2, 3};
+
+            // clang-format on
             m_mesh->UploadBuffers();
         } else if (key == input::Keys::T) {
             m_mesh->VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}};
-            m_mesh->IndexBuffer = {0, 1, 2};
-            m_mesh->UploadBuffers();
-        } else if (key == input::Keys::Y) {
-            m_mesh->VertexBuffer = {{-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
             m_mesh->IndexBuffer = {0, 1, 2};
             m_mesh->UploadBuffers();
         } else if (key == input::Keys::I) {
@@ -164,6 +179,7 @@ int main(int argc, char const *argv[])
     }
 
     program->Bind();
+    LogShaderUniforms(program);
 
     auto mesh = core::MakeShared<Mesh>(renderer);
     auto handler = WindowInputHandler::Create(window, mesh);
@@ -171,11 +187,23 @@ int main(int argc, char const *argv[])
 
     uint32_t color = 0;
     core::pod::Vec4<float> uniform = {0, 0, 0, 0};
-    core::pod::Vec3<int> colorv;
-    glm::mat4 R(1.0f);
+    core::pod::Vec3<int> colorv = {0, 0, 0};
+    core::pod::Vec3<float> rotation = {0, 0, 0};
 
-    LogShaderUniforms(program);
+    // matrix setup
+    glm::mat4 ViewMat = glm::lookAt(glm::vec3(0, 0, -8),  // position
+                                    glm::vec3(0, 0, 1),   // look at
+                                    glm::vec3(0, 1, 0)    // up vec
+                                    );
 
+    glm::mat4 ProjectionMat =
+        glm::perspective(45.0f,             // FoV
+                         1280.0f / 720.0f,  // Aspect Ratio.
+                         0.1f,              // Near clipping plane.
+                         100.0f             // Far clipping plane.
+                         );
+
+    // make stuff happen
     while (window->ShouldClose() == false) {
         colorv.r = color % 255;
         colorv.g = (color / 2) % 255;
@@ -191,13 +219,21 @@ int main(int argc, char const *argv[])
             [](const auto &uniform) { return uniform->GetName() == "mvp"; });
 
         if (transform != program->GetUniforms().end()) {
-            R = glm::rotate(R, 0.01f, glm::vec3(1.f, 0.f, 0.f));
-            R = glm::rotate(R, 0.02f, glm::vec3(0.f, 1.f, 0.f));
-            R = glm::rotate(R, 0.03f, glm::vec3(0.f, 0.f, 1.f));
-            auto mvp = R * handler->GetMvp();
+            glm::mat4 RotationMat(1.0f);
 
+            RotationMat =
+                glm::rotate(RotationMat, rotation.x, glm::vec3(1.f, 0.f, 0.f));
+            RotationMat =
+                glm::rotate(RotationMat, rotation.y, glm::vec3(0.f, 1.f, 0.f));
+            RotationMat =
+                glm::rotate(RotationMat, rotation.z, glm::vec3(0.f, 0.f, 1.f));
+
+            auto mvp = ProjectionMat * ViewMat * RotationMat;
             (*transform)->SetMat4(glm::value_ptr(mvp));
-            // LogEngine("Setting mat4");
+
+            rotation.x += 0.0025f;
+            rotation.y += 0.0030f;
+            rotation.z += 0.0020f;
         }
 
         const auto &colorUniform =
@@ -247,7 +283,7 @@ core::SharedPtr<render::IWindow> CreateWindow(
 {
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
-    wDef.Title = "Q - quad, T - trangle";
+    wDef.Title = "C - cube, Q - quad, T - triangle";
     wDef.DebugContext = true;
 
     return wmodule->CreateWindow(wDef);

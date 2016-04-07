@@ -19,6 +19,7 @@ flags = [
   '-I', '../src',
   '-I', '../include',
   '-I', '../third_party',
+  '-I', '../third_party/glm',
   '-include', '../include/EngineInc.h'
 ]
 
