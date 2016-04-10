@@ -16,6 +16,7 @@ public:
     virtual void Bind();
     virtual const core::Vector<core::UniquePtr<IGpuProgramUniform>>&
     GetUniforms();
+    virtual IGpuProgramUniform* GetUniform(const core::String& name);
 
 private:
     void InitUniforms();

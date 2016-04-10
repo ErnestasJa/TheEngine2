@@ -2,7 +2,7 @@
 #define ENGINE_LOG_H
 
 #include "ILogStream.h"
-namespace logging
+namespace elog
 {
 void Log(const LogSource source, const LogSeverity severity,
          const core::String& log);

@@ -45,4 +45,12 @@ GLGpuShaderProgram::GetUniforms()
 {
     return m_uniforms;
 }
+
+IGpuProgramUniform* GLGpuShaderProgram::GetUniform(const core::String& name)
+{
+    auto it = core::alg::find_if(m_uniforms, [&name](const auto& uniform) {
+        return uniform->GetName() == name;
+    });
+    return it != m_uniforms.end() ? (*it).get() : nullptr;
+}
 }

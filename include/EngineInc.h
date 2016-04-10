@@ -22,5 +22,6 @@
 #include "core/POD.h"
 #include "core/TypeUtilities.h"
 #include "core/StringExt.h"
+#include "core/Algorithm.hpp"
 
 #endif

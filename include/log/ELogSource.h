@@ -1,7 +1,7 @@
 #ifndef ELOGSOURCE_H
 #define ELOGSOURCE_H
 
-namespace logging
+namespace elog
 {
 enum class LogSource { Engine, Other };
 }

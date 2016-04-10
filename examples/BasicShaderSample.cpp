@@ -26,8 +26,8 @@ void main()
 
 int main(int argc, char const *argv[])
 {
-    auto engineLogStream = core::MakeShared<EngineCoutPipe>();
-    logging::AddLogStream(engineLogStream);
+    auto engineLogStream = core::MakeShared<sutil::EngineCoutPipe>();
+    elog::AddLogStream(engineLogStream);
 
     auto wmodule = render::CreateDefaultWindowModule();
     wmodule->Initialize();
@@ -39,23 +39,23 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    LoadExtensions();
-    auto debugMonitor = GetDebugMessageMonitor();
+    sutil::LoadExtensions();
+    auto debugMonitor = sutil::GetDebugMessageMonitor();
     auto renderer = render::CreateRenderer();
     auto program = renderer->CreateProgram(vertSource, fragSource);
     auto program2 = renderer->CreateProgram(core::String(vertSource) + "fail",
                                             core::String(fragSource) + "fail");
 
     if (!program) {
-        logging::Log(logging::LogSource::Engine, logging::LogSeverity::Warn,
-                     "Failed to load program");
+        elog::Log(elog::LogSource::Engine, elog::LogSeverity::Warn,
+                  "Failed to load program");
     } else {
         program->Bind();
     }
 
     if (!program2) {
-        logging::Log(logging::LogSource::Engine, logging::LogSeverity::Warn,
-                     "Failed to load program2");
+        elog::Log(elog::LogSource::Engine, elog::LogSeverity::Warn,
+                  "Failed to load program2");
     }
 
     uint32_t color = 0;
@@ -71,7 +71,7 @@ int main(int argc, char const *argv[])
         renderer->Clear();
         color++;
 
-        LogDebugMessagesAndFlush(debugMonitor);
+        sutil::LogDebugMessagesAndFlush(debugMonitor);
 
         window->SwapBuffers();
         window->PollEvents();
