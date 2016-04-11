@@ -13,6 +13,8 @@ core::SharedPtr<IRenderer> CreateRenderer()
 
 GLRenderer::GLRenderer()
 {
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
 }
 GLRenderer::~GLRenderer()
 {

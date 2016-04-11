@@ -201,7 +201,7 @@ namespace gl
     {
         glBufferData(handle.buffer_type, buffer_size * handle.component_count *
                                              handle.component_size,
-                     data, GL_STATIC_DRAW);
+                     data, GL_STREAM_DRAW);
     }
 
     inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle)

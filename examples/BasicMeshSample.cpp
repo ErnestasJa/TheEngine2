@@ -166,7 +166,7 @@ int main(int argc, char const *argv[])
     auto window = CreateWindow(wmodule);
 
     sutil::LoadExtensions();
-    auto debugMonitor = sutil::GetDebugMessageMonitor();
+    // auto debugMonitor = sutil::GetDebugMessageMonitor();
     auto renderer = render::CreateRenderer();
     auto program = renderer->CreateProgram(quadVertSource, quadFragSource);
 
@@ -221,7 +221,7 @@ int main(int argc, char const *argv[])
 
         window->SwapBuffers();
         window->PollEvents();
-        sutil::LogDebugMessagesAndFlush(debugMonitor);
+        // sutil::LogDebugMessagesAndFlush(debugMonitor);
     }
 
     wmodule->Finalize();
@@ -234,8 +234,9 @@ core::SharedPtr<render::IWindow> CreateWindow(
 {
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
+    wDef.ForwardCompatible = false;
     wDef.Title = "C - cube, Q - quad, T - triangle";
-    wDef.DebugContext = true;
+    wDef.DebugContext = false;
 
     return wmodule->CreateWindow(wDef);
 }
