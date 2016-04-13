@@ -1,5 +1,4 @@
 #include "log/LogInc.h"
-#include "core/StringExt.h"
 #include <iostream>
 
 namespace String = core::string;

@@ -36,7 +36,7 @@ add_library(engine STATIC
 
 	"${ENGINE_SRC_PATH}/log/LogImpl.cpp"
 
-	"${ENGINE_SRC_PATH}/core/StringExt.cpp"
+	"${ENGINE_SRC_PATH}/core/StringUtil.cpp"
 	
 	"${ENGINE_SRC_PATH}/render/GLExtensionLoader.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessage.cpp"

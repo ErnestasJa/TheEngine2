@@ -1,5 +1,3 @@
-#include "core/StringExt.h"
-
 namespace core
 {
 namespace string

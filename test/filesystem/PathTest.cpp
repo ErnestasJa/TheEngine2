@@ -36,16 +36,16 @@ protected:
 
 TEST_F(PathTest, ReturnsAppendedPathWithFileName)
 {
-    Path correctPath(absolutePath + PathExt::Separator + fileNameWithExtension);
+    Path correctPath(absolutePath + path::Separator + fileNameWithExtension);
 
     ASSERT_EQ(correctPath, Path(absolutePath).Append(fileNameWithExtension));
 }
 
 TEST_F(PathTest, ReturnsAppendedPathWithoutAdditionalSeparators)
 {
-    Path absPathWithAppendedSeparator(absolutePath + PathExt::Separator);
-    Path relativePathWithPrependedSeparator(PathExt::Separator + relativePath);
-    Path correctPath = absolutePath + PathExt::Separator + relativePath;
+    Path absPathWithAppendedSeparator(absolutePath + path::Separator);
+    Path relativePathWithPrependedSeparator(path::Separator + relativePath);
+    Path correctPath = absolutePath + path::Separator + relativePath;
 
     ASSERT_EQ(correctPath, Path(absolutePath).Append(relativePath));
     ASSERT_EQ(correctPath,
@@ -60,7 +60,7 @@ TEST_F(PathTest, ReturnsFileNameWithExtension)
 {
     ASSERT_EQ(fileNameWithExtension, Path(fileNameWithExtension).GetFileName());
     ASSERT_EQ(fileNameWithExtension,
-              Path(PathExt::Separator + fileNameWithExtension).GetFileName());
+              Path(path::Separator + fileNameWithExtension).GetFileName());
     ASSERT_EQ(fileNameWithExtension,
               Path(absolutePath).Append(fileNameWithExtension).GetFileName());
 }
@@ -69,9 +69,8 @@ TEST_F(PathTest, ReturnsFileNameWithoutExtension)
 {
     ASSERT_EQ(fileNameWithoutExtension,
               Path(fileNameWithoutExtension).GetFileName());
-    ASSERT_EQ(
-        fileNameWithoutExtension,
-        Path(PathExt::Separator + fileNameWithoutExtension).GetFileName());
+    ASSERT_EQ(fileNameWithoutExtension,
+              Path(path::Separator + fileNameWithoutExtension).GetFileName());
     ASSERT_EQ(
         fileNameWithoutExtension,
         Path(absolutePath).Append(fileNameWithoutExtension).GetFileName());
@@ -129,19 +128,17 @@ TEST_F(PathTest, DetectsFilename)
 
 TEST_F(PathTest, CanAppendSingleSeparatorToPath)
 {
-    ASSERT_EQ(relativePath + PathExt::Separator,
-              Path(relativePath).Append(PathExt::SeparatorStr));
+    ASSERT_EQ(relativePath + path::Separator,
+              Path(relativePath).Append(path::SeparatorStr));
 
-    ASSERT_EQ(relativePath + PathExt::Separator,
-              Path(relativePath)
-                  .Append(PathExt::SeparatorStr)
-                  .Append(PathExt::SeparatorStr));
+    ASSERT_EQ(relativePath + path::Separator, Path(relativePath)
+                                                  .Append(path::SeparatorStr)
+                                                  .Append(path::SeparatorStr));
 
     ASSERT_EQ(Path(unixRootPath),
-              Path(unixRootPath).Append(PathExt::SeparatorStr));
+              Path(unixRootPath).Append(path::SeparatorStr));
 
-    ASSERT_EQ(Path(winRootPath),
-              Path(winRootPath).Append(PathExt::SeparatorStr));
+    ASSERT_EQ(Path(winRootPath), Path(winRootPath).Append(path::SeparatorStr));
 }
 
 TEST_F(PathTest, DirSeparatorsAreNormalizedOnConstruction)

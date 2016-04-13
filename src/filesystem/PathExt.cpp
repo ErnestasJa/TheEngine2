@@ -1,10 +1,9 @@
-#include "filesystem/PathExt.h"
+#include "filesystem/Path.h"
 #include <algorithm>
-#include "core/StringExt.h"
 
 namespace io
 {
-namespace PathExt
+namespace path
 {
     std::string Append(const std::string& path, const std::string& pathToAppend)
     {

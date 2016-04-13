@@ -21,7 +21,7 @@
 #include "EngineForwardDeclares.h"
 #include "core/POD.h"
 #include "core/TypeUtilities.h"
-#include "core/StringExt.h"
+#include "core/StringUtil.h"
 #include "core/Algorithm.hpp"
 
 #endif

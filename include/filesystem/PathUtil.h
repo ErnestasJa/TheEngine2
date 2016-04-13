@@ -3,7 +3,7 @@
 
 namespace io
 {
-namespace PathExt
+namespace path
 {
     const auto Separator = '/';
     const std::string SeparatorStr{Separator};

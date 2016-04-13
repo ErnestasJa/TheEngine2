@@ -7,7 +7,7 @@
 // All paths shall be considered as relative paths when doing operations on
 // them.
 
-#include "PathExt.h"
+#include "PathUtil.h"
 
 namespace io
 {
@@ -16,7 +16,7 @@ class Path
 public:
     Path(const std::string& path)
     {
-        m_path = io::PathExt::Normalize(path);
+        m_path = io::path::Normalize(path);
     }
 
     Path() : m_path("")
@@ -29,25 +29,25 @@ public:
 
     Path Append(const Path& path)
     {
-        return io::PathExt::Append(m_path, std::string(path));
+        return io::path::Append(m_path, std::string(path));
     }
 
     Path GetFileName() const
     {
-        return io::PathExt::GetFileName(m_path);
+        return io::path::GetFileName(m_path);
     }
     Path GetExtension() const
     {
-        return io::PathExt::GetExtension(m_path);
+        return io::path::GetExtension(m_path);
     }
     Path GetParentDirectory() const
     {
-        return io::PathExt::GetParentDirectory(m_path);
+        return io::path::GetParentDirectory(m_path);
     }
 
     bool HasFileName() const
     {
-        return io::PathExt::HasFileName(m_path);
+        return io::path::HasFileName(m_path);
     }
     const std::string& AsString() const
     {

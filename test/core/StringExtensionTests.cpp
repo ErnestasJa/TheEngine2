@@ -1,5 +1,4 @@
 #include "gtest/gtest.h"
-#include "core/StringExt.h"
 #include <iostream>
 
 using namespace std::literals::string_literals;

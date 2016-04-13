@@ -2,7 +2,6 @@
 #include "GLFW/glfw3.h"
 #include "GLFWInputDevice.h"
 #include "log/LogInc.h"
-#include "core/StringExt.h"
 
 namespace render
 {
