@@ -52,7 +52,6 @@ private:
 int main(int argc, char const *argv[])
 {
     auto wmodule = render::CreateDefaultWindowModule();
-    wmodule->Initialize();
 
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
@@ -72,8 +71,6 @@ int main(int argc, char const *argv[])
         window->SwapBuffers();
         window->PollEvents();
     }
-
-    wmodule->Finalize();
 
     return 0;
 }

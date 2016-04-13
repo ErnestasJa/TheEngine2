@@ -161,8 +161,6 @@ int main(int argc, char const *argv[])
     elog::AddLogStream(engineLogStream);
 
     auto wmodule = render::CreateDefaultWindowModule();
-    wmodule->Initialize();
-
     auto window = CreateWindow(wmodule);
 
     sutil::LoadExtensions();
@@ -223,8 +221,6 @@ int main(int argc, char const *argv[])
         window->PollEvents();
         // sutil::LogDebugMessagesAndFlush(debugMonitor);
     }
-
-    wmodule->Finalize();
 
     return 0;
 }

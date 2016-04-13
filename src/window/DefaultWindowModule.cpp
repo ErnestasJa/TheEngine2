@@ -9,18 +9,13 @@ class DefaultWindowModule : public IWindowModule
 public:
     virtual ~DefaultWindowModule()
     {
+        glfwTerminate();
     }
 
-    virtual bool Initialize()
+    bool Initialize()
     {
         if (glfwInit() == false) return false;
 
-        return true;
-    }
-
-    virtual bool Finalize()
-    {
-        glfwTerminate();
         return true;
     }
 
@@ -39,6 +34,12 @@ private:
 
 core::SharedPtr<IWindowModule> CreateDefaultWindowModule()
 {
-    return std::make_shared<DefaultWindowModule>();
+    auto module = std::make_shared<DefaultWindowModule>();
+
+    if (module->Initialize()) {
+        return module;
+    }
+
+    return nullptr;
 }
 }

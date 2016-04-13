@@ -13,8 +13,6 @@ public:
     {
     }
 
-    virtual bool Initialize() = 0;
-    virtual bool Finalize() = 0;
     virtual core::SharedPtr<IWindow> CreateWindow(
         const SWindowDefinition& windowDefinition) = 0;
 };

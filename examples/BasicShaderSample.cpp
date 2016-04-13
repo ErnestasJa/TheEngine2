@@ -30,8 +30,6 @@ int main(int argc, char const *argv[])
     elog::AddLogStream(engineLogStream);
 
     auto wmodule = render::CreateDefaultWindowModule();
-    wmodule->Initialize();
-
     auto window = CreateWindow(wmodule);
 
     if (!window) {
@@ -76,8 +74,6 @@ int main(int argc, char const *argv[])
         window->SwapBuffers();
         window->PollEvents();
     }
-
-    wmodule->Finalize();
 
     return 0;
 }
