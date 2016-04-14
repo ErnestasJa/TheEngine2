@@ -51,6 +51,8 @@ bool GLRendererDebugMessageMonitor::AddMessage(
     const core::SharedPtr<IRendererDebugMessage> &message)
 {
     m_debugMessages.push_back(message);
+	
+	return true;
 }
 
 void GLRendererDebugMessageMonitor::ClearMessages()

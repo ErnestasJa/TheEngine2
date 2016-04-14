@@ -112,10 +112,10 @@ namespace gl
         uint32_t fs = CreateShaderFromString(GL_FRAGMENT_SHADER, fragSource);
         uint32_t gs = CreateShaderFromString(GL_GEOMETRY_SHADER, geomSource);
 
-        return gpu_shader_handle{.pipeline = CreateProgramPipeline(vs, fs, gs),
-                                 .vertex_program_id = vs,
-                                 .fragment_program_id = fs,
-                                 .geometry_program_id = gs};
+        return gpu_shader_handle{CreateProgramPipeline(vs, fs, gs),
+                                 vs,
+                                 fs,
+                                 gs};
     }
 
     inline bool IsProgramPipelineLinked(const gpu_shader_handle& handle)
@@ -144,10 +144,10 @@ namespace gl
 
         glGetProgramResourceName(id, GL_UNIFORM, index, 100, NULL, name);
 
-        return gpu_shader_uniform_handle{.id = (uint32_t)values[3],
-                                         .program_id = id,
-                                         .type = (uint32_t)values[1],
-                                         .name = name};
+        return gpu_shader_uniform_handle{(uint32_t)values[3],
+                                         id,
+                                         (uint32_t)values[1],
+                                         name};
     }
 
     inline void SetUniform(const gpu_shader_uniform_handle& handle, float value)

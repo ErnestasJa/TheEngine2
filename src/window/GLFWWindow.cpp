@@ -1,4 +1,5 @@
 #include "GLFWWindow.h"
+#include "GLXW/glxw.h"
 #include "GLFW/glfw3.h"
 #include "GLFWInputDevice.h"
 #include "log/LogInc.h"
@@ -32,13 +33,13 @@ void SetWindowHints(const SWindowDefinition& wDef)
 
 void ReadBackContext(SWindowDefinition& def)
 {
-    int32_t flags = 0;
-    glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-    def.ForwardCompatible = flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT;
-    def.DebugContext = flags & GL_CONTEXT_FLAG_DEBUG_BIT;
+    // int32_t flags = 0;
+    // glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+    // def.ForwardCompatible = flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT;
+    // def.DebugContext = flags & GL_CONTEXT_FLAG_DEBUG_BIT;
 
-    glGetIntegerv(GL_MAJOR_VERSION, &def.ContextMajorVersion);
-    glGetIntegerv(GL_MINOR_VERSION, &def.ContextMinorVersion);
+    // glGetIntegerv(GL_MAJOR_VERSION, &def.ContextMajorVersion);
+    // glGetIntegerv(GL_MINOR_VERSION, &def.ContextMinorVersion);
 }
 
 void LogContext(const SWindowDefinition& def)

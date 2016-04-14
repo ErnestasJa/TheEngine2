@@ -1,4 +1,5 @@
 import os
+import platform
 from collections import OrderedDict
 
 pdir = os.path.dirname
@@ -22,5 +23,6 @@ class PathManager:
 		self.CMakePaths["glfw"] = join(self.Paths["engine"],"third_party/glfw")
 		self.CMakePaths["glxw"] = join(self.Paths["engine"],"third_party/glxw")
 		self.CMakePaths["engine"] = join(self.Paths["engine"],"build/linux")
-		self.CMakePaths["test"] = join(self.Paths["engine"],"test")
+		if platform.system() != "Windows":
+			self.CMakePaths["test"] = join(self.Paths["engine"],"test")
 		self.CMakePaths["examples"] = join(self.Paths["engine"],"examples")

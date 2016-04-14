@@ -1,5 +1,5 @@
 import fnmatch
-import os, sys, shutil, subprocess
+import os, sys, shutil, subprocess, platform
 from test_runner import TestRunner
 from build_config import *
 from build_common import *
@@ -59,21 +59,35 @@ class Builder:
 				continue
 
 			self.CreateAndChDir(join(paths.Paths['build'], key))
-			subprocess.check_call('cmake "' 
-				+ value + '"'
-				+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
-				+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
-			subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
+			if platform.system() == "Windows":
+				subprocess.check_call('vcvars64.bat', shell=True)
+				subprocess.check_call('cmake "' 
+					+ value + '"'
+					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
+					+ ' -DWINDOWS_BUILD=1'
+					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "NMake Makefiles"', shell=True)
+				subprocess.check_call('nmake', shell=True)
+			else:
+				subprocess.check_call('cmake "' 
+					+ value + '"'
+					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
+					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "NMake Makefiles"', shell=True)
+				subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
 			self.CopyLibs()
 
 	def GetLibs(self, dir):
 		match = []
-
-		for root, dirnames, filenames in os.walk(dir):
-			for filename in fnmatch.filter(filenames, '*.a'):
-				if filename != "objects.a":
-					match.append([filename,os.path.join(root, filename)])
-					
+		if platform.system() == "Windows":
+			for root, dirnames, filenames in os.walk(dir):
+				for filename in fnmatch.filter(filenames, '*.lib'):
+					if filename != "objects.lib":
+						match.append([filename,os.path.join(root, filename)])
+		else:
+			for root, dirnames, filenames in os.walk(dir):
+				for filename in fnmatch.filter(filenames, '*.a'):
+					if filename != "objects.a":
+						match.append([filename,os.path.join(root, filename)])
+						
 		return match
 
 	def CopyLibs(self):
