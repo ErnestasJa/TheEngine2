@@ -54,6 +54,8 @@ class Builder:
 		self.CreateAndChDir(paths.Paths['build'])
 		self.CreateAndChDir(paths.Paths['lib'])
 
+		os.chdir(paths.CMakePaths['glxw'])
+		subprocess.check_call('python glxw_gen.py', shell=True)
 		for key, value in paths.CMakePaths.items():
 			if self.build_samples == False and key == "examples":
 				continue
