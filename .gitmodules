@@ -12,4 +12,4 @@
 	url = https://github.com/glfw/glfw
 [submodule "third_party/glxw"]
 	path = third_party/glxw
-	url = https://github.com/rikusalminen/glxw.git
+	url = https://github.com/Murloc992/glxw.git
