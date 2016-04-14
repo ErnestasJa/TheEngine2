@@ -1,15 +1,15 @@
 #include "window/WindowInc.h"
+#include "render/RenderInc.h"
 #include <iostream>
 
 int main(int argc, char const *argv[])
 {
-    auto wmodule = render::CreateDefaultWindowModule();
-
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
     wDef.Title = "Window example application";
 
-    auto window = wmodule->CreateWindow(wDef);
+    auto context = render::CreateContext(wDef);
+    auto window = context->GetWindow().get();
 
     if (!window) {
         std::cout << "Failed to create window" << std::endl;

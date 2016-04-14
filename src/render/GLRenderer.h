@@ -21,6 +21,8 @@ public:
 
 private:
 };
+
+core::UniquePtr<IRenderer> CreateRenderer();
 }
 
 #endif

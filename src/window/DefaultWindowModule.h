@@ -1,10 +1,9 @@
-#include "window/IWindowModule.h"
 #include "GLFWWindow.h"
 #include "GLFW/glfw3.h"
 
 namespace render
 {
-class DefaultWindowModule : public IWindowModule
+class DefaultWindowModule
 {
 public:
     virtual ~DefaultWindowModule()
@@ -19,10 +18,10 @@ public:
         return true;
     }
 
-    virtual core::SharedPtr<IWindow> CreateWindow(
+    virtual core::UniquePtr<IWindow> CreateWindow(
         const SWindowDefinition& windowDefinition)
     {
-        auto window = core::MakeShared<GLFWWindow>();
+        auto window = core::MakeUnique<GLFWWindow>();
 
         if (window->Init(windowDefinition)) return window;
 
@@ -32,9 +31,9 @@ public:
 private:
 };
 
-core::SharedPtr<IWindowModule> CreateDefaultWindowModule()
+core::UniquePtr<DefaultWindowModule> CreateDefaultWindowModule()
 {
-    auto module = std::make_shared<DefaultWindowModule>();
+    auto module = std::make_unique<DefaultWindowModule>();
 
     if (module->Initialize()) {
         return module;

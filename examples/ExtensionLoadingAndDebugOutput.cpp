@@ -19,30 +19,13 @@ int main(int argc, char const *argv[])
     auto engineLogStream = core::MakeShared<EngineCoutPipe>();
     elog::AddLogStream(engineLogStream);
 
-    auto wmodule = render::CreateDefaultWindowModule();
-
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
     wDef.Title = "Window example application";
     wDef.DebugContext = true;
-    wDef.ForwardCompatible = true;
-    wDef.ContextMajorVersion = 3;
-    wDef.ContextMinorVersion = 3;
 
-    auto window = wmodule->CreateWindow(wDef);
-
-    if (!window) {
-        std::cout << "Failed to create window" << std::endl;
-        return -1;
-    }
-
-    auto extLoader = render::CreateExtensionLoader();
-
-    if (extLoader->LoadExtensions())
-        std::cout << "OpenGL extensions loaded." << std::endl;
-    else
-        std::cout << "Failed to load OpenGL extensions." << std::endl;
-
+    auto context = render::CreateContext(wDef);
+    auto window = context->GetWindow().get();
     auto debugMonitor = render::GetRendererDebugMessageMonitor();
 
     if (debugMonitor) {

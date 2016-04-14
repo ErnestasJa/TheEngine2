@@ -81,16 +81,6 @@ void LogShaderUniforms(core::SharedPtr<render::IGpuProgram> const &program)
     }
 }
 
-void LoadExtensions()
-{
-    auto extLoader = render::CreateExtensionLoader();
-
-    if (extLoader->LoadExtensions())
-        std::cout << "OpenGL extensions loaded." << std::endl;
-    else
-        std::cout << "Failed to load OpenGL extensions." << std::endl;
-}
-
 glm::mat4 BuildRotation(const glm::vec3 &rotation)
 {
     glm::mat4 m;

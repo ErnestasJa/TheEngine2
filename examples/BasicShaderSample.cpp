@@ -2,9 +2,6 @@
 #include "render/RenderInc.h"
 #include "CommonUtil.h"
 
-core::SharedPtr<render::IWindow> CreateWindow(
-    const core::SharedPtr<render::IWindowModule> &wmodule);
-
 const char *vertSource =
     R"(#version 330
 
@@ -29,17 +26,21 @@ int main(int argc, char const *argv[])
     auto engineLogStream = core::MakeShared<sutil::EngineCoutPipe>();
     elog::AddLogStream(engineLogStream);
 
-    auto wmodule = render::CreateDefaultWindowModule();
-    auto window = CreateWindow(wmodule);
+    render::SWindowDefinition wDef;
+    wDef.Dimensions = {1280, 720};
+    wDef.Title = "Window example application";
+    wDef.DebugContext = true;
 
-    if (!window) {
-        std::cout << "Failed to create window" << std::endl;
-        return -1;
-    }
+    auto context = render::CreateContext(wDef);
 
-    sutil::LoadExtensions();
+    if (!context)
+        elog::Log(elog::LogSource::Engine, elog::LogSeverity::Error,
+                  "Failed to create context");
+
+    auto window = context->GetWindow().get();
+    auto renderer = context->GetRenderer().get();
     auto debugMonitor = sutil::GetDebugMessageMonitor();
-    auto renderer = render::CreateRenderer();
+
     auto program = renderer->CreateProgram(vertSource, fragSource);
     auto program2 = renderer->CreateProgram(core::String(vertSource) + "fail",
                                             core::String(fragSource) + "fail");
@@ -76,15 +77,4 @@ int main(int argc, char const *argv[])
     }
 
     return 0;
-}
-
-core::SharedPtr<render::IWindow> CreateWindow(
-    const core::SharedPtr<render::IWindowModule> &wmodule)
-{
-    render::SWindowDefinition wDef;
-    wDef.Dimensions = {1280, 720};
-    wDef.Title = "Window example application";
-    wDef.DebugContext = true;
-
-    return wmodule->CreateWindow(wDef);
 }

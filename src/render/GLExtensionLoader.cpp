@@ -17,7 +17,7 @@ bool GLExtensionLoader::LoadExtensions()
     return glxwInit() == 0;
 }
 
-core::SharedPtr<IRenderExtensionLoader> CreateExtensionLoader()
+core::SharedPtr<GLExtensionLoader> CreateExtensionLoader()
 {
     return core::MakeShared<GLExtensionLoader>();
 }
