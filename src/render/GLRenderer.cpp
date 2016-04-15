@@ -6,9 +6,9 @@
 
 namespace render
 {
-core::SharedPtr<IRenderer> CreateRenderer()
+core::UniquePtr<IRenderer> CreateRenderer()
 {
-    return core::MakeShared<GLRenderer>();
+    return core::MakeUnique<GLRenderer>();
 }
 
 GLRenderer::GLRenderer()

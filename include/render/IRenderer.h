@@ -30,8 +30,6 @@ public:
     virtual void SetClearColor(const Vec3i& color) = 0;
     virtual void Clear() = 0;
 };
-
-core::SharedPtr<IRenderer> CreateRenderer();
 }
 
 #endif

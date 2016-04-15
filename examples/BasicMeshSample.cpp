@@ -4,9 +4,6 @@
 #include "CommonUtil.h"
 #include "Geometry.h"
 
-core::SharedPtr<render::IWindow> CreateWindow(
-    const core::SharedPtr<render::IWindowModule> &wmodule);
-
 // clang-format off
 const char *quadVertSource = R"V0G0N(
 #version 330
@@ -48,7 +45,7 @@ struct Mesh {
     {
     }
 
-    Mesh(const core::SharedPtr<render::IRenderer> &ptr)
+    Mesh(render::IRenderer *ptr)
     {
         BufferDescriptors.push_back(render::BufferDescriptor{
             1, render::BufferObjectType::index,
@@ -92,15 +89,13 @@ struct Mesh {
 class WindowInputHandler : public input::InputHandler
 {
 public:
-    static auto Create(core::WeakPtr<render::IWindow> window,
-                       core::SharedPtr<Mesh> mesh)
+    static auto Create(render::IWindow *window, core::SharedPtr<Mesh> mesh)
     {
         return core::MakeShared<WindowInputHandler>(window, mesh);
     }
 
 public:
-    WindowInputHandler(core::WeakPtr<render::IWindow> window,
-                       core::SharedPtr<Mesh> mesh)
+    WindowInputHandler(render::IWindow *window, core::SharedPtr<Mesh> mesh)
         : m_mesh(mesh), m_window(window)
     {
     }
@@ -133,7 +128,7 @@ public:
 private:
     glm::mat4 m_mvp;
     core::SharedPtr<Mesh> m_mesh;
-    core::WeakPtr<render::IWindow> m_window;
+    render::IWindow *m_window;
 };
 
 class BaseMaterial
@@ -155,17 +150,17 @@ private:
     render::IGpuProgramUniform *u_mvp;
 };
 
+render::SWindowDefinition GetWindowDefinition();
+
 int main(int argc, char const *argv[])
 {
     auto engineLogStream = core::MakeShared<sutil::EngineCoutPipe>();
     elog::AddLogStream(engineLogStream);
 
-    auto wmodule = render::CreateDefaultWindowModule();
-    auto window = CreateWindow(wmodule);
+    auto context = render::CreateContext(GetWindowDefinition());
+    auto window = context->GetWindow().get();
+    auto renderer = context->GetRenderer().get();
 
-    sutil::LoadExtensions();
-    // auto debugMonitor = sutil::GetDebugMessageMonitor();
-    auto renderer = render::CreateRenderer();
     auto program = renderer->CreateProgram(quadVertSource, quadFragSource);
 
     if (!program) {
@@ -225,8 +220,7 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-core::SharedPtr<render::IWindow> CreateWindow(
-    const core::SharedPtr<render::IWindowModule> &wmodule)
+render::SWindowDefinition GetWindowDefinition()
 {
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
@@ -234,5 +228,5 @@ core::SharedPtr<render::IWindow> CreateWindow(
     wDef.Title = "C - cube, Q - quad, T - triangle";
     wDef.DebugContext = false;
 
-    return wmodule->CreateWindow(wDef);
+    return wDef;
 }

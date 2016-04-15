@@ -35,7 +35,6 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/filesystem/FileSystem.cpp"
 
 	"${ENGINE_SRC_PATH}/window/GLFWWindow.cpp"
-	"${ENGINE_SRC_PATH}/window/DefaultWindowModule.cpp"
 	"${ENGINE_SRC_PATH}/window/GLFWInputDevice.cpp"
 
 	"${ENGINE_SRC_PATH}/input/InputMapping.cpp"
@@ -52,4 +51,5 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/render/GLRenderer.cpp"
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferObject.cpp"
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferArrayObject.cpp"
+	"${ENGINE_SRC_PATH}/render/GLRenderContext.cpp"
 )
