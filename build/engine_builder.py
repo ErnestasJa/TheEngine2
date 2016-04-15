@@ -78,6 +78,7 @@ class Builder:
 				subprocess.check_call('cmake "' 
 					+ value + '"'
 					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
+					+ ' -DWINDOWS_BUILD=0'
 					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "NMake Makefiles"', shell=True)
 				subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
 			self.CopyLibs()
