@@ -13,6 +13,7 @@ class Builder:
 	def __init__(self):
 		self.clean_compile_directory = False
 		self.build_samples = True
+		self.use_jom = False
 		self.__ParseArgs()
 
 	def __ParseArgs(self):
@@ -26,6 +27,8 @@ class Builder:
 				self.clean_compile_directory = True
 			elif sys.argv[i] == "-nosamples":
 				self.build_samples = False
+			elif sys.argv[i] == "-usejom":
+				self.use_jom = True
 
 		print(BuildMessage.ArgumentsMsg)
 
@@ -62,13 +65,15 @@ class Builder:
 
 			self.CreateAndChDir(join(paths.Paths['build'], key))
 			if platform.system() == "Windows":
-				subprocess.check_call('vcvars64.bat', shell=True)
 				subprocess.check_call('cmake "' 
 					+ value + '"'
 					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
 					+ ' -DWINDOWS_BUILD=1'
 					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "NMake Makefiles"', shell=True)
-				subprocess.check_call('nmake', shell=True)
+				if self.use_jom == True:
+					subprocess.check_call('jom.exe -j' + str(Builder.Threads), shell=True)
+				else:
+					subprocess.check_call('nmake', shell=True)
 			else:
 				subprocess.check_call('cmake "' 
 					+ value + '"'
