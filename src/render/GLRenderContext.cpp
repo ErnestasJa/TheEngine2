@@ -19,6 +19,8 @@ std::shared_ptr<IRenderContext> CreateContext(const SWindowDefinition& def)
     if (!extensionLoader) return nullptr;
     if (!extensionLoader->LoadExtensions()) return nullptr;
 
+    static_cast<GLFWWindow*>(window.get())->UpdateContext();
+
     auto renderer = CreateRenderer();
     if (!renderer) return nullptr;
 

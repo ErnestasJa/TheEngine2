@@ -23,6 +23,8 @@ public:
     virtual bool ShouldClose();
     virtual core::WeakPtr<input::IInputDevice> GetInputDevice();
     virtual const SWindowDefinition& GetWindowDefinition();
+    virtual void UpdateContext();  /// this is to be called after creating
+                                   /// window and loading extensions.
 
 private:
     SWindowDefinition m_windowDefinition;

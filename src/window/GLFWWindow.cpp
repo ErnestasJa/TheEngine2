@@ -56,6 +56,12 @@ void LogContext(const SWindowDefinition& def)
                               def.DebugContext ? "yes" : "no"));
 }
 
+void GLFWWindow::UpdateContext()
+{
+    ReadBackContext(m_windowDefinition);
+    LogContext(m_windowDefinition);
+}
+
 bool GLFWWindow::Init(const SWindowDefinition& wDef)
 {
     m_windowDefinition = wDef;
@@ -69,9 +75,6 @@ bool GLFWWindow::Init(const SWindowDefinition& wDef)
     if (m_window == nullptr) {
         return false;
     }
-
-    ReadBackContext(m_windowDefinition);
-    LogContext(m_windowDefinition);
 
     m_inputDevice = GLFWInputDevice::Create(m_window);
 
