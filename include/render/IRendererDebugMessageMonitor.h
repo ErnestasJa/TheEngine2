@@ -18,8 +18,6 @@ public:
     virtual const core::Vector<core::SharedPtr<IRendererDebugMessage>>&
     GetMessages() const = 0;
 };
-
-core::SharedPtr<IRendererDebugMessageMonitor> GetRendererDebugMessageMonitor();
 }
 
 #endif

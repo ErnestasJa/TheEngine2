@@ -14,6 +14,7 @@ using Vec4f = core::pod::Vec4<float>;
 class IGpuProgram;
 class IGpuBufferObject;
 class IGpuBufferArrayObject;
+class IRendererDebugMessageMonitor;
 struct BufferDescriptor;
 class IRenderer
 {
@@ -21,6 +22,7 @@ public:
     virtual ~IRenderer()
     {
     }
+    virtual IRendererDebugMessageMonitor* GetDebugMessageMonitor() = 0;
     virtual core::SharedPtr<IGpuProgram> CreateProgram(
         const core::String& vertSource = "",
         const core::String& fragSource = "",

@@ -23,6 +23,9 @@ public:
 private:
     core::Vector<core::SharedPtr<IRendererDebugMessage>> m_debugMessages;
 };
+
+core::UniquePtr<GLRendererDebugMessageMonitor>
+CreateRendererDebugMessageMonitor();
 }
 
 #endif

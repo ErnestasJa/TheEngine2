@@ -1,6 +1,7 @@
 #include "GLRenderContext.h"
 #include "GLRenderer.h"
 #include "GLExtensionLoader.h"
+#include "GLRendererDebugMessageMonitor.h"
 #include "window/WindowInc.h"
 #include "../window/GLFWWindow.h"
 #include "../window/DefaultWindowModule.h"
@@ -21,7 +22,9 @@ std::shared_ptr<IRenderContext> CreateContext(const SWindowDefinition& def)
 
     static_cast<GLFWWindow*>(window.get())->UpdateContext();
 
-    auto renderer = CreateRenderer();
+    auto debugMonitor = CreateRendererDebugMessageMonitor();
+
+    auto renderer = CreateRenderer(std::move(debugMonitor));
     if (!renderer) return nullptr;
 
     return std::make_shared<GLRenderContext>(

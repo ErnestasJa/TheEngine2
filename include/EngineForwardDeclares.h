@@ -39,10 +39,10 @@ UniquePtr<T> MakeUnique(U&&... u)
     return std::make_unique<T>(std::forward<U>(u)...);
 }
 
-template <class... U>
-auto Move(U&&... u)
+template <class U>
+inline auto Move(U&& u)
 {
-    return std::move(std::forward<U>(u)...);
+    return std::move(u);
 }
 
 template <class U, typename Pred>

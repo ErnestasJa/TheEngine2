@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
 
     auto context = render::CreateContext(wDef);
     auto window = context->GetWindow().get();
-    auto debugMonitor = render::GetRendererDebugMessageMonitor();
+    auto debugMonitor = context->GetRenderer()->GetDebugMessageMonitor();
 
     if (debugMonitor) {
         debugMonitor->SetDebugging(true);

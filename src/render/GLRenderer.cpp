@@ -2,22 +2,31 @@
 #include "GLGpuShaderProgram.h"
 #include "GLGpuBufferObject.h"
 #include "GLGpuBufferArrayObject.h"
+#include "GLRendererDebugMessageMonitor.h"
 #include "OpenGL.hpp"
 
 namespace render
 {
-core::UniquePtr<IRenderer> CreateRenderer()
+core::UniquePtr<IRenderer> CreateRenderer(
+    core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
 {
-    return core::MakeUnique<GLRenderer>();
+    return core::MakeUnique<GLRenderer>(core::Move(debugMessageMonitor));
 }
 
-GLRenderer::GLRenderer()
+GLRenderer::GLRenderer(
+    core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
+    : m_debugMessageMonitor(core::Move(debugMessageMonitor))
 {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 }
 GLRenderer::~GLRenderer()
 {
+}
+
+IRendererDebugMessageMonitor* GLRenderer::GetDebugMessageMonitor()
+{
+    return m_debugMessageMonitor.get();
 }
 
 core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(

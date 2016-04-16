@@ -43,26 +43,12 @@ public:
     }
 };
 
-core::SharedPtr<render::IRendererDebugMessageMonitor> GetDebugMessageMonitor()
-{
-    auto debugMonitor = render::GetRendererDebugMessageMonitor();
-
-    if (debugMonitor) {
-        debugMonitor->SetDebugging(true);
-    } else {
-        std::cout << "Failed to load debuging monitor" << std::endl;
-    }
-
-    return debugMonitor;
-}
-
 void LogEngine(const core::String &message)
 {
     elog::Log(elog::LogSource::Engine, elog::LogSeverity::Debug, message);
 }
 
-void LogDebugMessagesAndFlush(
-    const core::SharedPtr<render::IRendererDebugMessageMonitor> &dbgMonitor)
+void LogDebugMessagesAndFlush(render::IRendererDebugMessageMonitor *dbgMonitor)
 {
     if (dbgMonitor)
         for (auto msg : dbgMonitor->GetMessages()) {

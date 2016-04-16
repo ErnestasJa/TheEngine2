@@ -5,11 +5,14 @@
 
 namespace render
 {
+class GLRendererDebugMessageMonitor;
 class GLRenderer : public IRenderer
 {
 public:
-    GLRenderer();
+    GLRenderer(
+        core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor);
     virtual ~GLRenderer();
+    virtual IRendererDebugMessageMonitor* GetDebugMessageMonitor();
     virtual core::SharedPtr<IGpuProgram> CreateProgram(
         const core::String& vertSource = "",
         const core::String& fragSource = "",
@@ -20,9 +23,11 @@ public:
     virtual void Clear();
 
 private:
+    core::UniquePtr<GLRendererDebugMessageMonitor> m_debugMessageMonitor;
 };
 
-core::UniquePtr<IRenderer> CreateRenderer();
+core::UniquePtr<IRenderer> CreateRenderer(
+    core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor);
 }
 
 #endif

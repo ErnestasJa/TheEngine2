@@ -5,17 +5,11 @@
 
 namespace render
 {
-static core::WeakPtr<IRendererDebugMessageMonitor> Instance;
-
-core::SharedPtr<IRendererDebugMessageMonitor> GetRendererDebugMessageMonitor()
+core::UniquePtr<GLRendererDebugMessageMonitor>
+CreateRendererDebugMessageMonitor()
 {
     if (GLRendererDebugMessageMonitor::IsDebugOutputSupported()) {
-        auto instance = Instance.lock();
-        if (!instance) {
-            Instance = instance =
-                core::MakeShared<GLRendererDebugMessageMonitor>();
-        }
-        return instance;
+        return core::MakeUnique<GLRendererDebugMessageMonitor>();
     }
 
     return nullptr;

@@ -39,7 +39,8 @@ int main(int argc, char const *argv[])
 
     auto window = context->GetWindow().get();
     auto renderer = context->GetRenderer().get();
-    auto debugMonitor = sutil::GetDebugMessageMonitor();
+    auto debugMonitor = context->GetRenderer()->GetDebugMessageMonitor();
+    debugMonitor->SetDebugging(true);
 
     auto program = renderer->CreateProgram(vertSource, fragSource);
     auto program2 = renderer->CreateProgram(core::String(vertSource) + "fail",
