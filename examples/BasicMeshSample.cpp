@@ -65,9 +65,10 @@ struct Mesh {
         vao = ptr->CreateBufferArrayObject(BufferDescriptors);
         texture = ptr->CreateTexture(render::TextureDescriptor());
         texture->UploadData(render::TextureDataDescriptor{
-            texture1::header_data, render::TextureDataFormat::RGBA,
-            core::pod::Vec2<int32_t>{(int32_t)texture1::width,
-                                     (int32_t)texture1::height}});
+            (void *)texture::gimp_image.pixel_data,
+            render::TextureDataFormat::RGBA,
+            core::pod::Vec2<int32_t>{(int32_t)texture::gimp_image.width,
+                                     (int32_t)texture::gimp_image.height}});
     }
 
     void UploadBuffers()
