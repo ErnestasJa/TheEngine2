@@ -23,7 +23,10 @@ include_directories("${ENGINE_INC_PATH}/"
 )
 
 add_library(engine STATIC 
-	"${ENGINE_SRC_PATH}/filesystem/PathExt.cpp"
+
+	"${ENGINE_SRC_PATH}/core/StringUtil.cpp"
+	
+	"${ENGINE_SRC_PATH}/filesystem/PathUtil.cpp"
 	"${ENGINE_SRC_PATH}/filesystem/FileReader.cpp"
 	"${ENGINE_SRC_PATH}/filesystem/FileWriter.cpp"
 	"${ENGINE_SRC_PATH}/filesystem/FileSystem.cpp"
@@ -35,8 +38,6 @@ add_library(engine STATIC
 
 	"${ENGINE_SRC_PATH}/log/LogImpl.cpp"
 
-	"${ENGINE_SRC_PATH}/core/StringUtil.cpp"
-	
 	"${ENGINE_SRC_PATH}/render/GLExtensionLoader.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessage.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRendererDebugMessageMonitor.cpp"

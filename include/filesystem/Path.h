@@ -14,7 +14,7 @@ namespace io
 class Path
 {
 public:
-    Path(const std::string& path)
+    Path(const core::String& path)
     {
         m_path = io::path::Normalize(path);
     }
@@ -29,7 +29,7 @@ public:
 
     Path Append(const Path& path)
     {
-        return io::path::Append(m_path, std::string(path));
+        return io::path::Append(m_path, core::String(path));
     }
 
     Path GetFileName() const
@@ -49,11 +49,11 @@ public:
     {
         return io::path::HasFileName(m_path);
     }
-    const std::string& AsString() const
+    const core::String& AsString() const
     {
         return m_path;
     }
-    operator std::string() const
+    operator core::String() const
     {
         return m_path;
     }
@@ -64,7 +64,7 @@ public:
     }
 
 private:
-    std::string m_path;
+    core::String m_path;
 };
 
 inline bool operator==(const Path& lhs, const Path& rhs)

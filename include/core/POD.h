@@ -1,7 +1,7 @@
 #ifndef ENGINE_POD_INC_H
 #define ENGINE_POD_INC_H
 
-/* ######## Rationale #########
+/* ######## Motivation #########
 We need composite POD data types in many places in project.
 glm (or w/e math library of choice) would fit those places, but not everywhere
 it makes sense to have all the functionality of math

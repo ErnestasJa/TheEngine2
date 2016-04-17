@@ -161,6 +161,9 @@ int main(int argc, char const *argv[])
     auto window = context->GetWindow().get();
     auto renderer = context->GetRenderer().get();
 
+    auto dbg = renderer->GetDebugMessageMonitor();
+    if (dbg) dbg->SetDebugging(true);
+
     auto program = renderer->CreateProgram(quadVertSource, quadFragSource);
 
     if (!program) {
@@ -224,9 +227,9 @@ render::SWindowDefinition GetWindowDefinition()
 {
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
-    wDef.ForwardCompatible = false;
+    wDef.ForwardCompatible = true;
     wDef.Title = "C - cube, Q - quad, T - triangle";
-    wDef.DebugContext = false;
+    wDef.DebugContext = true;
 
     return wDef;
 }

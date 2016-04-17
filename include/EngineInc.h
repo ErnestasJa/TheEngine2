@@ -20,7 +20,7 @@
 /*Engine headers*/
 #include "EngineForwardDeclares.h"
 #include "core/POD.h"
-#include "core/TypeUtilities.h"
+#include "core/TypeUtils.h"
 #include "core/StringUtil.h"
 #include "core/Algorithm.hpp"
 
