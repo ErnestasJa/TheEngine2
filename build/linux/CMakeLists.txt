@@ -47,4 +47,5 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferObject.cpp"
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferArrayObject.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRenderContext.cpp"
+	"${ENGINE_SRC_PATH}/render/GLTexture.cpp"
 )

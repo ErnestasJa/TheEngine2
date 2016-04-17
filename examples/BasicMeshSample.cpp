@@ -3,43 +3,46 @@
 #include "input/InputInc.h"
 #include "CommonUtil.h"
 #include "Geometry.h"
+#include "Textures.h"
 
 // clang-format off
 const char *quadVertSource = R"V0G0N(
 #version 330
 
 layout(location = 0) in vec3 pos;
-smooth out vec4 vertPos;
+layout(location = 1) in vec2 tex;
+out vec2 uv;
 
 uniform mat4 mvp;
 
 void main(void)                  
-{                         
-    vertPos = mvp * vec4(pos,1);
-    gl_Position = vertPos;
+{              
+    uv = tex;           
+    gl_Position = mvp * vec4(pos,1);
 }
 )V0G0N";
 
 const char *quadFragSource = R"V0G0N(
 #version 330
 
-uniform vec4 colorOffset;
+uniform sampler2D texture;
+in vec2 uv;
 out vec4 FragColor;
-in vec4 vertPos;
 
-void main()               
+void main(void)               
 {                 
-    FragColor = vec4(sin(vertPos.y-vertPos.x+colorOffset.x), cos(vertPos.x+vertPos.y+colorOffset.y), sin(vertPos.x-vertPos.y+colorOffset.z), 1);
-
+    FragColor = texture2D(texture,uv);
 };
 )V0G0N";
 // clang-format on
 
 struct Mesh {
     std::vector<render::BufferDescriptor> BufferDescriptors;
+    core::Vector<render::Vec2f> UVBuffer;
     core::Vector<render::Vec3f> VertexBuffer;
     core::Vector<uint32_t> IndexBuffer;
     core::SharedPtr<render::IGpuBufferArrayObject> vao;
+    core::SharedPtr<render::ITexture> texture;
 
     Mesh()
     {
@@ -55,7 +58,16 @@ struct Mesh {
             3, render::BufferObjectType::vertex,
             render::BufferComponentDataType::float32, 0});
 
+        BufferDescriptors.push_back(render::BufferDescriptor{
+            2, render::BufferObjectType::vertex,
+            render::BufferComponentDataType::float32, 1});
+
         vao = ptr->CreateBufferArrayObject(BufferDescriptors);
+        texture = ptr->CreateTexture(render::TextureDescriptor());
+        texture->UploadData(render::TextureDataDescriptor{
+            texture1::header_data, render::TextureDataFormat::RGBA,
+            core::pod::Vec2<int32_t>{(int32_t)texture1::width,
+                                     (int32_t)texture1::height}});
     }
 
     void UploadBuffers()
@@ -64,12 +76,13 @@ struct Mesh {
             ->UpdateBuffer(IndexBuffer.size(), IndexBuffer.data());
         vao->GetBufferObject(1)
             ->UpdateBuffer(VertexBuffer.size(), VertexBuffer.data());
+        vao->GetBufferObject(2)->UpdateBuffer(UVBuffer.size(), UVBuffer.data());
     }
 
     void UploadQuad()
     {
         VertexBuffer = {{-1, 1, 0}, {-1, -1, 0}, {1, 1, 0}, {1, -1, 0}};
-        IndexBuffer = {0, 1, 2, 1, 2, 3};
+        IndexBuffer = {0, 1, 2, 3, 2, 1};
         UploadBuffers();
     }
 
@@ -77,11 +90,13 @@ struct Mesh {
     {
         VertexBuffer = geom::CubeVertices;
         IndexBuffer = geom::CubeIndices;
+        UVBuffer = geom::CubeUV;
         UploadBuffers();
     }
 
     void Render()
     {
+        texture->Bind();
         vao->Render(IndexBuffer.size());
     }
 };
@@ -160,8 +175,8 @@ int main(int argc, char const *argv[])
     auto context = render::CreateContext(GetWindowDefinition());
     auto window = context->GetWindow().get();
     auto renderer = context->GetRenderer().get();
-
     auto dbg = renderer->GetDebugMessageMonitor();
+
     if (dbg)
         dbg->SetDebugging(true);
     else

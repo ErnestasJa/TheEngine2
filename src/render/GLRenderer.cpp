@@ -3,6 +3,8 @@
 #include "GLGpuBufferObject.h"
 #include "GLGpuBufferArrayObject.h"
 #include "GLRendererDebugMessageMonitor.h"
+#include "render/CTexture.h"
+#include "GLTexture.h"
 #include "OpenGL.hpp"
 
 namespace render
@@ -19,6 +21,7 @@ GLRenderer::GLRenderer(
 {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
 }
 GLRenderer::~GLRenderer()
 {
@@ -69,6 +72,19 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
     vao->EnableBuffers();
 
     return vao;
+}
+
+core::SharedPtr<ITexture> GLRenderer::CreateTexture(
+    const TextureDescriptor& descriptor)
+{
+    auto handle = gl::CreateTexture(descriptor);
+
+    if (gl::IsHandleValid(handle)) {
+        auto texture = core::MakeShared<GLTexture>(handle);
+        return texture;
+    }
+
+    return nullptr;
 }
 
 void GLRenderer::SetClearColor(const Vec3i& color)

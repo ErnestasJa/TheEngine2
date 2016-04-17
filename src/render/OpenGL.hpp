@@ -2,6 +2,7 @@
 #define OPENGLRENDER_HPP
 #include "GLXW/glxw.h"
 #include "render/BufferDescriptor.h"
+#include "render/CTexture.h"
 
 namespace render
 {
@@ -31,22 +32,23 @@ namespace gl
     };
 
     struct gpu_vertex_array_object_handle {
-        uint32_t vao_id;
+        uint32_t id;
     };
 
-    inline bool IsHandleValid(const gpu_shader_handle& handle)
+    struct gpu_texture_handle {
+        uint32_t id;
+        uint32_t type;
+        uint32_t format;
+        uint32_t wrap_s;
+        uint32_t wrap_t;
+        uint32_t filter_min;
+        uint32_t filter_mag;
+    };
+
+    template <class T>
+    inline bool IsHandleValid(const T& handle)
     {
         return handle.id != 0;
-    }
-
-    inline bool IsHandleValid(const gpu_buffer_object_handle& handle)
-    {
-        return handle.id != 0;
-    }
-
-    inline bool IsHandleValid(const gpu_vertex_array_object_handle& handle)
-    {
-        return handle.vao_id != 0;
     }
 
     inline void BindHandle(const gpu_shader_handle& handle)
@@ -61,7 +63,12 @@ namespace gl
 
     inline void BindHandle(const gpu_vertex_array_object_handle& handle)
     {
-        glBindVertexArray(handle.vao_id);
+        glBindVertexArray(handle.id);
+    }
+
+    inline void BindHandle(const gpu_texture_handle& handle)
+    {
+        glBindTexture(handle.type, handle.id);
     }
 
     inline void FreeHandle(const gpu_shader_handle& handle)
@@ -76,7 +83,138 @@ namespace gl
 
     inline void FreeHandle(const gpu_vertex_array_object_handle& handle)
     {
-        glDeleteVertexArrays(1, &handle.vao_id);
+        glDeleteVertexArrays(1, &handle.id);
+    }
+
+    inline void FreeHandle(const gpu_texture_handle& handle)
+    {
+        glDeleteTextures(1, &handle.id);
+    }
+
+    inline void SetUnpackAlignment(render::TextureDataFormat format)
+    {
+        switch (format) {
+            case render::TextureDataFormat::RGB:
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                break;
+
+            case render::TextureDataFormat::RGBA:
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+                break;
+
+            default:
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+        }
+    }
+
+    inline gpu_texture_handle CreateTexture(
+        const render::TextureDescriptor& descriptor)
+    {
+        auto GetType = [&]() {
+            switch (descriptor.type) {
+                case render::TextureType::T2D:
+                    return GL_TEXTURE_2D;
+                case render::TextureType::T3D:
+                    return GL_TEXTURE_3D;
+                case render::TextureType::CUBEMAP:
+                    return GL_TEXTURE_CUBE_MAP;
+                default:
+                    return GL_TEXTURE_2D;
+            }
+        };
+
+        auto GetFormat = [&]() {
+            switch (descriptor.internalFormat) {
+                case render::TextureInternalDataFormat::RGB:
+                    return GL_RGB;
+                case render::TextureInternalDataFormat::RGBA:
+                    return GL_RGBA;
+                default:
+                    return GL_RGBA;
+            }
+        };
+
+        auto GetWrapMode = [](render::TextureWrapMode mode) {
+            switch (mode) {
+                case render::TextureWrapMode::REPEAT:
+                    return GL_REPEAT;
+                default:
+                    return GL_REPEAT;
+            }
+        };
+
+        auto GetMinFilterMode = [](render::TextureFilterMode mode) {
+            switch (mode) {
+                case render::TextureFilterMode::NEAREST:
+                    return GL_NEAREST;
+                case render::TextureFilterMode::BILINEAR:
+                    return GL_LINEAR;
+                case render::TextureFilterMode::TRILINEAR:
+                    return GL_LINEAR_MIPMAP_LINEAR;
+                default:
+                    return GL_LINEAR;
+            }
+        };
+
+        auto GetMagFilterMode = [](render::TextureFilterMode mode) {
+            switch (mode) {
+                case render::TextureFilterMode::NEAREST:
+                    return GL_NEAREST;
+                case render::TextureFilterMode::BILINEAR:
+                    return GL_LINEAR;
+                case render::TextureFilterMode::TRILINEAR:
+                    return GL_LINEAR;
+                default:
+                    return GL_LINEAR;
+            }
+        };
+
+        gpu_texture_handle handle;
+        handle.type = GetType();
+        handle.format = GetFormat();
+        handle.wrap_s = GetWrapMode(descriptor.wrapModeS);
+        handle.wrap_t = GetWrapMode(descriptor.wrapModeT);
+        handle.filter_min = GetMinFilterMode(descriptor.filterMode);
+        handle.filter_mag = GetMagFilterMode(descriptor.filterMode);
+
+        glGenTextures(1, &handle.id);
+        BindHandle(handle);
+        glTexParameteri(handle.type, GL_TEXTURE_WRAP_S, handle.wrap_s);
+        glTexParameteri(handle.type, GL_TEXTURE_WRAP_T, handle.wrap_t);
+        glTexParameteri(handle.type, GL_TEXTURE_MIN_FILTER, handle.filter_min);
+        glTexParameteri(handle.type, GL_TEXTURE_MAG_FILTER, handle.filter_mag);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+
+        return handle;
+    }
+
+    inline bool TextureShouldUseMipMaps(const gpu_texture_handle& handle)
+    {
+        return handle.filter_mag == GL_LINEAR_MIPMAP_LINEAR;
+    }
+
+    inline void UploadTextureData(const gpu_texture_handle& handle,
+                                  const TextureDataDescriptor& descriptor)
+    {
+        auto GetFormat = [&]() {
+            switch (descriptor.format) {
+                case render::TextureDataFormat::RGB:
+                    return GL_RGB;
+                case render::TextureDataFormat::RGBA:
+                    return GL_RGBA;
+                default:
+                    return GL_RGBA;
+            }
+        };
+
+        uint32_t imageFormat = GetFormat();
+        glTexImage2D(handle.type, 0, handle.format, descriptor.size.x,
+                     descriptor.size.y, 0, imageFormat, GL_UNSIGNED_BYTE,
+                     descriptor.data);
+
+        if (TextureShouldUseMipMaps(handle)) {
+            glGenerateMipmap(handle.type);
+        }
     }
 
     inline uint32_t CreateShaderFromString(uint32_t type, const char* source)
@@ -216,7 +354,7 @@ namespace gl
     inline gpu_vertex_array_object_handle CreateVertexArrayObject()
     {
         gpu_vertex_array_object_handle handle;
-        glGenVertexArrays(1, &handle.vao_id);
+        glGenVertexArrays(1, &handle.id);
         return handle;
     }
 

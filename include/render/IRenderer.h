@@ -16,6 +16,8 @@ class IGpuBufferObject;
 class IGpuBufferArrayObject;
 class IRendererDebugMessageMonitor;
 struct BufferDescriptor;
+struct TextureDescriptor;
+struct ITexture;
 class IRenderer
 {
 public:
@@ -29,6 +31,8 @@ public:
         const core::String& geomSource = "") = 0;
     virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
         const core::Vector<BufferDescriptor>& descriptors) = 0;
+    virtual core::SharedPtr<ITexture> CreateTexture(
+        const TextureDescriptor& descriptor) = 0;
     virtual void SetClearColor(const Vec3i& color) = 0;
     virtual void Clear() = 0;
 };

@@ -6,6 +6,7 @@
 #include "IRenderer.h"
 #include "IGpuBufferObject.h"
 #include "IGpuBufferArrayObject.h"
+#include "ITexture.h"
 #include "BufferDescriptor.h"
 #include "IRenderContext.h"
 
