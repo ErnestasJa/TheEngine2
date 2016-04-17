@@ -8,7 +8,7 @@ namespace render
 namespace gl
 {
     struct gpu_shader_handle {
-        uint32_t pipeline;
+        uint32_t id;
         uint32_t vertex_program_id;
         uint32_t fragment_program_id;
         uint32_t geometry_program_id;
@@ -22,10 +22,10 @@ namespace gl
     };
 
     struct gpu_buffer_object_handle {
+        uint32_t id;
         uint32_t component_size;
         uint32_t component_count;
         uint32_t component_type;
-        uint32_t buffer_id;
         uint32_t buffer_type;
         uint32_t index;
     };
@@ -36,12 +36,12 @@ namespace gl
 
     inline bool IsHandleValid(const gpu_shader_handle& handle)
     {
-        return handle.pipeline != 0;
+        return handle.id != 0;
     }
 
     inline bool IsHandleValid(const gpu_buffer_object_handle& handle)
     {
-        return handle.buffer_id != 0;
+        return handle.id != 0;
     }
 
     inline bool IsHandleValid(const gpu_vertex_array_object_handle& handle)
@@ -51,12 +51,12 @@ namespace gl
 
     inline void BindHandle(const gpu_shader_handle& handle)
     {
-        glBindProgramPipeline(handle.pipeline);
+        glBindProgramPipeline(handle.id);
     }
 
     inline void BindHandle(const gpu_buffer_object_handle& handle)
     {
-        glBindBuffer(handle.buffer_type, handle.buffer_id);
+        glBindBuffer(handle.buffer_type, handle.id);
     }
 
     inline void BindHandle(const gpu_vertex_array_object_handle& handle)
@@ -66,12 +66,12 @@ namespace gl
 
     inline void FreeHandle(const gpu_shader_handle& handle)
     {
-        glDeleteProgramPipelines(1, &handle.pipeline);
+        glDeleteProgramPipelines(1, &handle.id);
     }
 
     inline void FreeHandle(const gpu_buffer_object_handle& handle)
     {
-        glDeleteBuffers(1, &handle.buffer_id);
+        glDeleteBuffers(1, &handle.id);
     }
 
     inline void FreeHandle(const gpu_vertex_array_object_handle& handle)
@@ -112,7 +112,7 @@ namespace gl
         uint32_t fs = CreateShaderFromString(GL_FRAGMENT_SHADER, fragSource);
         uint32_t gs = CreateShaderFromString(GL_GEOMETRY_SHADER, geomSource);
 
-        return gpu_shader_handle{.pipeline = CreateProgramPipeline(vs, fs, gs),
+        return gpu_shader_handle{.id = CreateProgramPipeline(vs, fs, gs),
                                  .vertex_program_id = vs,
                                  .fragment_program_id = fs,
                                  .geometry_program_id = gs};
@@ -121,7 +121,7 @@ namespace gl
     inline bool IsProgramPipelineLinked(const gpu_shader_handle& handle)
     {
         int32_t isLinked = 0;
-        glGetProgramiv(handle.pipeline, GL_LINK_STATUS, &isLinked);
+        glGetProgramiv(handle.id, GL_LINK_STATUS, &isLinked);
         return isLinked != 0;
     }
 
@@ -189,7 +189,7 @@ namespace gl
 
         for (uint32_t i = 0; i < count; i++) {
             gpu_buffer_object_handle handle;
-            handle.buffer_id = buffers[i];
+            handle.id = buffers[i];
             handles.push_back(handle);
         }
 
@@ -242,7 +242,7 @@ namespace gl
     }
 
     inline void ProcessHandle(const BufferDescriptor& desc,
-                              gl::gpu_buffer_object_handle& handle)
+                              gpu_buffer_object_handle& handle)
     {
         auto GetByteCount = [&]() {
             switch (desc.component_type) {
