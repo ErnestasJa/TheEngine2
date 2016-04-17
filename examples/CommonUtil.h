@@ -50,13 +50,14 @@ void LogEngine(const core::String &message)
 
 void LogDebugMessagesAndFlush(render::IRendererDebugMessageMonitor *dbgMonitor)
 {
-    if (dbgMonitor)
+    if (dbgMonitor) {
         for (auto msg : dbgMonitor->GetMessages()) {
             elog::Log(elog::LogSource::Engine, elog::LogSeverity::Debug,
                       msg->AsString());
         }
 
-    dbgMonitor->ClearMessages();
+        dbgMonitor->ClearMessages();
+    }
 }
 
 void LogShaderUniforms(core::SharedPtr<render::IGpuProgram> const &program)

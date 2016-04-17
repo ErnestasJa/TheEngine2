@@ -162,7 +162,11 @@ int main(int argc, char const *argv[])
     auto renderer = context->GetRenderer().get();
 
     auto dbg = renderer->GetDebugMessageMonitor();
-    if (dbg) dbg->SetDebugging(true);
+    if (dbg)
+        dbg->SetDebugging(true);
+    else
+        elog::Log(elog::LogSource::Engine, elog::LogSeverity::Warn,
+                  "debug monitor not available.");
 
     auto program = renderer->CreateProgram(quadVertSource, quadFragSource);
 
@@ -205,7 +209,7 @@ int main(int argc, char const *argv[])
         auto RotationMat = sutil::BuildRotation(rotation);
 
         rotation += glm::vec3(0.0025f, 0.0030f, 0.0020f);
-        colorOffset += glm::vec4(0.01, 0.015, 0.02, 0);
+        colorOffset += glm::vec4(0.01f, 0.015f, 0.02f, 0.f);
         color++;
 
         material.MVP = ProjectionMat * handler->GetViewMatrix() * RotationMat;
@@ -217,7 +221,7 @@ int main(int argc, char const *argv[])
 
         window->SwapBuffers();
         window->PollEvents();
-        // sutil::LogDebugMessagesAndFlush(debugMonitor);
+        sutil::LogDebugMessagesAndFlush(dbg);
     }
 
     return 0;
