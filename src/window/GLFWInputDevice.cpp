@@ -1,3 +1,4 @@
+#include "GLFW/glfw3.h"
 #include "GLFWInputDevice.h"
 #include "GLFWInputKeyMap.h"
 #include "input/InputHandler.h"

@@ -1,5 +1,5 @@
 import fnmatch
-import os, sys, shutil, subprocess
+import os, sys, shutil, subprocess, platform
 from test_runner import TestRunner
 from build_config import *
 from build_common import *
@@ -13,6 +13,7 @@ class Builder:
 	def __init__(self):
 		self.clean_compile_directory = False
 		self.build_samples = True
+		self.use_jom = False
 		self.__ParseArgs()
 
 	def __ParseArgs(self):
@@ -26,6 +27,8 @@ class Builder:
 				self.clean_compile_directory = True
 			elif sys.argv[i] == "-nosamples":
 				self.build_samples = False
+			elif sys.argv[i] == "-usejom":
+				self.use_jom = True
 
 		print(BuildMessage.ArgumentsMsg)
 
@@ -54,26 +57,45 @@ class Builder:
 		self.CreateAndChDir(paths.Paths['build'])
 		self.CreateAndChDir(paths.Paths['lib'])
 
+		os.chdir(paths.CMakePaths['glxw'])
+		subprocess.check_call('python glxw_gen.py', shell=True)
 		for key, value in paths.CMakePaths.items():
 			if self.build_samples == False and key == "examples":
 				continue
 
 			self.CreateAndChDir(join(paths.Paths['build'], key))
-			subprocess.check_call('cmake "' 
-				+ value + '"'
-				+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
-				+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
-			subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
+			if platform.system() == "Windows":
+				subprocess.check_call('cmake "' 
+					+ value + '"'
+					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
+					+ ' -DWINDOWS_BUILD=1'
+					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "NMake Makefiles"', shell=True)
+				if self.use_jom == True:
+					subprocess.check_call('jom.exe -j' + str(Builder.Threads), shell=True)
+				else:
+					subprocess.check_call('nmake', shell=True)
+			else:
+				subprocess.check_call('cmake "' 
+					+ value + '"'
+					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
+					+ ' -DWINDOWS_BUILD=0'
+					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
+				subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
 			self.CopyLibs()
 
 	def GetLibs(self, dir):
 		match = []
-
-		for root, dirnames, filenames in os.walk(dir):
-			for filename in fnmatch.filter(filenames, '*.a'):
-				if filename != "objects.a":
-					match.append([filename,os.path.join(root, filename)])
-					
+		if platform.system() == "Windows":
+			for root, dirnames, filenames in os.walk(dir):
+				for filename in fnmatch.filter(filenames, '*.lib'):
+					if filename != "objects.lib":
+						match.append([filename,os.path.join(root, filename)])
+		else:
+			for root, dirnames, filenames in os.walk(dir):
+				for filename in fnmatch.filter(filenames, '*.a'):
+					if filename != "objects.a":
+						match.append([filename,os.path.join(root, filename)])
+						
 		return match
 
 	def CopyLibs(self):
