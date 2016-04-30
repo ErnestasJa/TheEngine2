@@ -87,13 +87,13 @@ void main(){
     // Material properties
     vec3 MaterialDiffuseColor = texture( DiffuseTextureSampler, UV ).rgb;
     vec3 MaterialAmbientColor = vec3(0.1,0.1,0.1) * MaterialDiffuseColor;
-    vec3 MaterialSpecularColor = vec3(0.05,0.05,0.05);
+    vec3 MaterialSpecularColor = vec3(0,0,0);
 
     vec3 TextureNormal_tangentspace = normalize(texture( NormalTextureSampler, vec2(UV.x,UV.y) ).rgb*2.0 - 1.0);
     
     float distance = length( LightPosition_worldspace - Position_worldspace );
 
-    vec3 n = TextureNormal_tangentspace;
+    vec3 n = TextureNormal_tangentspace *2.0f;
     vec3 l = normalize(LightDirection_tangentspace);
     float cosTheta = clamp( dot( n,l ), 0,1 );
     vec3 E = normalize(EyeDirection_tangentspace);
