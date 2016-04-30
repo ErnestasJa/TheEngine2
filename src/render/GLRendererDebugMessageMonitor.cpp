@@ -57,6 +57,7 @@ void GLRendererDebugMessageMonitor::SetDebugging(bool enabled)
     if (enabled) {
         glDebugMessageCallback(debugCallback, this);
         glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
         uint32_t unusedIds = 0;
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0,
                               &unusedIds, true);

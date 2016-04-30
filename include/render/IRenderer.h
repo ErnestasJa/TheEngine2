@@ -33,6 +33,8 @@ public:
         const core::Vector<BufferDescriptor>& descriptors) = 0;
     virtual core::SharedPtr<ITexture> CreateTexture(
         const TextureDescriptor& descriptor) = 0;
+    virtual void SetActiveTextures(
+        const core::Vector<core::SharedPtr<ITexture>>& textures) = 0;
     virtual void SetClearColor(const Vec3i& color) = 0;
     virtual void Clear() = 0;
 };

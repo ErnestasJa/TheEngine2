@@ -13,7 +13,6 @@ public:
     }
 
     virtual void UploadData(const TextureDataDescriptor &descriptor) = 0;
-    virtual void Bind() = 0;
 };
 }
 

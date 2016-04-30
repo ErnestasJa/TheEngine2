@@ -13,12 +13,14 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <array>
 #include <type_traits>
 
 /*Third party headers*/
 
 /*Engine headers*/
 #include "EngineForwardDeclares.h"
+#include "core/Debug.h"
 #include "core/POD.h"
 #include "core/TypeUtils.h"
 #include "core/StringUtil.h"

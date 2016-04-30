@@ -20,6 +20,8 @@ using TByteArray = std::vector<uint8_t>;
 using String = std::string;
 template <class T>
 using Vector = std::vector<T>;
+template <class T, uint32_t N>
+using Array = std::array<T, N>;
 template <class T>
 using SharedPtr = std::shared_ptr<T>;
 template <class T>

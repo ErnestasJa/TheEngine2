@@ -46,52 +46,58 @@ namespace gl
     };
 
     template <class T>
-    inline bool IsHandleValid(const T& handle)
+    inline bool IsHandleValid(const T& handle) DFUNC
     {
         return handle.id != 0;
     }
 
-    inline void BindHandle(const gpu_shader_handle& handle)
+    inline void BindHandle(const gpu_shader_handle& handle) DFUNC
     {
-        glBindProgramPipeline(handle.id);
+        glUseProgram(handle.id);
     }
 
-    inline void BindHandle(const gpu_buffer_object_handle& handle)
+    inline void BindHandle(const gpu_buffer_object_handle& handle) DFUNC
     {
         glBindBuffer(handle.buffer_type, handle.id);
     }
 
-    inline void BindHandle(const gpu_vertex_array_object_handle& handle)
+    inline void BindHandle(const gpu_vertex_array_object_handle& handle) DFUNC
     {
         glBindVertexArray(handle.id);
     }
 
-    inline void BindHandle(const gpu_texture_handle& handle)
+    inline void BindHandle(const gpu_texture_handle& handle) DFUNC
     {
         glBindTexture(handle.type, handle.id);
     }
 
-    inline void FreeHandle(const gpu_shader_handle& handle)
+    inline void FreeHandle(const gpu_shader_handle& handle) DFUNC
     {
-        glDeleteProgramPipelines(1, &handle.id);
+        glDeleteProgram(handle.id);
+        if (handle.vertex_program_id)  //
+            glDeleteShader(handle.vertex_program_id);
+        if (handle.fragment_program_id)
+            glDeleteShader(handle.fragment_program_id);
+        if (handle.geometry_program_id)
+            glDeleteShader(handle.geometry_program_id);
     }
 
-    inline void FreeHandle(const gpu_buffer_object_handle& handle)
+    inline void FreeHandle(const gpu_buffer_object_handle& handle) DFUNC
     {
         glDeleteBuffers(1, &handle.id);
     }
 
-    inline void FreeHandle(const gpu_vertex_array_object_handle& handle)
+    inline void FreeHandle(const gpu_vertex_array_object_handle& handle) DFUNC
     {
         glDeleteVertexArrays(1, &handle.id);
     }
 
-    inline void FreeHandle(const gpu_texture_handle& handle)
+    inline void FreeHandle(const gpu_texture_handle& handle) DFUNC
     {
         glDeleteTextures(1, &handle.id);
     }
 
-    inline void SetUnpackAlignment(render::TextureDataFormat format)
+    inline void SetUnpackAlignment(render::TextureDataFormat format) DFUNC
     {
         switch (format) {
             case render::TextureDataFormat::RGB:
@@ -108,7 +114,7 @@ namespace gl
     }
 
     inline gpu_texture_handle CreateTexture(
-        const render::TextureDescriptor& descriptor)
+        const render::TextureDescriptor& descriptor) DFUNC
     {
         auto GetType = [&]() {
             switch (descriptor.type) {
@@ -188,13 +194,18 @@ namespace gl
         return handle;
     }
 
-    inline bool TextureShouldUseMipMaps(const gpu_texture_handle& handle)
+    inline void SetTextureActiveBindingSlot(uint32_t active_binding_slot) DFUNC
+    {
+        glActiveTexture(GL_TEXTURE0 + active_binding_slot);
+    }
+
+    inline bool TextureShouldUseMipMaps(const gpu_texture_handle& handle) DFUNC
     {
         return handle.filter_mag == GL_LINEAR_MIPMAP_LINEAR;
     }
 
     inline void UploadTextureData(const gpu_texture_handle& handle,
-                                  const TextureDataDescriptor& descriptor)
+                                  const TextureDataDescriptor& descriptor) DFUNC
     {
         auto GetFormat = [&]() {
             switch (descriptor.format) {
@@ -217,109 +228,174 @@ namespace gl
         }
     }
 
-    inline uint32_t CreateShaderFromString(uint32_t type, const char* source)
+    inline bool CheckAndPrintShaderCompileStatus(uint32_t shader) DFUNC
     {
-        if (source && source[0] != core::string::NullTerminator)
-            return glCreateShaderProgramv(type, 1, &source);
-        else
-            return 0;
+        GLint isCompiled = 0;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+        if (isCompiled == GL_FALSE) {
+            GLint maxLength = 1024;
+            char errorLog[1024] = {'\0'};
+            glGetShaderInfoLog(shader, maxLength, &maxLength, &errorLog[0]);
+
+            printf("SHADER COMPILE STATUS: %s \n", errorLog);
+            return false;
+        }
+        return true;
     }
 
-    inline uint32_t CreateProgramPipeline(uint32_t vert_program,
-                                          uint32_t frag_program,
-                                          uint32_t geom_program)
+    inline bool CheckLinkStatus(const gpu_shader_handle& handle) DFUNC
     {
-        uint32_t ppo;
-        glCreateProgramPipelines(1, &ppo);
-        glBindProgramPipeline(ppo);
+        int32_t isLinked = 0;
+        glGetProgramiv(handle.id, GL_LINK_STATUS, (int32_t*)&isLinked);
 
-        if (vert_program)
-            glUseProgramStages(ppo, GL_VERTEX_SHADER_BIT, vert_program);
-        if (frag_program)
-            glUseProgramStages(ppo, GL_FRAGMENT_SHADER_BIT, frag_program);
-        if (geom_program)
-            glUseProgramStages(ppo, GL_GEOMETRY_SHADER_BIT, geom_program);
+        if (isLinked == GL_FALSE) {
+            GLint maxLength = 1024;
+            char errorLog[1024] = {'\0'};
+            glGetProgramiv(handle.id, GL_INFO_LOG_LENGTH, &maxLength);
+            glGetProgramInfoLog(handle.id, maxLength, &maxLength, &errorLog[0]);
 
-        return ppo;
+            printf("SHADER LINK STATUS: %s \n", errorLog);
+            return false;
+        }
+
+        return true;
+    }
+
+    inline uint32_t CreateShaderFromString(uint32_t type,
+                                           const char* source) DFUNC
+    {
+        if (source && source[0] != core::string::NullTerminator) {
+            uint32_t shader = glCreateShader(type);
+            glShaderSource(shader, 1, &source, nullptr);
+            glCompileShader(shader);
+
+            if (CheckAndPrintShaderCompileStatus(shader))
+                return shader;
+            else
+                glDeleteShader(shader);
+        }
+        return 0;
+    }
+
+    inline bool LinkProgram(const gpu_shader_handle& handle) DFUNC
+    {
+        if (handle.vertex_program_id)
+            glAttachShader(handle.id, handle.vertex_program_id);
+        if (handle.fragment_program_id)
+            glAttachShader(handle.id, handle.fragment_program_id);
+        if (handle.geometry_program_id)
+            glAttachShader(handle.id, handle.geometry_program_id);
+
+        glLinkProgram(handle.id);
+
+        if (CheckLinkStatus(handle) == false) {
+            return false;
+        }
+
+        if (handle.vertex_program_id)
+            glDetachShader(handle.id, handle.vertex_program_id);
+        if (handle.fragment_program_id)
+            glDetachShader(handle.id, handle.fragment_program_id);
+        if (handle.geometry_program_id)
+            glDetachShader(handle.id, handle.geometry_program_id);
+
+        return true;
+    }
+
+    inline gpu_shader_handle CreateProgram(uint32_t vert_program,
+                                           uint32_t frag_program,
+                                           uint32_t geom_program) DFUNC
+    {
+        uint32_t program = glCreateProgram();
+
+        gpu_shader_handle handle{.id = program,
+                                 .vertex_program_id = vert_program,
+                                 .fragment_program_id = frag_program,
+                                 .geometry_program_id = geom_program};
+
+        if (LinkProgram(handle) == false) {
+            FreeHandle(handle);
+            return gpu_shader_handle{0, 0, 0, 0};
+        }
+
+        return handle;
     }
 
     inline gpu_shader_handle CreatePipelineFromShaderStrings(
-        const char* vertSource, const char* fragSource, const char* geomSource)
+        const char* vertSource, const char* fragSource,
+        const char* geomSource) DFUNC
     {
         uint32_t vs = CreateShaderFromString(GL_VERTEX_SHADER, vertSource);
         uint32_t fs = CreateShaderFromString(GL_FRAGMENT_SHADER, fragSource);
         uint32_t gs = CreateShaderFromString(GL_GEOMETRY_SHADER, geomSource);
 
-        return gpu_shader_handle{.id = CreateProgramPipeline(vs, fs, gs),
-                                 .vertex_program_id = vs,
-                                 .fragment_program_id = fs,
-                                 .geometry_program_id = gs};
+        return CreateProgram(vs, fs, gs);
     }
 
-    inline bool IsProgramPipelineLinked(const gpu_shader_handle& handle)
-    {
-        int32_t isLinked = 0;
-        glGetProgramiv(handle.id, GL_LINK_STATUS, &isLinked);
-        return isLinked != 0;
-    }
-
-    inline uint32_t GetUniformCount(uint32_t id)
+    inline uint32_t GetUniformCount(uint32_t id) DFUNC
     {
         int32_t count = 0;
-        glGetProgramInterfaceiv(id, GL_UNIFORM, GL_ACTIVE_RESOURCES, &count);
+        glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count);
         return count < 0 ? 0 : count;
     }
 
-    inline gpu_shader_uniform_handle GetUniform(uint32_t id, uint32_t index)
+    inline gpu_shader_uniform_handle GetUniform(uint32_t id,
+                                                uint32_t index) DFUNC
     {
-        const uint32_t properties[4] = {GL_BLOCK_INDEX, GL_TYPE, GL_NAME_LENGTH,
-                                        GL_LOCATION};
-
+        int32_t name_len = -1, size = -1;
+        uint32_t type = -1;
         char name[100];
-        int32_t values[4];
-        glGetProgramResourceiv(id, GL_UNIFORM, index, 4, properties, 4, NULL,
-                               values);
 
-        glGetProgramResourceName(id, GL_UNIFORM, index, 100, NULL, name);
+        glGetActiveUniform(id, index, sizeof(name) - 1, &name_len, &size, &type,
+                           name);
+        int32_t location = glGetUniformLocation(id, name);
 
-        return gpu_shader_uniform_handle{.id = (uint32_t)values[3],
+        ASSERT(location != -1);
+
+        return gpu_shader_uniform_handle{.id = (uint32_t)location,
                                          .program_id = id,
-                                         .type = (uint32_t)values[1],
+                                         .type = type,
                                          .name = name};
     }
 
-    inline void SetUniform(const gpu_shader_uniform_handle& handle, float value)
+    inline void SetUniform(const gpu_shader_uniform_handle& handle,
+                           float value) DFUNC
     {
-        glProgramUniform1f(handle.program_id, handle.id, value);
+        glUniform1f(handle.id, value);
     }
 
     inline void SetUniform(const gpu_shader_uniform_handle& handle,
-                           const core::pod::Vec2<float>& value)
+                           const core::pod::Vec2<float>& value) DFUNC
     {
-        glProgramUniform2fv(handle.program_id, handle.id, 1, &value.x);
+        glUniform2fv(handle.id, 1, &value.x);
     }
 
     inline void SetUniform(const gpu_shader_uniform_handle& handle,
-                           const core::pod::Vec3<float>& value)
+                           const core::pod::Vec3<float>& value) DFUNC
     {
-        glProgramUniform3fv(handle.program_id, handle.id, 1, &value.x);
+        glUniform3fv(handle.id, 1, &value.x);
     }
 
     inline void SetUniform(const gpu_shader_uniform_handle& handle,
-                           const core::pod::Vec4<float>& value)
+                           const core::pod::Vec4<float>& value) DFUNC
     {
-        glProgramUniform4fv(handle.program_id, handle.id, 1, &value.x);
+        glUniform4fv(handle.id, 1, &value.x);
     }
 
     inline void SetUniformMat4(const gpu_shader_uniform_handle& handle,
-                               float* value, bool transpose = false)
+                               float* value, bool transpose = false) DFUNC
     {
-        glProgramUniformMatrix4fv(handle.program_id, handle.id, 1, transpose,
-                                  value);
+        glUniformMatrix4fv(handle.id, 1, transpose, value);
+    }
+
+    inline void SetUniformMat3(const gpu_shader_uniform_handle& handle,
+                               float* value, bool transpose = false) DFUNC
+    {
+        glUniformMatrix3fv(handle.id, 1, transpose, value);
     }
 
     inline core::Vector<gpu_buffer_object_handle> CreateGpuStorages(
-        uint32_t count)
+        uint32_t count) DFUNC
     {
         auto handles = core::Vector<gpu_buffer_object_handle>();
         auto buffers = core::UniquePtr<uint32_t[]>(new uint32_t[count]);
@@ -335,14 +411,15 @@ namespace gl
     }
 
     inline void UpdateBufferObject(const gpu_buffer_object_handle& handle,
-                                   uint32_t buffer_size, void* data)
+                                   uint32_t buffer_size, void* data) DFUNC
     {
         glBufferData(handle.buffer_type, buffer_size * handle.component_count *
                                              handle.component_size,
                      data, GL_STATIC_DRAW);
     }
 
-    inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle)
+    inline void EnableVertexArrayBuffer(
+        const gpu_buffer_object_handle& handle) DFUNC
     {
         if (handle.buffer_type == GL_ARRAY_BUFFER) {
             glEnableVertexAttribArray(handle.index);
@@ -351,36 +428,37 @@ namespace gl
         }
     }
 
-    inline gpu_vertex_array_object_handle CreateVertexArrayObject()
+    inline gpu_vertex_array_object_handle CreateVertexArrayObject() DFUNC
     {
         gpu_vertex_array_object_handle handle;
         glGenVertexArrays(1, &handle.id);
         return handle;
     }
 
-    inline void Render(const gpu_buffer_object_handle& handle, uint32_t count)
+    inline void Render(const gpu_buffer_object_handle& handle,
+                       uint32_t count) DFUNC
     {
         glDrawElements(GL_TRIANGLES, count, handle.component_type, 0);
     }
 
-    inline void SetClearColor(const core::pod::Vec3<int32_t>& color)
+    inline void SetClearColor(const core::pod::Vec3<int32_t>& color) DFUNC
     {
         glClearColor(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, 1);
     }
 
-    inline void Clear()
+    inline void Clear() DFUNC
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    inline uint32_t GetGLBufferObjectType(render::BufferObjectType type)
+    inline uint32_t GetGLBufferObjectType(render::BufferObjectType type) DFUNC
     {
         return type == render::BufferObjectType::index ? GL_ELEMENT_ARRAY_BUFFER
                                                        : GL_ARRAY_BUFFER;
     }
 
     inline void ProcessHandle(const BufferDescriptor& desc,
-                              gpu_buffer_object_handle& handle)
+                              gpu_buffer_object_handle& handle) DFUNC
     {
         auto GetByteCount = [&]() {
             switch (desc.component_type) {

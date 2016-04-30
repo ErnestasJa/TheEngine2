@@ -35,9 +35,7 @@ void GLGpuShaderProgram::InitUniforms()
         }
     };
 
-    if (m_handle.vertex_program_id) query(m_handle.vertex_program_id);
-    if (m_handle.fragment_program_id) query(m_handle.fragment_program_id);
-    if (m_handle.geometry_program_id) query(m_handle.vertex_program_id);
+    query(m_handle.id);
 }
 
 const core::Vector<core::UniquePtr<IGpuProgramUniform>>&

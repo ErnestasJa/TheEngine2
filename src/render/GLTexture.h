@@ -12,7 +12,7 @@ public:
     GLTexture(const gl::gpu_texture_handle &handle);
     virtual ~GLTexture();
     virtual void UploadData(const TextureDataDescriptor &descriptor);
-    virtual void Bind();
+    virtual void Bind() const;
 
 private:
     gl::gpu_texture_handle m_handle;

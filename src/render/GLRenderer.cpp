@@ -19,9 +19,9 @@ GLRenderer::GLRenderer(
     core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
     : m_debugMessageMonitor(core::Move(debugMessageMonitor))
 {
-    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 }
 GLRenderer::~GLRenderer()
 {
@@ -39,7 +39,7 @@ core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(
     auto handle = gl::CreatePipelineFromShaderStrings(
         vertSource.c_str(), fragSource.c_str(), geomSource.c_str());
 
-    if (gl::IsHandleValid(handle) && gl::IsProgramPipelineLinked(handle))
+    if (gl::IsHandleValid(handle))
         return core::MakeShared<GLGpuShaderProgram>(handle);
     else
         return nullptr;
@@ -85,6 +85,16 @@ core::SharedPtr<ITexture> GLRenderer::CreateTexture(
     }
 
     return nullptr;
+}
+
+void GLRenderer::SetActiveTextures(
+    const core::Vector<core::SharedPtr<ITexture>>& textures)
+{
+    for (uint32_t i = 0; i < textures.size(); i++) {
+        const auto& tex = textures[i];
+        gl::SetTextureActiveBindingSlot(i);
+        static_cast<GLTexture*>(tex.get())->Bind();
+    }
 }
 
 void GLRenderer::SetClearColor(const Vec3i& color)

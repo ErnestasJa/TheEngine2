@@ -21,6 +21,8 @@ public:
         const core::Vector<BufferDescriptor>& descriptors);
     virtual core::SharedPtr<ITexture> CreateTexture(
         const TextureDescriptor& descriptor);
+    virtual void SetActiveTextures(
+        const core::Vector<core::SharedPtr<ITexture>>& textures);
     virtual void SetClearColor(const Vec3i& color);
     virtual void Clear();
 

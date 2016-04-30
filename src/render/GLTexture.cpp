@@ -16,7 +16,7 @@ void GLTexture::UploadData(const TextureDataDescriptor &descriptor)
     gl::UploadTextureData(m_handle, descriptor);
 }
 
-void GLTexture::Bind()
+void GLTexture::Bind() const
 {
     gl::BindHandle(m_handle);
 }

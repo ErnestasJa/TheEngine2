@@ -18,6 +18,7 @@ public:
     virtual const void Set(const core::pod::Vec3<float>& value);
     virtual const void Set(const core::pod::Vec4<float>& value);
     virtual const void SetMat4(float* value);
+    virtual const void SetMat3(float* value);
 
 private:
     gl::gpu_shader_uniform_handle m_handle;

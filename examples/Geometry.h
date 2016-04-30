@@ -1,9 +1,9 @@
 #ifndef SAMPLE_GEOMETRY_H
 #define SAMPLE_GEOMETRY_H
-
+#include "glm/glm.hpp"
 namespace geom
 {
-static core::Vector<core::pod::Vec3<float>> CubeVertices = {
+static core::Vector<glm::vec3> CubeVertices = {
     {1.000000, -1.000000, -1.000000},   //
     {-1.000000, 1.000000, -1.000000},   //
     {1.000000, 1.000000, -1.000000},    //
@@ -32,7 +32,7 @@ static core::Vector<core::pod::Vec3<float>> CubeVertices = {
     {-1.000000, 1.000000, -1.000000},   //
 };
 
-static core::Vector<core::pod::Vec2<float>> CubeUV = {
+static core::Vector<glm::vec2> CubeUV = {
     {0.999935, 1.000000},   //
     {0.000108, 0.000173},   //
     {0.999935, 0.000173},   //
@@ -61,7 +61,7 @@ static core::Vector<core::pod::Vec2<float>> CubeUV = {
     {0.000108, 0.000173},   //
 };
 
-static core::Vector<core::pod::Vec3<float>> CubeNormals = {
+static core::Vector<glm::vec3> CubeNormals = {
     {-0.000000, -0.000000, -1.000000},  //
     {-0.000000, -0.000000, -1.000000},  //
     {-0.000000, -0.000000, -1.000000},  //
@@ -103,7 +103,57 @@ static core::Vector<uint32_t> CubeIndices = {
     9,  23, 10,  //
     12, 24, 13,  //
     15, 25, 16,  //
+
 };
+
+static void ComputeTangentsAndBiTangents(
+    // inputs
+    const core::Vector<uint32_t>& indices,
+    const core::Vector<glm::vec3>& vertices, const core::Vector<glm::vec2>& uvs,
+    // outputs
+    core::Vector<glm::vec3>& tangents, core::Vector<glm::vec3>& bitangents)
+{
+    tangents.clear();
+    bitangents.clear();
+    for (int i = 0; i < indices.size(); i += 3) {
+        // Shortcuts for vertices
+        int i0 = indices[i + 0];
+        int i1 = indices[i + 1];
+        int i2 = indices[i + 2];
+
+        const glm::vec3& v0 = vertices[i0];
+        const glm::vec3& v1 = vertices[i1];
+        const glm::vec3& v2 = vertices[i2];
+
+        // Shortcuts for UVs
+        const glm::vec2& uv0 = uvs[i0];
+        const glm::vec2& uv1 = uvs[i1];
+        const glm::vec2& uv2 = uvs[i2];
+
+        // Edges of the triangle : postion delta
+        glm::vec3 deltaPos1 = v1 - v0;
+        glm::vec3 deltaPos2 = v2 - v0;
+
+        // UV delta
+        glm::vec2 deltaUV1 = uv1 - uv0;
+        glm::vec2 deltaUV2 = uv2 - uv0;
+
+        float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+        glm::vec3 tangent =
+            (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+        glm::vec3 bitangent =
+            (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+
+        tangents.push_back(tangent);
+        tangents.push_back(tangent);
+        tangents.push_back(tangent);
+
+        // Same thing for binormals
+        bitangents.push_back(bitangent);
+        bitangents.push_back(bitangent);
+        bitangents.push_back(bitangent);
+    }
+}
 }
 
 #endif
