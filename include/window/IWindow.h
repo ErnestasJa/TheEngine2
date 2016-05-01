@@ -3,8 +3,12 @@
 
 #include "input/IInputDevice.h"
 
+// TODO: this should be window namespace
+
 namespace render
 {
+enum class CursorMode { Normal, Hidden, HiddenCapture };
+
 class IWindow
 {
 public:
@@ -20,6 +24,7 @@ public:
     virtual void SwapBuffers() = 0;
     virtual bool ShouldClose() = 0;
     virtual core::WeakPtr<input::IInputDevice> GetInputDevice() = 0;
+    virtual void SetCursorMode(CursorMode cursorMode) = 0;
 };
 }
 

@@ -24,6 +24,9 @@ namespace pod
             struct {
                 T u, v;
             };
+            struct {
+                T w, h;
+            };
             T val[2];
         };
     };

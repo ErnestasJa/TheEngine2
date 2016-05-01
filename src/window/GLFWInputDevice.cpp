@@ -55,7 +55,6 @@ void GLFWInputDevice::PollEvents(float deltaTime)
 {
     // we might be doing double event polling
     // maybe skip it here or check if they were polled for window.
-    glfwPollEvents();
 }
 
 void GLFWInputDevice::SetInputHandler(

@@ -26,8 +26,7 @@ set(BUILD_SOURCES
 	"WindowInputHandler.cpp" 
 	"BasicLogSample.cpp"
 	"ExtensionLoadingAndDebugOutput.cpp"
-	"BasicShaderSample.cpp"
-	"BasicMeshSample.cpp"
+	"BasicRenderingSample.cpp"
 	"TemplateUtilitiesSamples.cpp"
 )
 

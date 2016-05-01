@@ -25,6 +25,7 @@ public:
     virtual const SWindowDefinition& GetWindowDefinition();
     virtual void UpdateContext();  /// this is to be called after creating
                                    /// window and loading extensions.
+    virtual void SetCursorMode(CursorMode cursorMode);
 
 private:
     SWindowDefinition m_windowDefinition;

@@ -135,4 +135,24 @@ const SWindowDefinition& GLFWWindow::GetWindowDefinition()
 {
     return m_windowDefinition;
 }
+
+void GLFWWindow::SetCursorMode(CursorMode cursorMode)
+{
+    uint32_t glfwCursorMode = GLFW_CURSOR_NORMAL;
+
+    switch (cursorMode) {
+        case CursorMode::Normal:
+            glfwCursorMode = GLFW_CURSOR_NORMAL;
+            break;
+        case CursorMode::Hidden:
+            glfwCursorMode = GLFW_CURSOR_HIDDEN;
+            break;
+
+        case CursorMode::HiddenCapture:
+            glfwCursorMode = GLFW_CURSOR_DISABLED;
+            break;
+    }
+
+    glfwSetInputMode(m_window, GLFW_CURSOR, glfwCursorMode);
+}
 }
