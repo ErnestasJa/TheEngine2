@@ -1,6 +1,6 @@
-#include "window/WindowInc.h"
+#include "Include.h"
 #include "render/RenderInc.h"
-#include "BasicRenderingSample/Include.h"
+#include "window/WindowInc.h"
 
 render::SWindowDefinition GetWindowDefinition();
 core::Vector<core::SharedPtr<render::ITexture>> LoadTextures(
