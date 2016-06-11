@@ -86,12 +86,13 @@ uniform vec3 LightPosition_worldspace;
 
 void main(){
     vec3 LightColor = vec3(1,1,1);
-    float LightPower = 80.0;
+    float LightPower = 120.0;
     
     // Material properties
-    vec3 MaterialDiffuseColor = texture( DiffuseTextureSampler, UV ).rgb;
-    vec3 MaterialAmbientColor = vec3(0.1,0.1,0.1) * MaterialDiffuseColor;
-    vec3 MaterialSpecularColor = vec3(0,0,0);
+    vec3 texColor = texture( DiffuseTextureSampler, UV ).rgb;
+    vec3 MaterialDiffuseColor = vec3(0.2,0,0.6) * length(texColor);
+    vec3 MaterialAmbientColor = vec3(0,0,0);
+    vec3 MaterialSpecularColor = vec3(0.2,0.2,0.2);
 
     vec3 TextureNormal_tangentspace = normalize(texture( NormalTextureSampler, vec2(UV.x,UV.y) ).rgb*2.0 - 1.0);
     
@@ -107,7 +108,7 @@ void main(){
     color = 
         MaterialAmbientColor
         +MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance)
-        //+MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance)
+        +MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance)
         ;
 
 }

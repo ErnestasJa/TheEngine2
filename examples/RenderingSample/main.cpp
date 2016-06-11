@@ -1,6 +1,11 @@
+#include "ImageLoader.h"
 #include "Include.h"
+#include "filesystem/IFileSystem.h"
 #include "render/RenderInc.h"
 #include "window/WindowInc.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "third_party/stb_image.h"
 
 render::SWindowDefinition GetWindowDefinition();
 core::Vector<core::SharedPtr<render::ITexture>> LoadTextures(
@@ -8,6 +13,12 @@ core::Vector<core::SharedPtr<render::ITexture>> LoadTextures(
 
 int main(int argc, char const *argv[])
 {
+    auto appPath = io::Path(
+        core::String("/home/serengeor/coding/TheEngine2/build/bin/examples"));
+    auto fileSystem = io::CreateFileSystem(appPath);
+    fileSystem->AddSearchDirectory(appPath);
+    fileSystem->SetWriteDirectory(appPath);
+
     auto engineLogStream = core::MakeShared<sutil::EngineCoutPipe>();
     elog::AddLogStream(engineLogStream);
 
@@ -27,11 +38,20 @@ int main(int argc, char const *argv[])
         sutil::LogDebugMessagesAndFlush(renderer->GetDebugMessageMonitor());
     }
 
-    auto textures = LoadTextures(renderer);
+    elog::Log(
+        elog::LogSource::Engine, elog::LogSeverity::Info,
+        core::string::CFormat("App path: %s", appPath.AsString().c_str()));
+
+    ImageLoader imageLoader(fileSystem, renderer);
+    auto detail = imageLoader.LoadImage(io::Path("detail.png"));
+    auto normal = imageLoader.LoadImage(io::Path("normal_map.png"));
+
+    auto textures =
+        core::Vector<core::SharedPtr<render::ITexture>>{detail, normal};
 
     auto obj =
         RenderObject(renderer, core::MakeShared<Mesh>(renderer), mat, textures);
-    obj.Transform = glm::translate(glm::vec3(0, 0, 10));
+    obj.Transform = glm::translate(glm::vec3(5, 0, 10));
 
     auto cam = core::MakeShared<Camera>((float)window->GetDimensions().w /
                                         (float)window->GetDimensions().h);
