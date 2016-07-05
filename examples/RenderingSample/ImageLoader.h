@@ -2,6 +2,7 @@
 #define RESOURCE_LOADER_H
 
 #include "filesystem/IFileSystem.h"
+#include "log/LogInc.h"
 #include "render/RenderInc.h"
 #include "third_party/stb_image.h"
 
@@ -22,24 +23,26 @@ public:
 
     core::SharedPtr<render::ITexture> LoadImage(const io::Path& path)
     {
+        using core::string::CFormat;
         auto file = m_fileSystem->OpenRead(path);
 
         if (!file) {
-            printf("Failed to open %s\n", path.AsString().c_str());
+            elog::LogInfo(
+                CFormat("Failed to open %s\n", path.AsString().c_str()));
             return nullptr;
         }
 
         core::TByteArray testByteArray;
         auto bytesRead = file->Read(testByteArray);
 
-        printf("Image size bytes: %u\n", bytesRead);
+        elog::LogInfo(CFormat("Image size bytes: %u\n", bytesRead));
         Image img;
         img.data = core::UniquePtr<uint8_t>(stbi_load_from_memory(
             (stbi_uc*)testByteArray.data(), bytesRead, &img.size.w, &img.size.h,
             &img.channels, STBI_rgb));
 
-        printf("Image size x: %i\n", img.size.x);
-        printf("Image size y: %i\n", img.size.y);
+        elog::LogInfo(CFormat("Image size x: %i\n", img.size.x));
+        elog::LogInfo(CFormat("Image size y: %i\n", img.size.y));
 
         auto texture = m_renderer->CreateTexture(render::TextureDescriptor());
         texture->UploadData(render::TextureDataDescriptor{

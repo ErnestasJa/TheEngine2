@@ -62,7 +62,6 @@ int main(int argc, char const *argv[])
     renderer->SetClearColor({125, 125, 225});
     window->SetCursorMode(render::CursorMode::HiddenCapture);
 
-    // make stuff happen
     while (window->ShouldClose() == false) {
         renderer->Clear();
 

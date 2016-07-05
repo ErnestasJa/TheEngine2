@@ -26,7 +26,7 @@ set(BUILD_SOURCES
 	"WindowInputHandler.cpp" 
 	"BasicLogSample.cpp"
 	"ExtensionLoadingAndDebugOutput.cpp"
-	"RenderingSample/main.cpp"
+	"RenderingSample/RenderingSample.cpp"
 	"TemplateUtilitiesSamples.cpp"
 )
 
