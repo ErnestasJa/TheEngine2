@@ -19,7 +19,9 @@ set(LIBBIN_PATH "${LIB_PATH}/third_patry/bin/linux" )
 #third party lib configuration
 set(PHYSFS_INC_PATH "${ENGINE_PATH}/third_party/physfs/src" )
 
-#Let it build, let it build! :)
+
+
+#Includes
 include_directories("${ENGINE_INC_PATH}/"
 	"${ENGINE_INC_PATH}/filesystem"
 	"${LIB_PATH}",
@@ -28,8 +30,30 @@ include_directories("${ENGINE_INC_PATH}/"
 	"${LIB_PATH}/glxw/include"
 )
 
-add_library(engine STATIC 
 
+#Platform independent sources
+
+
+
+#Platform specific
+#Linux
+if(NOT "${WINDOWS_BUILD}" STREQUAL "1")
+set(LINUX_SOURCES
+	"${ENGINE_SRC_PATH}/platform/LinuxFileSystem.cpp"
+)
+endif()
+
+#Windows
+if("${WINDOWS_BUILD}" STREQUAL "1")
+set(WINDOWS_SOURCES
+	""
+)
+endif()
+
+#Android (maybe a bit too optimistic..)
+
+#Cross platform sources
+set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/core/StringUtil.cpp"
 	
 	"${ENGINE_SRC_PATH}/filesystem/PathUtil.cpp"
@@ -54,4 +78,10 @@ add_library(engine STATIC
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferArrayObject.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRenderContext.cpp"
 	"${ENGINE_SRC_PATH}/render/GLTexture.cpp"
+)
+
+add_library(engine STATIC 
+	${LINUX_SOURCES}
+	${WINDOWS_SOURCES}
+	${CROSSPLATFORM_SOURCES}
 )

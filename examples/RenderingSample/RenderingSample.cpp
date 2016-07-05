@@ -1,6 +1,7 @@
 #include "ImageLoader.h"
 #include "Include.h"
 #include "filesystem/IFileSystem.h"
+#include "platform/IPlatformFileSystem.h"
 #include "render/RenderInc.h"
 #include "window/WindowInc.h"
 
@@ -13,8 +14,9 @@ core::Vector<core::SharedPtr<render::ITexture>> LoadTextures(
 
 int main(int argc, char const *argv[])
 {
-    auto appPath = io::Path(
-        core::String("/home/serengeor/coding/TheEngine2/build/bin/examples"));
+    core::String appPath =
+        platform::GetPlatformFileSystem()->GetExecutableDirectory();
+
     auto fileSystem = io::CreateFileSystem(appPath);
     fileSystem->AddSearchDirectory(appPath);
     fileSystem->SetWriteDirectory(appPath);
@@ -38,13 +40,12 @@ int main(int argc, char const *argv[])
         sutil::LogDebugMessagesAndFlush(renderer->GetDebugMessageMonitor());
     }
 
-    elog::Log(
-        elog::LogSource::Engine, elog::LogSeverity::Info,
-        core::string::CFormat("App path: %s", appPath.AsString().c_str()));
+    elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
+              core::string::CFormat("App path: %s", appPath.c_str()));
 
     ImageLoader imageLoader(fileSystem, renderer);
-    auto detail = imageLoader.LoadImage(io::Path("detail.png"));
-    auto normal = imageLoader.LoadImage(io::Path("normal_map.png"));
+    auto detail = imageLoader.LoadImage(io::Path("diffuse.png"));
+    auto normal = imageLoader.LoadImage(io::Path("normal.png"));
 
     auto textures =
         core::Vector<core::SharedPtr<render::ITexture>>{detail, normal};

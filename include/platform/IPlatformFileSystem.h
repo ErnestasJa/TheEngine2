@@ -1,10 +1,20 @@
 #ifndef IPLATFORMFILESYSTEM_H
 #define IPLATFORMFILESYSTEM_H
 
+namespace io
+{
+class Path;
+}
+
+namespace platform
+{
 class IPlatformFileSystem
 {
 public:
-    virtual core::String GetExecutableDirectory() = 0;
+    virtual io::Path GetExecutableDirectory() = 0;
 };
+
+core::UniquePtr<IPlatformFileSystem> GetPlatformFileSystem();
+}
 
 #endif
