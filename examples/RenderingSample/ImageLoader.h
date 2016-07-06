@@ -6,14 +6,15 @@
 #include "render/RenderInc.h"
 #include "third_party/stb_image.h"
 
-struct Image {
-    int32_t channels;
-    core::pod::Vec2<int32_t> size;
-    core::UniquePtr<uint8_t> data;
-};
-
 class ImageLoader
 {
+private:
+    struct Image {
+        int32_t channels;
+        core::pod::Vec2<int32_t> size;
+        core::UniquePtr<uint8_t> data;
+    };
+
 public:
     ImageLoader(core::SharedPtr<io::IFileSystem> fs,
                 render::IRenderer* renderer)
