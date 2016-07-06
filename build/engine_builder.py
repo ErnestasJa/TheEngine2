@@ -1,5 +1,6 @@
 import fnmatch
 import os, sys, shutil, subprocess, platform
+from distutils.dir_util import copy_tree
 from test_runner import TestRunner
 from build_config import *
 from build_common import *
@@ -81,6 +82,11 @@ class Builder:
 					+ ' -DWINDOWS_BUILD=0'
 					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
 				subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
+
+			if key == "examples":
+				self.CopyExampleResources()
+
+
 			self.CopyLibs()
 
 	def GetLibs(self, dir):
@@ -109,3 +115,7 @@ class Builder:
 			except:
 				print(BuildMessage.FailedToMoveFile.format(f[1], moved_file_path))
 				raise
+
+	def CopyExampleResources(self):
+		copy_tree(paths.Paths["resources"], paths.Paths["example_bin"])
+

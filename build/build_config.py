@@ -10,6 +10,7 @@ class BuildMessage:
 	FailedToCreateDirectory = 'Failed to create build directory: "{0}"'
 	FailedToMoveFile = 'Failed to move file "{0}" to "{1}".'
 
+
 class PathManager:
 	def __init__(self):
 		self.Paths = {}
@@ -17,6 +18,8 @@ class PathManager:
 		self.Paths["engine"] = pdir(self.Paths["cwd"])
 		self.Paths["build"] = join(self.Paths["engine"], "build/bin")
 		self.Paths["lib"] = join(self.Paths["engine"], "build/lib")
+		self.Paths["resources"] = join(self.Paths["engine"], "resources")
+		self.Paths["example_bin"] = join(self.Paths["build"], "examples/resources")
 
 		self.CMakePaths = OrderedDict()
 		self.CMakePaths["physfs"] = join(self.Paths["engine"],"third_party/physfs")

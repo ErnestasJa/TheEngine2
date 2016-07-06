@@ -44,8 +44,8 @@ int main(int argc, char const *argv[])
               core::string::CFormat("App path: %s", appPath.c_str()));
 
     ImageLoader imageLoader(fileSystem, renderer);
-    auto detail = imageLoader.LoadImage(io::Path("diffuse.png"));
-    auto normal = imageLoader.LoadImage(io::Path("normal.png"));
+    auto detail = imageLoader.LoadImage(io::Path("resources/diffuse.png"));
+    auto normal = imageLoader.LoadImage(io::Path("resources/normal.png"));
 
     auto textures =
         core::Vector<core::SharedPtr<render::ITexture>>{detail, normal};
