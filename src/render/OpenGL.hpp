@@ -189,7 +189,7 @@ namespace gl
         glTexParameteri(handle.type, GL_TEXTURE_WRAP_T, handle.wrap_t);
         glTexParameteri(handle.type, GL_TEXTURE_MIN_FILTER, handle.filter_min);
         glTexParameteri(handle.type, GL_TEXTURE_MAG_FILTER, handle.filter_mag);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+        glTexParameteri(handle.type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 
         return handle;
     }
@@ -201,7 +201,7 @@ namespace gl
 
     inline bool TextureShouldUseMipMaps(const gpu_texture_handle& handle) DFUNC
     {
-        return handle.filter_mag == GL_LINEAR_MIPMAP_LINEAR;
+        return handle.filter_min == GL_LINEAR_MIPMAP_LINEAR;
     }
 
     inline void UploadTextureData(const gpu_texture_handle& handle,

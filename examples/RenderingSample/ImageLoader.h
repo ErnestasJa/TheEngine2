@@ -45,7 +45,9 @@ public:
         elog::LogInfo(CFormat("Image size x: %i\n", img.size.x));
         elog::LogInfo(CFormat("Image size y: %i\n", img.size.y));
 
-        auto texture = m_renderer->CreateTexture(render::TextureDescriptor());
+        render::TextureDescriptor desc;
+        desc.filterMode = render::TextureFilterMode::TRILINEAR;
+        auto texture = m_renderer->CreateTexture(desc);
         texture->UploadData(render::TextureDataDescriptor{
             (void*)img.data.get(), render::TextureDataFormat::RGB, img.size});
 
