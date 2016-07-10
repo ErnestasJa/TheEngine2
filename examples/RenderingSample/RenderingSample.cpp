@@ -35,7 +35,7 @@ int main(int argc, char const *argv[])
         elog::Log(elog::LogSource::Engine, elog::LogSeverity::Warn,
                   "debug monitor not available.");
 
-    auto mat = material::BaseMaterial::CreateMaterial(renderer);
+    auto mat = material::CreatePhongMaterial(renderer);
     if (!mat) {
         sutil::LogDebugMessagesAndFlush(renderer->GetDebugMessageMonitor());
     }
@@ -50,9 +50,15 @@ int main(int argc, char const *argv[])
     auto textures =
         core::Vector<core::SharedPtr<render::ITexture>>{detail, normal};
 
-    auto obj =
-        RenderObject(renderer, core::MakeShared<Mesh>(renderer), mat, textures);
-    obj.Transform = glm::translate(glm::vec3(5, 0, 10));
+    core::Vector<RenderObject> objs;
+
+    for (int32_t x = 0; x < 10; x++)
+        for (int32_t z = 0; z < 10; z++) {
+            auto obj = RenderObject(renderer, core::MakeShared<Mesh>(renderer),
+                                    mat, textures);
+            obj.Transform = glm::translate(glm::vec3(x * 2, 0, z * 2));
+            objs.push_back(obj);
+        }
 
     auto cam = core::MakeShared<Camera>((float)window->GetDimensions().w /
                                         (float)window->GetDimensions().h);
@@ -68,7 +74,8 @@ int main(int argc, char const *argv[])
 
         material::SharedUniforms.View = cam->GetView();
         material::SharedUniforms.Projection = cam->GetProjection();
-        obj.Render();
+
+        for (const auto &obj : objs) obj.Render();
 
         window->SwapBuffers();
         window->PollEvents();
@@ -87,26 +94,4 @@ render::SWindowDefinition GetWindowDefinition()
     wDef.DebugContext = true;
 
     return wDef;
-}
-
-core::Vector<core::SharedPtr<render::ITexture>> LoadTextures(
-    render::IRenderer *renderer)
-{
-    auto texture = renderer->CreateTexture(render::TextureDescriptor());
-    texture->UploadData(render::TextureDataDescriptor{
-        (void *)texture::diffuse_texture_bytes.pixel_data,
-        render::TextureDataFormat::RGB,
-        core::pod::Vec2<int32_t>{
-            (int32_t)texture::diffuse_texture_bytes.width,
-            (int32_t)texture::diffuse_texture_bytes.height}});
-
-    auto texture2 = renderer->CreateTexture(render::TextureDescriptor());
-    texture2->UploadData(render::TextureDataDescriptor{
-        (void *)texture::normal_map_texture_bytes.pixel_data,
-        render::TextureDataFormat::RGB,
-        core::pod::Vec2<int32_t>{
-            (int32_t)texture::normal_map_texture_bytes.width,
-            (int32_t)texture::normal_map_texture_bytes.height}});
-
-    return core::Vector<decltype(texture)>{texture, texture2};
 }

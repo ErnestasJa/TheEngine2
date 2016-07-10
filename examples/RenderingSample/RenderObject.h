@@ -1,8 +1,8 @@
 #ifndef RENDER_OBJECT_H
 #define RENDER_OBJECT_H
 
-#include "glm/glm.hpp"
 #include "glm/ext.hpp"
+#include "glm/glm.hpp"
 #include "render/RenderInc.h"
 
 #include "Include.h"
@@ -23,7 +23,7 @@ public:
                            geom::CubeNormals, geom::CubeUV);
     }
 
-    void Render()
+    void Render() const
     {
         m_renderer->SetActiveTextures(m_textures);
         m_material->Use(Transform);

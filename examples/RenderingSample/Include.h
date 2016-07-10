@@ -3,12 +3,11 @@
 
 #include "Camera.h"
 #include "Geometry.h"
+#include "InputHandler.h"
 #include "Materials.h"
 #include "Mesh.h"
 #include "RenderObject.h"
 #include "Shaders.h"
-#include "Textures.h"
 #include "Util.h"
-#include "InputHandler.h"
 
 #endif

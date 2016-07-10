@@ -1,12 +1,12 @@
 #ifndef MATERIALS_H
 #define MATERIALS_H
 
-#include "glm/glm.hpp"
-#include "glm/ext.hpp"
-#include "render/RenderInc.h"
-#include "log/LogInc.h"
 #include "Shaders.h"
 #include "Util.h"
+#include "glm/ext.hpp"
+#include "glm/glm.hpp"
+#include "log/LogInc.h"
+#include "render/RenderInc.h"
 
 namespace material
 {
@@ -16,30 +16,55 @@ static struct {
 
 class BaseMaterial
 {
-private:
+public:
+    virtual void Use(const glm::mat4 &model)
+    {
+        m_shader->Bind();
+    }
+
+protected:
     BaseMaterial(const core::SharedPtr<render::IGpuProgram> &shader)
         : m_shader(shader)
     {
-#define LOOKUP_UNIFORM(uniform_name) \
-    uniform_name = m_shader->GetUniform(#uniform_name)
-
-        LOOKUP_UNIFORM(MVP);
-        LOOKUP_UNIFORM(V);
-        LOOKUP_UNIFORM(M);
-        LOOKUP_UNIFORM(MV3x3);
-        LOOKUP_UNIFORM(LightPosition_worldspace);
     }
 
-public:
-    void Use(const glm::mat4 &model)
+    void LookupUniform(render::IGpuProgramUniform *&uniform,
+                       const core::String &name)
     {
+        uniform = m_shader->GetUniform(name);
+
+        if (!uniform) {
+            elog::LogWarning("Uniform not found: " + name);
+        }
+    }
+
+protected:
+    core::SharedPtr<render::IGpuProgram> m_shader;
+};
+
+class PhongMaterial : public BaseMaterial
+{
+public:
+    PhongMaterial(const core::SharedPtr<render::IGpuProgram> &shader)
+        : BaseMaterial(shader)
+    {
+        LookupUniform(MVP, "MVP");
+        LookupUniform(M, "M");
+        LookupUniform(V, "V");
+        LookupUniform(MV3x3, "MV3x3");
+        LookupUniform(LightPosition_worldspace, "LightPosition_worldspace");
+    }
+
+    virtual void Use(const glm::mat4 &model) override
+    {
+        BaseMaterial::Use(model);
+
         glm::mat4 m = model;
         glm::mat4 v = SharedUniforms.View;
         glm::mat4 p = SharedUniforms.Projection;
         glm::mat4 mvp = p * v * m;
         glm::mat3 mv3x3(v * m);
 
-        m_shader->Bind();
         MVP->SetMat4(glm::value_ptr(mvp));
         V->SetMat4(glm::value_ptr(v));
         M->SetMat4(glm::value_ptr(m));
@@ -47,11 +72,7 @@ public:
         LightPosition_worldspace->Set(core::pod::Vec3<float>{0.0f, 5.f, 0.f});
     }
 
-    static core::SharedPtr<BaseMaterial> CreateMaterial(
-        render::IRenderer *renderer);
-
-private:
-    core::SharedPtr<render::IGpuProgram> m_shader;
+protected:
     render::IGpuProgramUniform *MVP;
     render::IGpuProgramUniform *V;
     render::IGpuProgramUniform *M;
@@ -59,7 +80,7 @@ private:
     render::IGpuProgramUniform *LightPosition_worldspace;
 };
 
-core::SharedPtr<BaseMaterial> BaseMaterial::CreateMaterial(
+static core::SharedPtr<BaseMaterial> CreatePhongMaterial(
     render::IRenderer *renderer)
 {
     auto program = renderer->CreateProgram(shader::NormalMapShader.Vertex,
@@ -71,7 +92,7 @@ core::SharedPtr<BaseMaterial> BaseMaterial::CreateMaterial(
 
     sutil::LogShaderUniforms(program);
 
-    return core::SharedPtr<BaseMaterial>(new BaseMaterial(program));
+    return core::SharedPtr<BaseMaterial>(new PhongMaterial(program));
 }
 }
 
