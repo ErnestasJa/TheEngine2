@@ -15,6 +15,7 @@ class Builder:
 		self.clean_compile_directory = False
 		self.build_samples = True
 		self.use_jom = False
+		self.use_nmake = False
 		self.__ParseArgs()
 
 	def __ParseArgs(self):
@@ -30,6 +31,8 @@ class Builder:
 				self.build_samples = False
 			elif sys.argv[i] == "-usejom":
 				self.use_jom = True
+			elif sys.argv[i] == "-nmake":
+				self.use_nmake = True
 
 		print(BuildMessage.ArgumentsMsg)
 
@@ -60,28 +63,15 @@ class Builder:
 
 		os.chdir(paths.CMakePaths['glxw'])
 		subprocess.check_call('python glxw_gen.py', shell=True)
+
 		for key, value in paths.CMakePaths.items():
 			if self.build_samples == False and key == "examples":
 				continue
 
 			self.CreateAndChDir(join(paths.Paths['build'], key))
-			if platform.system() == "Windows":
-				subprocess.check_call('cmake "' 
-					+ value + '"'
-					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
-					+ ' -DWINDOWS_BUILD=1'
-					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "NMake Makefiles"', shell=True)
-				if self.use_jom == True:
-					subprocess.check_call('jom.exe -j' + str(Builder.Threads), shell=True)
-				else:
-					subprocess.check_call('nmake', shell=True)
-			else:
-				subprocess.check_call('cmake "' 
-					+ value + '"'
-					+ ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"' 
-					+ ' -DWINDOWS_BUILD=0'
-					+ ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"', shell=True)
-				subprocess.check_call('make -j' + str(Builder.Threads), shell=True)
+
+			subprocess.check_call(self.GetCmakeCommand(key, value), shell=True)
+			subprocess.check_call(self.GetCompileCommand(), shell=True)
 
 			if key == "examples":
 				self.CopyExampleResources()
@@ -89,18 +79,59 @@ class Builder:
 
 			self.CopyLibs()
 
+	def GetCmakeCommand(self, key, value):
+		OS = platform.system()
+
+		command = 'cmake "' + value + '"' 
+
+		if key == "physfs":
+			command += ' -DCXXFLAGS="Wno-unused-variable" -DPHYSFS_BUILD_TEST="FALSE"'
+
+		command += ' -DENGINE_PATH:PATH="' + paths.Paths['engine'] + '"'
+
+		if OS == "Windows":
+			if self.use_jom or self.use_nmake:
+				command += ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "NMake Makefiles"'
+			else:
+				command += ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "MinGW Makefiles"'
+		else:
+			command += ' -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles"'
+
+		print("Cmake command: " + command)
+
+		return command
+
+	def GetCompileCommand(self):
+		OS = platform.system()
+
+		command = ''
+
+		if OS == "Windows":
+			if self.use_jom:
+				command += 'jom.exe -j' + str(Builder.Threads)
+			if self.use_nmake:
+				command += 'nmake'
+			else:
+				command += 'mingw32-make.exe -j' + str(Builder.Threads)
+		else:
+			command += 'make -j' + str(Builder.Threads)
+
+		return command
+
+
 	def GetLibs(self, dir):
 		match = []
-		if platform.system() == "Windows":
-			for root, dirnames, filenames in os.walk(dir):
-				for filename in fnmatch.filter(filenames, '*.lib'):
-					if filename != "objects.lib":
-						match.append([filename,os.path.join(root, filename)])
+		extension = ""
+
+		if platform.system() == "Windows" and (self.use_jom or self.use_nmake):
+			extension = ".lib"
 		else:
-			for root, dirnames, filenames in os.walk(dir):
-				for filename in fnmatch.filter(filenames, '*.a'):
-					if filename != "objects.a":
-						match.append([filename,os.path.join(root, filename)])
+			extension = ".a"
+
+		for root, dirnames, filenames in os.walk(dir):
+			for filename in fnmatch.filter(filenames, '*' + extension):
+				if filename != "objects" + extension:
+					match.append([filename,os.path.join(root, filename)])
 						
 		return match
 

@@ -1,11 +1,11 @@
-#ifndef LINUXFILESYSTEM_H
-#define LINUXFILESYSTEM_H
+#ifndef WINDOWSFILESYSTEM_H
+#define WINDOWSFILESYSTEM_H
 
 #include "platform/IPlatformFileSystem.h"
 
 namespace platform
 {
-class LinuxFileSystem : public IPlatformFileSystem
+class WindowsFileSystem : public IPlatformFileSystem
 {
 public:
     virtual io::Path GetExecutableDirectory();

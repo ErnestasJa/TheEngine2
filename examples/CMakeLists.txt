@@ -35,26 +35,47 @@ set(BUILD_SOURCES
 	"TemplateUtilitiesSamples.cpp"
 )
 
-if("${WINDOWS_BUILD}" STREQUAL "1")
-set(SYSTEM_WINDOWS_LIBS
-opengl32.lib
-)
+if(WIN32)
+	if(MINGW)
+		set(SAMPLE_LIBS
+			"${ENGINE_LIB_PATH}/libengine.a"
+			"${ENGINE_LIB_PATH}/libphysfs.a"
+			"${ENGINE_LIB_PATH}/libglfw3.a"
+			"${ENGINE_LIB_PATH}/libglxw_wgl.a"
+			"${ENGINE_LIB_PATH}/libglxw.a"
+			opengl32
+			pthread
+		)
+	else()
+		set(SAMPLE_LIBS
+			"${ENGINE_LIB_PATH}/libengine.lib"
+			"${ENGINE_LIB_PATH}/libphysfs.lib"
+			"${ENGINE_LIB_PATH}/libglfw3.lib"
+			"${ENGINE_LIB_PATH}/libglxw.lib"
+			opengl32
+			pthread
+		)
+	endif()
 else()
-set(SYSTEM_LINUX_LIBS
-GL
-GLU
-X11
-Xxf86vm
-Xinerama 
-Xrandr
-Xcursor
-Xi
-rt 
-m
-pthread
-dl
-z
-)
+	set(SAMPLE_LIBS
+		GL
+		GLU
+		X11
+		Xxf86vm
+		Xinerama 
+		Xrandr
+		Xcursor
+		Xi
+		rt 
+		m
+		pthread
+		dl
+		z
+		"${ENGINE_LIB_PATH}/libengine.a"
+		"${ENGINE_LIB_PATH}/libphysfs.a"
+		"${ENGINE_LIB_PATH}/libglfw3.a"
+		"${ENGINE_LIB_PATH}/libglxw.a"
+	)
 endif()
 
 foreach(testsourcefile ${BUILD_SOURCES})
@@ -63,23 +84,10 @@ foreach(testsourcefile ${BUILD_SOURCES})
     
     add_executable(${test_filename} ${testsourcefile})
 
-	if("${WINDOWS_BUILD}" STREQUAL "1")
     target_link_libraries(${test_filename} 
-    	${SYSTEM_WINDOWS_LIBS}
-		"${ENGINE_LIB_PATH}/engine.lib"
-		"${ENGINE_LIB_PATH}/physfs.lib"
-		"${ENGINE_LIB_PATH}/glfw3.lib"
-		"${ENGINE_LIB_PATH}/glxw.lib"
+    	${SAMPLE_LIBS}
 	)
-	else()
-	target_link_libraries(${test_filename} 
-    	${SYSTEM_LINUX_LIBS}
-		"${ENGINE_LIB_PATH}/libengine.a"
-		"${ENGINE_LIB_PATH}/libphysfs.a"
-		"${ENGINE_LIB_PATH}/libglfw3.a"
-		"${ENGINE_LIB_PATH}/libglxw.a"
-	)
-	endif()
+	
 	
 endforeach(testsourcefile ${BUILD_SOURCES})
 

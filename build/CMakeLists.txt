@@ -3,10 +3,19 @@ project (ENGINE)
 
 MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 
-if("${WINDOWS_BUILD}" STREQUAL "1")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2 /W3 /FI EngineInc.h")
+set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -std=c++14 -include EngineInc.h")
+set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /O2 /W3 /FI EngineInc.h")
+
+
+#Only supporting gcc on linux, mingw/nmake on windows
+if(WIN32)
+	if(MINGW)
+		set(CMAKE_CXX_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
+	else()
+		set(CMAKE_CXX_FLAGS "${CPP_NMAKE_COMPILE_FLAGS}")
+	endif()
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -Wfatal-errors -std=c++14 -include EngineInc.h")
+	set(CMAKE_CXX_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
 endif()
 
 
@@ -18,7 +27,6 @@ set(LIBBIN_PATH "${LIB_PATH}/third_patry/bin/linux" )
 
 #third party lib configuration
 set(PHYSFS_INC_PATH "${ENGINE_PATH}/third_party/physfs/src" )
-
 
 
 #Includes
@@ -37,16 +45,16 @@ include_directories("${ENGINE_INC_PATH}/"
 
 #Platform specific
 #Linux
-if(NOT "${WINDOWS_BUILD}" STREQUAL "1")
+if(UNIX) #Asume that we're compiling on some linux distro that can actually compile the project.
 set(LINUX_SOURCES
 	"${ENGINE_SRC_PATH}/platform/LinuxFileSystem.cpp"
 )
 endif()
 
 #Windows
-if("${WINDOWS_BUILD}" STREQUAL "1")
+if(WIN32)
 set(WINDOWS_SOURCES
-	""
+	"${ENGINE_SRC_PATH}/platform/WindowsFileSystem.cpp"
 )
 endif()
 
