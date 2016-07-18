@@ -36,9 +36,7 @@ int main(int argc, char const *argv[])
                   "debug monitor not available.");
 
     auto mat = material::CreatePhongMaterial(renderer);
-    if (!mat) {
-        sutil::LogDebugMessagesAndFlush(renderer->GetDebugMessageMonitor());
-    }
+    auto mat2 = material::CreateCellMaterial(renderer);
 
     elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
               core::string::CFormat("App path: %s", appPath.c_str()));
@@ -55,7 +53,7 @@ int main(int argc, char const *argv[])
     for (int32_t x = 0; x < 10; x++)
         for (int32_t z = 0; z < 10; z++) {
             auto obj = RenderObject(renderer, core::MakeShared<Mesh>(renderer),
-                                    mat, textures);
+                                    z % 2 ? mat : mat2, textures);
             obj.Transform = glm::translate(glm::vec3(x * 2, 0, z * 2));
             objs.push_back(obj);
         }
