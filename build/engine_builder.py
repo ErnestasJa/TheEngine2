@@ -116,6 +116,8 @@ class Builder:
 		else:
 			command += 'make -j' + str(Builder.Threads)
 
+		print("Build command: " + command)
+
 		return command
 
 

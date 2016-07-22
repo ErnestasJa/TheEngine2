@@ -1,11 +1,14 @@
 cmake_minimum_required (VERSION 2.6)
 project (BUILD_SAMPLES)
 
+set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -std=c++14 -include EngineInc.h")
+set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /O2 /W3 /FI EngineInc.h")
 
-if("${WINDOWS_BUILD}" STREQUAL "1")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2 /W3 /FI EngineInc.h")
+#Only supporting gcc on linux, mingw(gcc)/nmake on windows
+if(WIN32 AND NOT MINGW)
+		set(CMAKE_CXX_FLAGS "${CPP_NMAKE_COMPILE_FLAGS}")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -Wfatal-errors -std=c++14 -include EngineInc.h")
+	set(CMAKE_CXX_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
 endif()
 
 set(ENGINE_PATH "" CACHE PATH "Set this to directory which contains 'include', 'src' directories for engine")

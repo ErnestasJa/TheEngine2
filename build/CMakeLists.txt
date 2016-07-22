@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8)
 project (ENGINE)
 
 MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
@@ -6,14 +6,9 @@ MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -std=c++14 -include EngineInc.h")
 set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /O2 /W3 /FI EngineInc.h")
 
-
-#Only supporting gcc on linux, mingw/nmake on windows
-if(WIN32)
-	if(MINGW)
-		set(CMAKE_CXX_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
-	else()
+#Only supporting gcc on linux, mingw(gcc)/nmake on windows
+if(WIN32 AND NOT MINGW)
 		set(CMAKE_CXX_FLAGS "${CPP_NMAKE_COMPILE_FLAGS}")
-	endif()
 else()
 	set(CMAKE_CXX_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
 endif()
