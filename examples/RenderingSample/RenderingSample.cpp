@@ -14,7 +14,7 @@ core::Vector<core::SharedPtr<render::ITexture>> LoadTextures(
 
 int main(int argc, char const *argv[])
 {
-    core::String appPath =
+    auto appPath =
         platform::GetPlatformFileSystem()->GetExecutableDirectory();
 
     auto fileSystem = io::CreateFileSystem(appPath);
@@ -32,14 +32,12 @@ int main(int argc, char const *argv[])
     if (dbg)
         dbg->SetDebugging(true);
     else
-        elog::Log(elog::LogSource::Engine, elog::LogSeverity::Warn,
-                  "debug monitor not available.");
+        elog::LogWarn("debug monitor not available.");
 
     auto mat = material::CreatePhongMaterial(renderer);
     auto mat2 = material::CreateCellMaterial(renderer);
 
-    elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
-              core::string::CFormat("App path: %s", appPath.c_str()));
+    elog::LogInfo(core::string::CFormat("App path: %s", appPath.c_str()));
 
     ImageLoader imageLoader(fileSystem, renderer);
     auto detail = imageLoader.LoadImage(io::Path("resources/diffuse.png"));
@@ -88,7 +86,7 @@ render::SWindowDefinition GetWindowDefinition()
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
     wDef.ForwardCompatible = true;
-    wDef.Title = "C - cube, Q - quad, T - triangle";
+    wDef.Title = "Rendering sample";
     wDef.DebugContext = true;
 
     return wDef;
