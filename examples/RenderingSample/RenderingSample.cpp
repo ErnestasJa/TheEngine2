@@ -32,12 +32,12 @@ int main(int argc, char const *argv[])
     if (dbg)
         dbg->SetDebugging(true);
     else
-        elog::LogWarn("debug monitor not available.");
+        elog::LogWarning("debug monitor not available.");
 
     auto mat = material::CreatePhongMaterial(renderer);
     auto mat2 = material::CreateCellMaterial(renderer);
 
-    elog::LogInfo(core::string::CFormat("App path: %s", appPath.c_str()));
+    //elog::LogInfo(core::string::CFormat("App path: %s", appPath.c_str()));
 
     ImageLoader imageLoader(fileSystem, renderer);
     auto detail = imageLoader.LoadImage(io::Path("resources/diffuse.png"));

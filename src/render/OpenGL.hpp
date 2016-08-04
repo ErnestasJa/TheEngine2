@@ -308,10 +308,10 @@ namespace gl
     {
         uint32_t program = glCreateProgram();
 
-        gpu_shader_handle handle{.id = program,
-                                 .vertex_program_id = vert_program,
-                                 .fragment_program_id = frag_program,
-                                 .geometry_program_id = geom_program};
+        gpu_shader_handle handle{program,
+                                 vert_program,
+                                 frag_program,
+                                 geom_program};
 
         if (LinkProgram(handle) == false) {
             FreeHandle(handle);
@@ -352,10 +352,10 @@ namespace gl
 
         ASSERT(location != -1);
 
-        return gpu_shader_uniform_handle{.id = (uint32_t)location,
-                                         .program_id = id,
-                                         .type = type,
-                                         .name = name};
+        return gpu_shader_uniform_handle{(uint32_t)location,
+                                         id,
+                                         type,
+                                         name};
     }
 
     inline void SetUniform(const gpu_shader_uniform_handle& handle,

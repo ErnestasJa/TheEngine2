@@ -51,12 +51,11 @@ if(WIN32)
 		)
 	else()
 		set(SAMPLE_LIBS
-			"${ENGINE_LIB_PATH}/libengine.lib"
-			"${ENGINE_LIB_PATH}/libphysfs.lib"
-			"${ENGINE_LIB_PATH}/libglfw3.lib"
-			"${ENGINE_LIB_PATH}/libglxw.lib"
+			"${ENGINE_LIB_PATH}/engine.lib"
+			"${ENGINE_LIB_PATH}/physfs.lib"
+			"${ENGINE_LIB_PATH}/glfw3.lib"
+			"${ENGINE_LIB_PATH}/glxw.lib"
 			opengl32
-			pthread
 		)
 	endif()
 else()
