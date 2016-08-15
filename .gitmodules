@@ -16,3 +16,6 @@
 [submodule "resources"]
 	path = resources
 	url = https://github.com/serengeor/E2Resources.git
+[submodule "build/build_tools"]
+	path = build/build_tools
+	url = https://github.com/serengeor/Builder.git

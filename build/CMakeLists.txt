@@ -27,7 +27,7 @@ set(PHYSFS_INC_PATH "${ENGINE_PATH}/third_party/physfs/src" )
 #Includes
 include_directories("${ENGINE_INC_PATH}/"
 	"${ENGINE_INC_PATH}/filesystem"
-	"${LIB_PATH}",
+	"${LIB_PATH}"
 	"${LIB_PATH}/glm"
 	"${LIB_PATH}/glfw/include"
 	"${LIB_PATH}/glxw/include"
@@ -35,7 +35,6 @@ include_directories("${ENGINE_INC_PATH}/"
 
 
 #Platform independent sources
-
 
 
 #Platform specific
