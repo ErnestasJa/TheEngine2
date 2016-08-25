@@ -11,7 +11,8 @@ script:
   - set -e
   - g++ --version
   - cd build
-  - python build.py -clean -nosamples
+  - python build_engine.py -clean -noexamples
+  - python test_runner.py
 addons:
   apt:
     sources:
