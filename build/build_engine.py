@@ -11,6 +11,7 @@ parser.add_argument("-noexamples", action='store_true', help="use this to skip e
 parser.add_argument("-notests", action='store_true', help="use this to skip tests")
 parser.add_argument("-clean", action='store_true', help="use this to delete bin directory before building")
 args = parser.parse_args()
+print(args)
 
 #setup
 compiler = GetCompiler(compiler = args.compiler)
@@ -21,7 +22,7 @@ buildPath = PathBuilder(enginePath.Join("build"))
 binPath = buildPath.Join("bin")
 libPath = PathBuilder(buildPath.Join("lib"))
 
-if args.clean == True:
+if args.clean:
     FileSystem.RemoveDir(str(binPath))
 
 #compile libs & engine
@@ -34,9 +35,9 @@ CMaker.Exec(buildPath,                              binPath.Join("engine"), defi
 FileSystem.CopyFiles(FileSystem.GetFilesByExtension(str(binPath), compiler.lib_extension()), libPath)
 
 #compile tests & examples
-if args.notests == True:
+if not args.notests:
     CMaker.Exec(enginePath.Join("test"),     binPath.Join("test"), threads = 1, defines = {'ENGINE_PATH':'"'+str(enginePath)+'"','gtest_disable_pthreads':'ON'})
 
-if args.noexamples == True:
+if not args.noexamples:
     FileSystem.CopyFolder(enginePath.Join("resources"), binPath.Join("examples/resources"))
     CMaker.Exec(enginePath.Join("examples"), binPath.Join("examples"), defines = {'ENGINE_PATH':'"'+str(enginePath)+'"'})
