@@ -3,8 +3,7 @@
 
 #include "render/IRendererDebugMessageMonitor.h"
 
-namespace render
-{
+namespace render {
 class GLRendererDebugMessageMonitor : public IRendererDebugMessageMonitor
 {
 public:
@@ -17,15 +16,13 @@ public:
     void ClearMessages();
     void SetDebugging(bool enabled);
     bool isDebuggingEnabled();
-    const core::Vector<core::SharedPtr<IRendererDebugMessage>>& GetMessages()
-        const;
+    const core::Vector<core::SharedPtr<IRendererDebugMessage>>& GetMessages() const;
 
 private:
     core::Vector<core::SharedPtr<IRendererDebugMessage>> m_debugMessages;
 };
 
-core::UniquePtr<GLRendererDebugMessageMonitor>
-CreateRendererDebugMessageMonitor();
+core::UniquePtr<GLRendererDebugMessageMonitor> CreateRendererDebugMessageMonitor();
 }
 
 #endif

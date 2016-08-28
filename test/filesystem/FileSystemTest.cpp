@@ -1,13 +1,12 @@
-#include "gtest/gtest.h"
 #include "Common.h"
 #include "filesystem/IFileSystem.h"
+#include "gtest/gtest.h"
 
-namespace
-{
-const char *argv0;
+namespace {
+const char* argv0;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     argv0 = argv[0];
     ::testing::InitGoogleTest(&argc, argv);
@@ -21,15 +20,14 @@ protected:
     {
         ASSERT_NE(argv0, nullptr);
 
-        writeFilePath = "TestWriteFile"s + Common::GetTimestampString();
-        readFilePath = "testdata/TestReadFile.txt"s;
-        emptyReadFile = "testdata/EmptyReadFile.txt"s;
-        directoryPath = "TestDirectory"s + Common::GetTimestampString();
+        writeFilePath      = "TestWriteFile"s + Common::GetTimestampString();
+        readFilePath       = "testdata/TestReadFile.txt"s;
+        emptyReadFile      = "testdata/EmptyReadFile.txt"s;
+        directoryPath      = "TestDirectory"s + Common::GetTimestampString();
         testExecutableName = "FileSystemTest"s;
-        testDirectoryPath = io::Path(std::string(argv0));
-        readFileContents =
-            "Hello?!\n"
-            "World!";
+        testDirectoryPath  = io::Path(std::string(argv0));
+        readFileContents   = "Hello?!\n"
+                           "World!";
 
         if (testDirectoryPath.HasFileName() &&
             testDirectoryPath.GetFileName() == testExecutableName)
@@ -160,8 +158,7 @@ TEST_F(FileSystemTest, StringContentsReadFromFileAreCorrect)
 
 TEST_F(FileSystemTest, ByteBufferContentsReadFromFileAreCorrect)
 {
-    core::TByteArray correctArray(readFileContents.begin(),
-                                  readFileContents.end());
+    core::TByteArray correctArray(readFileContents.begin(), readFileContents.end());
 
     auto file = fileSystem->OpenRead(readFilePath);
     ASSERT_NE(nullptr, file.get());
@@ -191,8 +188,7 @@ TEST_F(FileSystemTest, CanRandomAccessAndReadFile)
     ASSERT_NE(nullptr, file.get());
 
     std::size_t readPos = 5, readLength = 8;
-    std::string correctSubContent =
-        readFileContents.substr(readPos, readLength);
+    std::string correctSubContent = readFileContents.substr(readPos, readLength);
 
     std::string readBuffer;
     file->Seek(readPos);
@@ -201,8 +197,7 @@ TEST_F(FileSystemTest, CanRandomAccessAndReadFile)
     ASSERT_EQ(correctSubContent, readBuffer);
 }
 
-TEST_F(FileSystemTest,
-       CanFindFileWithoutSpecifyingDirectoryAfterAddingSearchDirectory)
+TEST_F(FileSystemTest, CanFindFileWithoutSpecifyingDirectoryAfterAddingSearchDirectory)
 {
     ASSERT_FALSE(fileSystem->FileExists(readFilePath.GetFileName()));
     fileSystem->AddSearchDirectory(readFilePath.GetParentDirectory());

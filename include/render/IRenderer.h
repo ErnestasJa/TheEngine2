@@ -1,8 +1,7 @@
 #ifndef IRENDERER_H
 #define IRENDERER_H
 
-namespace render
-{
+namespace render {
 // Note: remove these
 using Vec2i = core::pod::Vec2<int32_t>;
 using Vec2f = core::pod::Vec2<float>;
@@ -25,18 +24,15 @@ public:
     {
     }
     virtual IRendererDebugMessageMonitor* GetDebugMessageMonitor() = 0;
-    virtual core::SharedPtr<IGpuProgram> CreateProgram(
-        const core::String& vertSource = "",
-        const core::String& fragSource = "",
-        const core::String& geomSource = "") = 0;
+    virtual core::SharedPtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
+                                                       const core::String& fragSource = "",
+                                                       const core::String& geomSource = "") = 0;
     virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
-        const core::Vector<BufferDescriptor>& descriptors) = 0;
-    virtual core::SharedPtr<ITexture> CreateTexture(
-        const TextureDescriptor& descriptor) = 0;
-    virtual void SetActiveTextures(
-        const core::Vector<core::SharedPtr<ITexture>>& textures) = 0;
-    virtual void SetClearColor(const Vec3i& color) = 0;
-    virtual void Clear() = 0;
+        const core::Vector<BufferDescriptor>& descriptors)                                  = 0;
+    virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor)    = 0;
+    virtual void SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures) = 0;
+    virtual void SetClearColor(const Vec3i& color)                                          = 0;
+    virtual void Clear()                                                                    = 0;
 };
 }
 

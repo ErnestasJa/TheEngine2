@@ -4,8 +4,7 @@
 #include "filesystem/Path.h"
 #include "physfs/src/physfs.h"
 
-namespace io
-{
+namespace io {
 core::SharedPtr<IFileSystem> CreateFileSystem(const Path& argv0)
 {
     auto filesystem = std::make_shared<FileSystem>();
@@ -18,7 +17,8 @@ FileSystem::FileSystem()
 
 FileSystem::~FileSystem()
 {
-    if (PHYSFS_isInit()) PHYSFS_deinit();
+    if (PHYSFS_isInit())
+        PHYSFS_deinit();
 }
 
 bool FileSystem::Init(const Path& argv0)
@@ -94,23 +94,21 @@ core::SharedPtr<IFileReader> FileSystem::OpenRead(const Path& path)
     return fileReader->Open(path) ? fileReader : nullptr;
 }
 
-namespace
+namespace {
+void AppendFiles(void* data, const char* directory, const char* fileName)
 {
-    void AppendFiles(void* data, const char* directory, const char* fileName)
-    {
-        Path path(directory);
-        path.Append(std::string(fileName));
+    Path path(directory);
+    path.Append(std::string(fileName));
 
-        auto paths = static_cast<core::Vector<Path>*>(data);
-        paths->push_back(path);
-    }
+    auto paths = static_cast<core::Vector<Path>*>(data);
+    paths->push_back(path);
+}
 }
 
 core::Vector<Path> FileSystem::GetFilesInDirectory(const Path& directory)
 {
     core::Vector<Path> paths;
-    PHYSFS_enumerateFilesCallback(directory.AsString().c_str(), AppendFiles,
-                                  &paths);
+    PHYSFS_enumerateFilesCallback(directory.AsString().c_str(), AppendFiles, &paths);
     return paths;
 }
 }

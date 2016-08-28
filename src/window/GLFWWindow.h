@@ -6,8 +6,7 @@
 
 struct GLFWwindow;
 
-namespace render
-{
+namespace render {
 class GLFWWindow : public IWindow
 {
 public:
@@ -23,8 +22,8 @@ public:
     virtual bool ShouldClose();
     virtual core::WeakPtr<input::IInputDevice> GetInputDevice();
     virtual const SWindowDefinition& GetWindowDefinition();
-    virtual void UpdateContext();  /// this is to be called after creating
-                                   /// window and loading extensions.
+    virtual void UpdateContext(); /// this is to be called after creating
+                                  /// window and loading extensions.
     virtual void SetCursorMode(CursorMode cursorMode);
 
 private:

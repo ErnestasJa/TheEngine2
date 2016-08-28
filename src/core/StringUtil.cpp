@@ -1,68 +1,73 @@
-namespace core
+namespace core {
+namespace string {
+/*
+Some home grown functions to do basic string manipulation.
+They are not supposed to be fast.
+Should not be used in where high performance/memory usage matters.
+*/
+
+std::string Replace(const std::string& source, const std::string& toReplace,
+                    const std::string& replacement)
 {
-namespace string
-{
-    /*
-    Some home grown functions to do basic string manipulation.
-    They are not supposed to be fast.
-    Should not be used in where high performance/memory usage matters.
-    */
+    if (toReplace.empty())
+        return source;
+    uint32_t toReplaceSize = toReplace.size();
 
-    std::string Replace(const std::string& source, const std::string& toReplace,
-                        const std::string& replacement)
-    {
-        if (toReplace.empty()) return source;
-        uint32_t toReplaceSize = toReplace.size();
+    std::size_t prevIndex = 0, index = 0;
+    std::string src;
 
-        std::size_t prevIndex = 0, index = 0;
-        std::string src;
+    while (true) {
+        index = source.find(toReplace, prevIndex);
 
-        while (true) {
-            index = source.find(toReplace, prevIndex);
-
-            if (index == std::string::npos) {
-                src += source.substr(prevIndex);
-                break;
-            }
-
-            src += source.substr(prevIndex, index - prevIndex) + replacement;
-            prevIndex = index + toReplaceSize;
+        if (index == std::string::npos) {
+            src += source.substr(prevIndex);
+            break;
         }
 
-        return src;
+        src += source.substr(prevIndex, index - prevIndex) + replacement;
+        prevIndex = index + toReplaceSize;
     }
 
-    std::string TrimEnd(const std::string& s, const std::string& delimiters)
-    {
-        if (s.size() == 0) return s;
+    return src;
+}
 
-        auto pos = s.find_last_not_of(delimiters);
+std::string TrimEnd(const std::string& s, const std::string& delimiters)
+{
+    if (s.size() == 0)
+        return s;
 
-        if (pos == core::String::npos) return core::String();
+    auto pos = s.find_last_not_of(delimiters);
 
-        return s.substr(0, pos + 1);
-    }
+    if (pos == core::String::npos)
+        return core::String();
 
-    std::string TrimBegin(const std::string& s, const std::string& delimiters)
-    {
-        if (s.size() == 0) return s;
+    return s.substr(0, pos + 1);
+}
 
-        auto pos = s.find_first_not_of(delimiters);
-        if (pos == core::String::npos) return core::String();
+std::string TrimBegin(const std::string& s, const std::string& delimiters)
+{
+    if (s.size() == 0)
+        return s;
 
-        return s.substr(pos);
-    }
+    auto pos = s.find_first_not_of(delimiters);
+    if (pos == core::String::npos)
+        return core::String();
 
-    std::string Trim(const std::string& s, const std::string& delimiters)
-    {
-        if (s.size() == 0) return s;
+    return s.substr(pos);
+}
 
-        auto posBegin = s.find_first_not_of(delimiters);
-        auto posEnd = s.find_last_not_of(delimiters);
+std::string Trim(const std::string& s, const std::string& delimiters)
+{
+    if (s.size() == 0)
+        return s;
 
-        if (posBegin == core::String::npos) return core::String();
+    auto posBegin = s.find_first_not_of(delimiters);
+    auto posEnd   = s.find_last_not_of(delimiters);
 
-        return s.substr(posBegin, (posEnd + 1) - posBegin);
-    }
+    if (posBegin == core::String::npos)
+        return core::String();
+
+    return s.substr(posBegin, (posEnd + 1) - posBegin);
+}
 }
 }

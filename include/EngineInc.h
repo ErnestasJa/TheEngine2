@@ -7,23 +7,23 @@
 */
 
 /*Standard c/c++ headers*/
-#include <limits>
+#include <array>
 #include <cstdint>
-#include <string>
+#include <limits>
 #include <memory>
+#include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
-#include <array>
-#include <type_traits>
 
 /*Third party headers*/
 
 /*Engine headers*/
 #include "EngineForwardDeclares.h"
+#include "core/Algorithm.hpp"
 #include "core/Debug.h"
 #include "core/POD.h"
-#include "core/TypeUtils.h"
 #include "core/StringUtil.h"
-#include "core/Algorithm.hpp"
+#include "core/TypeUtils.h"
 
 #endif

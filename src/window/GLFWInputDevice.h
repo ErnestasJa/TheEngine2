@@ -13,8 +13,7 @@ public:
     GLFWInputDevice(GLFWwindow* window);
     virtual ~GLFWInputDevice();
     virtual void PollEvents(float deltaTime);
-    virtual void SetInputHandler(
-        const core::SharedPtr<input::InputHandler>& handler);
+    virtual void SetInputHandler(const core::SharedPtr<input::InputHandler>& handler);
 
 private:
     virtual void BindEventHandlers();

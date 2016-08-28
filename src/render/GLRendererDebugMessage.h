@@ -3,8 +3,7 @@
 
 #include "render/IRendererDebugMessage.h"
 
-namespace render
-{
+namespace render {
 class GLRendererDebugMessage : public IRendererDebugMessage
 {
 public:

@@ -1,8 +1,7 @@
 #ifndef INPUTMAPPING_H
 #define INPUTMAPPING_H
 
-namespace input
-{
+namespace input {
 class Key
 {
 public:
@@ -30,7 +29,8 @@ inline bool operator==(const Key& key, const core::String& str)
     return key.Name() == str;
 }
 
-struct Keys {
+struct Keys
+{
     static const Key A;
     static const Key B;
     static const Key C;

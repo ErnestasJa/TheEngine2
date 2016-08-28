@@ -3,8 +3,7 @@
 
 #include "platform/IPlatformFileSystem.h"
 
-namespace platform
-{
+namespace platform {
 class WindowsFileSystem : public IPlatformFileSystem
 {
 public:

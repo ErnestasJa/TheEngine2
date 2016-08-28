@@ -1,11 +1,10 @@
 #ifndef GLGPUSHADERPROGRAMUNIFORM_H
 #define GLGPUSHADERPROGRAMUNIFORM_H
 
-#include "render/IGpuProgramUniform.h"
 #include "OpenGL.hpp"
+#include "render/IGpuProgramUniform.h"
 
-namespace render
-{
+namespace render {
 class GLGpuShaderProgramUniform : public IGpuProgramUniform
 {
 public:

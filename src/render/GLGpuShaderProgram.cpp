@@ -2,10 +2,8 @@
 #include "GLGpuShaderProgramUniform.h"
 #include "OpenGL.hpp"
 
-namespace render
-{
-GLGpuShaderProgram::GLGpuShaderProgram(const gl::gpu_shader_handle& handle)
-    : m_handle(handle)
+namespace render {
+GLGpuShaderProgram::GLGpuShaderProgram(const gl::gpu_shader_handle& handle) : m_handle(handle)
 {
     InitUniforms();
 }
@@ -30,16 +28,14 @@ void GLGpuShaderProgram::InitUniforms()
         for (uint32_t i = 0; i < count; i++) {
             auto handle = gl::GetUniform(id, i);
 
-            m_uniforms.push_back(core::Move(
-                core::MakeUnique<GLGpuShaderProgramUniform>(handle)));
+            m_uniforms.push_back(core::Move(core::MakeUnique<GLGpuShaderProgramUniform>(handle)));
         }
     };
 
     query(m_handle.id);
 }
 
-const core::Vector<core::UniquePtr<IGpuProgramUniform>>&
-GLGpuShaderProgram::GetUniforms()
+const core::Vector<core::UniquePtr<IGpuProgramUniform>>& GLGpuShaderProgram::GetUniforms()
 {
     return m_uniforms;
 }

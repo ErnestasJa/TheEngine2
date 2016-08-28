@@ -3,8 +3,7 @@
 
 #include "IGpuProgramUniform.h"
 
-namespace render
-{
+namespace render {
 class IGpuProgram
 {
 public:
@@ -12,10 +11,9 @@ public:
     {
     }
 
-    virtual void Bind() = 0;
-    virtual const core::Vector<core::UniquePtr<IGpuProgramUniform>>&
-    GetUniforms() = 0;
-    virtual IGpuProgramUniform* GetUniform(const core::String& name) = 0;
+    virtual void Bind()                                                            = 0;
+    virtual const core::Vector<core::UniquePtr<IGpuProgramUniform>>& GetUniforms() = 0;
+    virtual IGpuProgramUniform* GetUniform(const core::String& name)               = 0;
 };
 }
 

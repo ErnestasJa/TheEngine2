@@ -1,11 +1,10 @@
 #ifndef GLGPUBUFFEROBJECT_H
 #define GLGPUBUFFEROBJECT_H
 
-#include "render/IGpuBufferObject.h"
 #include "OpenGL.hpp"
+#include "render/IGpuBufferObject.h"
 
-namespace render
-{
+namespace render {
 class GLGpuBufferObject : public IGpuBufferObject
 {
 public:

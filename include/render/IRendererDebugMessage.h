@@ -1,8 +1,7 @@
 #ifndef IRENDERERDEBUGMESSAGE_H
 #define IRENDERERDEBUGMESSAGE_H
 
-namespace render
-{
+namespace render {
 class IRendererDebugMessage
 {
 public:

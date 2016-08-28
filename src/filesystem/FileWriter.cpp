@@ -2,15 +2,15 @@
 #include "filesystem/Path.h"
 #include "physfs/src/physfs.h"
 
-namespace io
-{
+namespace io {
 FileWriter::FileWriter()
 {
 }
 
 FileWriter::~FileWriter()
 {
-    if (m_fileHandle != nullptr) PHYSFS_close(m_fileHandle);
+    if (m_fileHandle != nullptr)
+        PHYSFS_close(m_fileHandle);
 }
 
 bool FileWriter::Open(const Path& filePath)
@@ -24,23 +24,19 @@ std::intmax_t FileWriter::GetPosition() const
     return PHYSFS_tell(m_fileHandle);
 }
 
-template <class T>
-std::intmax_t FileWriter::WriteFile(const T& dataBuffer, std::uintmax_t size)
+template <class T> std::intmax_t FileWriter::WriteFile(const T& dataBuffer, std::uintmax_t size)
 {
     if (m_fileHandle) {
-        std::uintmax_t writeSize =
-            size > dataBuffer.size() ? dataBuffer.size() : size;
+        std::uintmax_t writeSize = size > dataBuffer.size() ? dataBuffer.size() : size;
 
-        auto bytesWrote =
-            PHYSFS_writeBytes(m_fileHandle, dataBuffer.data(), writeSize);
+        auto bytesWrote = PHYSFS_writeBytes(m_fileHandle, dataBuffer.data(), writeSize);
         return bytesWrote;
     }
 
     return -1;
 }
 
-std::intmax_t FileWriter::Write(const core::TByteArray& array,
-                                std::intmax_t size)
+std::intmax_t FileWriter::Write(const core::TByteArray& array, std::intmax_t size)
 {
     return WriteFile(array, size);
 }

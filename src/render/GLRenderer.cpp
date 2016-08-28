@@ -1,22 +1,20 @@
 #include "GLRenderer.h"
-#include "GLGpuShaderProgram.h"
-#include "GLGpuBufferObject.h"
 #include "GLGpuBufferArrayObject.h"
+#include "GLGpuBufferObject.h"
+#include "GLGpuShaderProgram.h"
 #include "GLRendererDebugMessageMonitor.h"
-#include "render/CTexture.h"
 #include "GLTexture.h"
 #include "OpenGL.hpp"
+#include "render/CTexture.h"
 
-namespace render
-{
+namespace render {
 core::UniquePtr<IRenderer> CreateRenderer(
     core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
 {
     return core::MakeUnique<GLRenderer>(core::Move(debugMessageMonitor));
 }
 
-GLRenderer::GLRenderer(
-    core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
+GLRenderer::GLRenderer(core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
     : m_debugMessageMonitor(core::Move(debugMessageMonitor))
 {
     glEnable(GL_DEPTH_TEST);
@@ -32,12 +30,12 @@ IRendererDebugMessageMonitor* GLRenderer::GetDebugMessageMonitor()
     return m_debugMessageMonitor.get();
 }
 
-core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(
-    const core::String& vertSource, const core::String& fragSource,
-    const core::String& geomSource)
+core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(const core::String& vertSource,
+                                                       const core::String& fragSource,
+                                                       const core::String& geomSource)
 {
-    auto handle = gl::CreatePipelineFromShaderStrings(
-        vertSource.c_str(), fragSource.c_str(), geomSource.c_str());
+    auto handle = gl::CreatePipelineFromShaderStrings(vertSource.c_str(), fragSource.c_str(),
+                                                      geomSource.c_str());
 
     if (gl::IsHandleValid(handle))
         return core::MakeShared<GLGpuShaderProgram>(handle);
@@ -50,11 +48,10 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
 {
     // setup buffers
     auto handles = gl::CreateGpuStorages(descriptors.size());
-    auto IsValid = [](const gl::gpu_buffer_object_handle& h) {
-        return gl::IsHandleValid(h);
-    };
+    auto IsValid = [](const gl::gpu_buffer_object_handle& h) { return gl::IsHandleValid(h); };
 
-    if (core::Any(handles, IsValid) == false) return nullptr;
+    if (core::Any(handles, IsValid) == false)
+        return nullptr;
 
     core::Vector<core::UniquePtr<IGpuBufferObject>> buffers;
     for (uint32_t i = 0; i < handles.size(); i++) {
@@ -64,18 +61,17 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
 
     // create the vao
     auto handle = gl::CreateVertexArrayObject();
-    if (gl::IsHandleValid(handle) == false) return nullptr;
+    if (gl::IsHandleValid(handle) == false)
+        return nullptr;
 
-    auto vao =
-        core::MakeShared<GLGpuBufferArrayObject>(handle, core::Move(buffers));
+    auto vao = core::MakeShared<GLGpuBufferArrayObject>(handle, core::Move(buffers));
 
     vao->EnableBuffers();
 
     return vao;
 }
 
-core::SharedPtr<ITexture> GLRenderer::CreateTexture(
-    const TextureDescriptor& descriptor)
+core::SharedPtr<ITexture> GLRenderer::CreateTexture(const TextureDescriptor& descriptor)
 {
     auto handle = gl::CreateTexture(descriptor);
 
@@ -87,8 +83,7 @@ core::SharedPtr<ITexture> GLRenderer::CreateTexture(
     return nullptr;
 }
 
-void GLRenderer::SetActiveTextures(
-    const core::Vector<core::SharedPtr<ITexture>>& textures)
+void GLRenderer::SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures)
 {
     for (uint32_t i = 0; i < textures.size(); i++) {
         const auto& tex = textures[i];

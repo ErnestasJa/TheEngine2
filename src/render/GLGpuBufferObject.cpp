@@ -1,9 +1,7 @@
 #include "GLGpuBufferObject.h"
 
-namespace render
-{
-GLGpuBufferObject::GLGpuBufferObject(const gl::gpu_buffer_object_handle& handle)
-    : m_handle(handle)
+namespace render {
+GLGpuBufferObject::GLGpuBufferObject(const gl::gpu_buffer_object_handle& handle) : m_handle(handle)
 {
 }
 

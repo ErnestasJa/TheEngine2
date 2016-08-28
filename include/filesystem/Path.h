@@ -9,8 +9,7 @@
 
 #include "PathUtil.h"
 
-namespace io
-{
+namespace io {
 class Path
 {
 public:

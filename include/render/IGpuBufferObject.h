@@ -3,8 +3,7 @@
 
 #include "BufferDescriptor.h"
 
-namespace render
-{
+namespace render {
 class IGpuBufferObject
 {
 public:

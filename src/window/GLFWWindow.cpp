@@ -1,18 +1,18 @@
 #include "GLFWWindow.h"
-#include "GLXW/glxw.h"
 #include "GLFW/glfw3.h"
 #include "GLFWInputDevice.h"
+#include "GLXW/glxw.h"
 #include "log/LogInc.h"
 
-namespace render
-{
+namespace render {
 GLFWWindow::GLFWWindow() : m_window(nullptr)
 {
 }
 
 GLFWWindow::~GLFWWindow()
 {
-    if (m_window) glfwDestroyWindow(m_window);
+    if (m_window)
+        glfwDestroyWindow(m_window);
 }
 
 void SetWindowHints(const SWindowDefinition& wDef)
@@ -44,17 +44,16 @@ void ReadBackContext(SWindowDefinition& def)
 
 void LogContext(const SWindowDefinition& def)
 {
-    elog::Log(
-        elog::LogSource::Engine, elog::LogSeverity::Info,
-        core::string::CFormat("\n\n"
-                              "==========================\n"
-                              "Context version: %u.%u\n"
-                              "Forward compatible: %s\n"
-                              "Debug enabled: %s\n"
-                              "==========================\n\n",
-                              def.ContextMajorVersion, def.ContextMinorVersion,
-                              def.ForwardCompatible ? "yes" : "no",
-                              def.DebugContext ? "yes" : "no"));
+    elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
+              core::string::CFormat("\n\n"
+                                    "==========================\n"
+                                    "Context version: %u.%u\n"
+                                    "Forward compatible: %s\n"
+                                    "Debug enabled: %s\n"
+                                    "==========================\n\n",
+                                    def.ContextMajorVersion, def.ContextMinorVersion,
+                                    def.ForwardCompatible ? "yes" : "no",
+                                    def.DebugContext ? "yes" : "no"));
 }
 
 void GLFWWindow::UpdateContext()
@@ -68,8 +67,8 @@ bool GLFWWindow::Init(const SWindowDefinition& wDef)
     m_windowDefinition = wDef;
     SetWindowHints(m_windowDefinition);
 
-    m_window = glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y,
-                                wDef.Title.c_str(), NULL, NULL);
+    m_window =
+        glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y, wDef.Title.c_str(), NULL, NULL);
 
     glfwMakeContextCurrent(m_window);
 
@@ -119,7 +118,8 @@ bool GLFWWindow::PollEvents()
 
 void GLFWWindow::SwapBuffers()
 {
-    if (m_window) glfwSwapBuffers(m_window);
+    if (m_window)
+        glfwSwapBuffers(m_window);
 }
 
 bool GLFWWindow::ShouldClose()
@@ -142,16 +142,16 @@ void GLFWWindow::SetCursorMode(CursorMode cursorMode)
     uint32_t glfwCursorMode = GLFW_CURSOR_NORMAL;
 
     switch (cursorMode) {
-        case CursorMode::Normal:
-            glfwCursorMode = GLFW_CURSOR_NORMAL;
-            break;
-        case CursorMode::Hidden:
-            glfwCursorMode = GLFW_CURSOR_HIDDEN;
-            break;
+    case CursorMode::Normal:
+        glfwCursorMode = GLFW_CURSOR_NORMAL;
+        break;
+    case CursorMode::Hidden:
+        glfwCursorMode = GLFW_CURSOR_HIDDEN;
+        break;
 
-        case CursorMode::HiddenCapture:
-            glfwCursorMode = GLFW_CURSOR_DISABLED;
-            break;
+    case CursorMode::HiddenCapture:
+        glfwCursorMode = GLFW_CURSOR_DISABLED;
+        break;
     }
 
     glfwSetInputMode(m_window, GLFW_CURSOR, glfwCursorMode);

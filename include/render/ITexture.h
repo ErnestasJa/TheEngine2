@@ -3,8 +3,7 @@
 
 #include "CTexture.h"
 
-namespace render
-{
+namespace render {
 class ITexture
 {
 public:
@@ -12,7 +11,7 @@ public:
     {
     }
 
-    virtual void UploadData(const TextureDataDescriptor &descriptor) = 0;
+    virtual void UploadData(const TextureDataDescriptor& descriptor) = 0;
 };
 }
 

@@ -1,14 +1,12 @@
 #include "LinuxFileSystem.h"
-#include <unistd.h>
 #include "filesystem/Path.h"
+#include <unistd.h>
 
-namespace
-{
+namespace {
 const uint32_t PATH_MAX = 1024;
 }
 
-namespace platform
-{
+namespace platform {
 io::Path LinuxFileSystem::GetExecutableDirectory()
 {
     char path[PATH_MAX];
@@ -16,7 +14,8 @@ io::Path LinuxFileSystem::GetExecutableDirectory()
 
     if (bytesUsed == -1) {
         return io::Path();
-    } else {
+    }
+    else {
         path[bytesUsed] = '\0';
         return io::Path(path).GetParentDirectory();
     }

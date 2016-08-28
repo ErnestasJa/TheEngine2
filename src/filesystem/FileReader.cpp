@@ -2,15 +2,15 @@
 #include "filesystem/Path.h"
 #include "physfs/src/physfs.h"
 
-namespace io
-{
+namespace io {
 FileReader::FileReader()
 {
 }
 
 FileReader::~FileReader()
 {
-    if (m_fileHandle != nullptr) PHYSFS_close(m_fileHandle);
+    if (m_fileHandle != nullptr)
+        PHYSFS_close(m_fileHandle);
 }
 
 bool FileReader::Open(const Path& filePath)
@@ -29,23 +29,24 @@ std::intmax_t FileReader::GetPosition() const
     return PHYSFS_tell(m_fileHandle);
 }
 
-template <class T>
-std::intmax_t FileReader::ReadFile(T& dataBuffer, std::uintmax_t size)
+template <class T> std::intmax_t FileReader::ReadFile(T& dataBuffer, std::uintmax_t size)
 {
     if (m_fileHandle) {
-        std::intmax_t fileLength = GetLength();
+        std::intmax_t fileLength   = GetLength();
         std::intmax_t filePosition = GetPosition();
 
         if (filePosition > -1 && fileLength > -1) {
             std::uintmax_t readSize = fileLength - filePosition;
-            if (size < readSize) readSize = size;
+            if (size < readSize)
+                readSize = size;
 
             dataBuffer.resize(readSize);
 
-            std::intmax_t bytesRead = PHYSFS_readBytes(
-                m_fileHandle, (void*)dataBuffer.data(), readSize);
+            std::intmax_t bytesRead =
+                PHYSFS_readBytes(m_fileHandle, (void*)dataBuffer.data(), readSize);
 
-            if (bytesRead > -1) return bytesRead;
+            if (bytesRead > -1)
+                return bytesRead;
         }
     }
 

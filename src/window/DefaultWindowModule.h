@@ -1,8 +1,7 @@
-#include "GLFWWindow.h"
 #include "GLFW/glfw3.h"
+#include "GLFWWindow.h"
 
-namespace render
-{
+namespace render {
 class DefaultWindowModule
 {
 public:
@@ -13,17 +12,18 @@ public:
 
     bool Initialize()
     {
-        if (glfwInit() == false) return false;
+        if (glfwInit() == false)
+            return false;
 
         return true;
     }
 
-    virtual core::UniquePtr<IWindow> CreateWindow(
-        const SWindowDefinition& windowDefinition)
+    virtual core::UniquePtr<IWindow> CreateWindow(const SWindowDefinition& windowDefinition)
     {
         auto window = core::MakeUnique<GLFWWindow>();
 
-        if (window->Init(windowDefinition)) return window;
+        if (window->Init(windowDefinition))
+            return window;
 
         return nullptr;
     }

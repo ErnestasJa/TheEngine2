@@ -3,8 +3,7 @@
 
 #include "filesystem/IFileSystem.h"
 
-namespace io
-{
+namespace io {
 class FileSystem : public IFileSystem
 {
 public:

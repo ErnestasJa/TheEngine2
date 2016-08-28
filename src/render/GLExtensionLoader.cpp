@@ -2,8 +2,7 @@
 
 #include "GLXW/glxw.h"
 
-namespace render
-{
+namespace render {
 GLExtensionLoader::GLExtensionLoader()
 {
 }

@@ -1,9 +1,12 @@
 #ifndef ELOGSOURCE_H
 #define ELOGSOURCE_H
 
-namespace elog
+namespace elog {
+enum class LogSource
 {
-enum class LogSource { Engine, Other };
+    Engine,
+    Other
+};
 }
 
 #endif

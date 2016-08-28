@@ -1,13 +1,11 @@
 #ifndef IPLATFORMFILESYSTEM_H
 #define IPLATFORMFILESYSTEM_H
 
-namespace io
-{
+namespace io {
 class Path;
 }
 
-namespace platform
-{
+namespace platform {
 class IPlatformFileSystem
 {
 public:

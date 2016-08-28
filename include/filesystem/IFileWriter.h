@@ -1,8 +1,7 @@
 #ifndef IFILE_WRITER_H
 #define IFILE_WRITER_H
 
-namespace io
-{
+namespace io {
 class IFileWriter
 {
 public:
@@ -16,7 +15,7 @@ public:
     virtual std::intmax_t Write(
         const std::string& string,
         std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max()) = 0;
-    virtual bool Seek(std::uintmax_t position) = 0;
+    virtual bool Seek(std::uintmax_t position)                            = 0;
 };
 }
 

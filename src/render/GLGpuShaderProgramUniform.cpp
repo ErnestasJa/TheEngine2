@@ -1,10 +1,8 @@
 #include "GLGpuShaderProgramUniform.h"
 #include "OpenGL.hpp"
 
-namespace render
-{
-GLGpuShaderProgramUniform::GLGpuShaderProgramUniform(
-    const gl::gpu_shader_uniform_handle& handle)
+namespace render {
+GLGpuShaderProgramUniform::GLGpuShaderProgramUniform(const gl::gpu_shader_uniform_handle& handle)
     : m_handle(handle)
 {
 }

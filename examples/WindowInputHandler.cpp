@@ -1,26 +1,25 @@
-#include "window/WindowInc.h"
-#include "render/RenderInc.h"
 #include "input/InputInc.h"
+#include "render/RenderInc.h"
+#include "window/WindowInc.h"
 #include <iostream>
 
 class WindowInputHandler : public input::InputHandler
 {
 public:
-    static auto Create(render::IWindow *window)
+    static auto Create(render::IWindow* window)
     {
         return core::MakeShared<WindowInputHandler>(window);
     }
 
 public:
-    WindowInputHandler(render::IWindow *window)
-        : m_quit(false), m_window(window)
+    WindowInputHandler(render::IWindow* window) : m_quit(false), m_window(window)
     {
     }
 
-    virtual bool OnKeyDown(const input::Key &key,
-                           const bool IsRepeated) override
+    virtual bool OnKeyDown(const input::Key& key, const bool IsRepeated) override
     {
-        if (key == input::Keys::Q || key == input::Keys::Esc) m_quit = true;
+        if (key == input::Keys::Q || key == input::Keys::Esc)
+            m_quit = true;
 
         if (m_window) {
             if (key == input::Keys::W) {
@@ -28,7 +27,8 @@ public:
                 dims.x += 20;
                 dims.y += 20;
                 m_window->SetDimensions(dims);
-            } else if (key == input::Keys::E) {
+            }
+            else if (key == input::Keys::E) {
                 auto dims = m_window->GetDimensions();
                 dims.x -= 20;
                 dims.y -= 20;
@@ -47,16 +47,16 @@ public:
 
 private:
     bool m_quit;
-    render::IWindow *m_window;
+    render::IWindow* m_window;
 };
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
     render::SWindowDefinition wDef;
     wDef.Dimensions = {1280, 720};
-    wDef.Title = "Window input test app. Press 'q' to quit.";
-    auto context = render::CreateContext(wDef);
-    auto window = context->GetWindow().get();
+    wDef.Title      = "Window input test app. Press 'q' to quit.";
+    auto context    = render::CreateContext(wDef);
+    auto window     = context->GetWindow().get();
 
     if (!window) {
         std::cout << "Failed to create window" << std::endl;

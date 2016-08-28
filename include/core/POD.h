@@ -11,51 +11,59 @@ utilize math library functionality.
 This way we also reduce the coupling of our library code and other libraries.
 */
 
-namespace core
+namespace core {
+namespace pod {
+template <class T> struct Vec2
 {
-namespace pod
+    union
+    {
+        struct
+        {
+            T x, y;
+        };
+        struct
+        {
+            T u, v;
+        };
+        struct
+        {
+            T w, h;
+        };
+        T val[2];
+    };
+};
+
+template <class T> struct Vec3
 {
-    template <class T>
-    struct Vec2 {
-        union {
-            struct {
-                T x, y;
-            };
-            struct {
-                T u, v;
-            };
-            struct {
-                T w, h;
-            };
-            T val[2];
+    union
+    {
+        struct
+        {
+            T x, y, z;
         };
+        struct
+        {
+            T r, g, b;
+        };
+        T val[3];
     };
+};
 
-    template <class T>
-    struct Vec3 {
-        union {
-            struct {
-                T x, y, z;
-            };
-            struct {
-                T r, g, b;
-            };
-            T val[3];
+template <class T> struct Vec4
+{
+    union
+    {
+        struct
+        {
+            T x, y, z, w;
         };
-    };
-
-    template <class T>
-    struct Vec4 {
-        union {
-            struct {
-                T x, y, z, w;
-            };
-            struct {
-                T r, g, b, a;
-            };
-            T val[4];
+        struct
+        {
+            T r, g, b, a;
         };
+        T val[4];
     };
+};
 }
 }
 

@@ -1,12 +1,11 @@
 #ifndef GLPROGRAM_H
 #define GLPROGRAM_H
 
+#include "OpenGL.hpp"
 #include "render/IGpuProgram.h"
 #include "render/IGpuProgramUniform.h"
-#include "OpenGL.hpp"
 
-namespace render
-{
+namespace render {
 class GLGpuShaderProgram : public IGpuProgram
 {
 public:
@@ -14,8 +13,7 @@ public:
     virtual ~GLGpuShaderProgram();
 
     virtual void Bind();
-    virtual const core::Vector<core::UniquePtr<IGpuProgramUniform>>&
-    GetUniforms();
+    virtual const core::Vector<core::UniquePtr<IGpuProgramUniform>>& GetUniforms();
     virtual IGpuProgramUniform* GetUniform(const core::String& name);
 
 private:

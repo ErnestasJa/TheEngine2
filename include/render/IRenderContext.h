@@ -1,8 +1,7 @@
 #ifndef IRENDERCONTEXT_H
 #define IRENDERCONTEXT_H
 
-namespace render
-{
+namespace render {
 struct SWindowDefinition;
 class IWindow;
 class IRenderer;
@@ -13,7 +12,7 @@ public:
     {
     }
 
-    virtual const std::unique_ptr<IWindow>& GetWindow() = 0;
+    virtual const std::unique_ptr<IWindow>& GetWindow()     = 0;
     virtual const std::unique_ptr<IRenderer>& GetRenderer() = 0;
 };
 

@@ -1,9 +1,7 @@
 #include "GLRendererDebugMessage.h"
 
-namespace render
-{
-GLRendererDebugMessage::GLRendererDebugMessage(const core::String& message)
-    : m_message(message)
+namespace render {
+GLRendererDebugMessage::GLRendererDebugMessage(const core::String& message) : m_message(message)
 {
 }
 

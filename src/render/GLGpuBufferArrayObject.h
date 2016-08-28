@@ -1,19 +1,17 @@
 #ifndef GLGPUBUFFERARRAYOBJECT_H
 #define GLGPUBUFFERARRAYOBJECT_H
 
+#include "OpenGL.hpp"
 #include "render/IGpuBufferArrayObject.h"
 #include "render/IGpuBufferObject.h"
-#include "OpenGL.hpp"
 
-namespace render
-{
+namespace render {
 class GLGpuBufferObject;
 class GLGpuBufferArrayObject : public IGpuBufferArrayObject
 {
 public:
-    GLGpuBufferArrayObject(
-        const gl::gpu_vertex_array_object_handle& handle,
-        core::Vector<core::UniquePtr<IGpuBufferObject>>&& bufferObjects);
+    GLGpuBufferArrayObject(const gl::gpu_vertex_array_object_handle& handle,
+                           core::Vector<core::UniquePtr<IGpuBufferObject>>&& bufferObjects);
     virtual ~GLGpuBufferArrayObject();
 
     virtual void Bind();

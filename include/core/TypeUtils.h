@@ -1,9 +1,9 @@
 #ifndef TYPEUTILITIES_H
 #define TYPEUTILITIES_H
 
-namespace core
+namespace core {
+union generic_data_access_handle
 {
-union generic_data_access_handle {
     uint8_t* ptr;
     int8_t* as_int8_t;
     uint8_t* as_uint8_t;
@@ -12,44 +12,56 @@ union generic_data_access_handle {
     int32_t* as_int32_t;
     uint32_t* as_uint32_t;
     float* as_float;
-    struct {
-        union {
+    struct
+    {
+        union
+        {
             float x;
             float u;
         };
-        union {
+        union
+        {
             float y;
             float v;
         };
     } * as_vec2;
-    struct {
-        union {
+    struct
+    {
+        union
+        {
             float x;
             float r;
         };
-        union {
+        union
+        {
             float y;
             float g;
         };
-        union {
+        union
+        {
             float z;
             float b;
         };
     } * as_vec3;
-    struct {
-        union {
+    struct
+    {
+        union
+        {
             float x;
             float r;
         };
-        union {
+        union
+        {
             float y;
             float g;
         };
-        union {
+        union
+        {
             float z;
             float b;
         };
-        union {
+        union
+        {
             float w;
             float a;
         };

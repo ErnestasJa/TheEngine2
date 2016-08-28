@@ -1,8 +1,7 @@
 #ifndef GLEXTENSIONLOADER_H
 #define GLEXTENSIONLOADER_H
 
-namespace render
-{
+namespace render {
 class GLExtensionLoader
 {
 public:
@@ -12,5 +11,4 @@ public:
 };
 core::SharedPtr<GLExtensionLoader> CreateExtensionLoader();
 }
-
 #endif

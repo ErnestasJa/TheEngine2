@@ -1,13 +1,13 @@
 #ifndef RENDERINC_H
 #define RENDERINC_H
 
-#include "IRendererDebugMessageMonitor.h"
-#include "IGpuProgram.h"
-#include "IRenderer.h"
-#include "IGpuBufferObject.h"
-#include "IGpuBufferArrayObject.h"
-#include "ITexture.h"
 #include "BufferDescriptor.h"
+#include "IGpuBufferArrayObject.h"
+#include "IGpuBufferObject.h"
+#include "IGpuProgram.h"
 #include "IRenderContext.h"
+#include "IRenderer.h"
+#include "IRendererDebugMessageMonitor.h"
+#include "ITexture.h"
 
 #endif

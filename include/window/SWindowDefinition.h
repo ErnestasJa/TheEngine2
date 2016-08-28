@@ -1,9 +1,9 @@
 #ifndef SWINDOWDEFINITION_H
 #define SWINDOWDEFINITION_H
 
-namespace render
+namespace render {
+struct SWindowDefinition
 {
-struct SWindowDefinition {
     bool ForwardCompatible;
     bool DebugContext;
     bool Resizeable;
@@ -17,16 +17,9 @@ struct SWindowDefinition {
     std::string Title;
 
     SWindowDefinition()
-        : ForwardCompatible(true),
-          DebugContext(false),
-          Resizeable(false),
-          ContextMajorVersion(3),
-          ContextMinorVersion(3),
-          DepthBits(24),
-          ColorFramebufferBits({8, 8, 8, 8}),
-          AccumulationBufferBits({0, 0, 0, 0}),
-          Position({0, 0}),
-          Dimensions({640, 480})
+        : ForwardCompatible(true), DebugContext(false), Resizeable(false), ContextMajorVersion(3),
+          ContextMinorVersion(3), DepthBits(24), ColorFramebufferBits({8, 8, 8, 8}),
+          AccumulationBufferBits({0, 0, 0, 0}), Position({0, 0}), Dimensions({640, 480})
     {
     }
 };

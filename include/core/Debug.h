@@ -10,10 +10,10 @@
 
 #ifdef ENGINE_DEBUG
 
-#define ASSERT(assertion)                          \
-    if ((assertion) == false) {                    \
-        printf("ASSERT FAILED: %s\n", #assertion); \
-        exit(-1);                                  \
+#define ASSERT(assertion)                                                                          \
+    if ((assertion) == false) {                                                                    \
+        printf("ASSERT FAILED: %s\n", #assertion);                                                 \
+        exit(-1);                                                                                  \
     }
 
 #define DFUNC __attribute__((noinline))

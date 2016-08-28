@@ -1,9 +1,9 @@
 #ifndef BUFFERDESCRIPTOR_H
 #define BUFFERDESCRIPTOR_H
 
-namespace render
+namespace render {
+enum class BufferComponentDataType
 {
-enum class BufferComponentDataType {
     uint8,
     int8,
     uint16,
@@ -13,12 +13,14 @@ enum class BufferComponentDataType {
     float32,
 };
 
-enum class BufferObjectType {
+enum class BufferObjectType
+{
     vertex,
     index,
 };
 
-struct BufferDescriptor {
+struct BufferDescriptor
+{
     int32_t component_count;
     BufferObjectType type;
     BufferComponentDataType component_type;

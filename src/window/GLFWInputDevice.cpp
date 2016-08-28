@@ -1,15 +1,14 @@
-#include "GLFW/glfw3.h"
 #include "GLFWInputDevice.h"
+#include "GLFW/glfw3.h"
 #include "GLFWInputKeyMap.h"
 #include "input/InputHandler.h"
 
-namespace
+namespace {
+struct SWindowUserData
 {
-struct SWindowUserData {
     core::WeakPtr<input::InputHandler> inputHandler;
 
-    static void Bind(GLFWwindow* window,
-                     core::WeakPtr<input::InputHandler> inputHandler)
+    static void Bind(GLFWwindow* window, core::WeakPtr<input::InputHandler> inputHandler)
     {
         glfwSetWindowUserPointer(window, new SWindowUserData{inputHandler});
     };
@@ -17,7 +16,8 @@ struct SWindowUserData {
     static void Unbind(GLFWwindow* window)
     {
         auto data = Get(window);
-        if (data) delete data;
+        if (data)
+            delete data;
         glfwSetWindowUserPointer(window, nullptr);
     };
 
@@ -26,11 +26,11 @@ struct SWindowUserData {
         return (SWindowUserData*)glfwGetWindowUserPointer(window);
     }
 
-    static core::SharedPtr<input::InputHandler> GetInputHandler(
-        GLFWwindow* window)
+    static core::SharedPtr<input::InputHandler> GetInputHandler(GLFWwindow* window)
     {
         auto ud = Get(window);
-        if (!ud) return nullptr;
+        if (!ud)
+            return nullptr;
         return ud->inputHandler.lock();
     }
 };
@@ -58,8 +58,7 @@ void GLFWInputDevice::PollEvents(float deltaTime)
     // maybe skip it here or check if they were polled for window.
 }
 
-void GLFWInputDevice::SetInputHandler(
-    const core::SharedPtr<input::InputHandler>& handler)
+void GLFWInputDevice::SetInputHandler(const core::SharedPtr<input::InputHandler>& handler)
 {
     m_handler = handler;
     SWindowUserData::Unbind(m_window);
@@ -68,29 +67,30 @@ void GLFWInputDevice::SetInputHandler(
 
 void GLFWInputDevice::BindEventHandlers()
 {
-    auto keyHandler = [](GLFWwindow* window, int glfwKey, int scancode,
-                         int action, int mods) -> void {
+    auto keyHandler = [](GLFWwindow* window, int glfwKey, int scancode, int action,
+                         int mods) -> void {
         auto handler = SWindowUserData::GetInputHandler(window);
-        if (!handler) return;
+        if (!handler)
+            return;
 
         const input::Key& key = input::MapKey(glfwKey);
         switch (action) {
-            case GLFW_PRESS:
-                handler->OnKeyDown(key, false);
-                break;
-            case GLFW_RELEASE:
-                handler->OnKeyUp(key, false);
-                break;
-            case GLFW_REPEAT:
-                handler->OnKeyDown(key, true);
-                break;
+        case GLFW_PRESS:
+            handler->OnKeyDown(key, false);
+            break;
+        case GLFW_RELEASE:
+            handler->OnKeyUp(key, false);
+            break;
+        case GLFW_REPEAT:
+            handler->OnKeyDown(key, true);
+            break;
         }
     };
 
-    auto mouseHandler = [](GLFWwindow* window, double xpos,
-                           double ypos) -> void {
+    auto mouseHandler = [](GLFWwindow* window, double xpos, double ypos) -> void {
         auto handler = SWindowUserData::GetInputHandler(window);
-        if (!handler) return;
+        if (!handler)
+            return;
 
         handler->OnMouseMove(xpos, ypos);
     };
