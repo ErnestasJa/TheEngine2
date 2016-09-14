@@ -1,5 +1,6 @@
 ---
 Language: Cpp
+Standard: Auto
 BasedOnStyle: LLVM
 ColumnLimit: 100
 IndentWidth: 4
@@ -19,6 +20,7 @@ BraceWrapping :
     BeforeCatch: true
     BeforeElse: true
     IndentBraces: false
+Cpp11BracedListStyle: false
 AllowShortFunctionsOnASingleLine: false
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
