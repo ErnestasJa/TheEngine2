@@ -8,9 +8,13 @@
 class CamInputHandler : public input::InputHandler
 {
 private:
-    CamInputHandler(core::SharedPtr<Camera> cam) : m_cam(cam)
+    float m_speedPresets[3];
+    int m_currentSpeedModifier;
+
+    CamInputHandler(core::SharedPtr<Camera> cam) : m_cam(cam), m_speedPresets({0.2f, 1, 10})
     {
         m_mouseOld = m_mouseNew = {0, 0};
+        m_currentSpeedModifier  = 0;
     }
 
 public:
@@ -20,10 +24,14 @@ public:
     }
 
 public:
-    virtual bool OnKeyDown(const input::Key &key,
-                           const bool IsRepeated) override
+    virtual bool OnKeyDown(const input::Key& key, const bool IsRepeated) override
     {
-        const float MoveSpeed = 0.2;
+        const float MoveSpeed = m_speedPresets[m_currentSpeedModifier % 3];
+
+        if (key == input::Keys::E && IsRepeated == false) {
+            m_currentSpeedModifier++;
+        }
+
         if (key == input::Keys::W) {
             m_cam->MoveForward(MoveSpeed);
         }
@@ -43,8 +51,8 @@ public:
     virtual bool OnMouseMove(const int32_t x, const int32_t y) override
     {
         const float MouseSpeed = 0.01;
-        m_mouseOld = m_mouseNew;
-        m_mouseNew = {x, y};
+        m_mouseOld             = m_mouseNew;
+        m_mouseNew             = {x, y};
 
         auto rot = m_cam->GetRotation();
 
