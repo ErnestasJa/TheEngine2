@@ -5,6 +5,7 @@
 
 namespace render {
 class GLRendererDebugMessageMonitor;
+class GLFrameBufferObject;
 class GLRenderer : public IRenderer
 {
 public:
@@ -21,8 +22,12 @@ public:
         const core::Vector<BufferDescriptor>& descriptors);
 
     virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor);
+    virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
+        const FrameBufferObjectDescriptor& descriptor);
 
     virtual void SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures);
+    virtual void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
+                                      FrameBufferTarget target);
 
     virtual void SetClearColor(const Vec3i& color);
     virtual void Clear();

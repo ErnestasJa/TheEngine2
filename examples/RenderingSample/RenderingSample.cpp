@@ -60,6 +60,10 @@ int main(int argc, char const* argv[])
     window->GetInputDevice().lock()->SetInputHandler(CamInputHandler::Create(cam));
     window->SetCursorMode(render::CursorMode::HiddenCapture);
 
+    auto fbo        = render::CreateFrameBufferObject({ render::FrameBufferTarget::ReadWrite });
+    auto fboTexture = renderer->CreateTexture(render::TextureDescriptor());
+    fbo->Attach(fboTexture);
+
     renderer->SetClearColor({ 125, 125, 225 });
     while (window->ShouldClose() == false) {
         renderer->Clear();

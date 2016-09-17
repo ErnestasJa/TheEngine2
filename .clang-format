@@ -32,6 +32,7 @@ AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: false
 AlignOperands : true
 PointerAlignment : Left
+BreakConstructorInitializersBeforeComma: true
 KeepEmptyLinesAtTheStartOfBlocks: true
 PenaltyBreakBeforeFirstCallParameter: 60
 PenaltyBreakComment: 300
