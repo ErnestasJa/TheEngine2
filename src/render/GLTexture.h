@@ -6,9 +6,11 @@
 
 namespace render {
 namespace gl {
-struct gpu_texture_handle : gpu_handle
+struct gpu_texture_handle
 {
+    uint32_t id;
     uint32_t type;
+    uint32_t data_type;
     uint32_t format;
     uint32_t wrap_s;
     uint32_t wrap_t;
@@ -17,17 +19,17 @@ struct gpu_texture_handle : gpu_handle
 };
 }
 
-
-class GLTexture : public ITexture, gl::gpu_object<gl::gpu_texture_handle>
+class GLTexture : public ITexture, public gl::gpu_object<gl::gpu_texture_handle>
 {
+public:
+    static core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor);
+    static void BindObject(GLTexture* object, uint32_t attachmentIndex);
+
 public:
     GLTexture(const gl::gpu_texture_handle& handle);
     virtual ~GLTexture();
     virtual void UploadData(const TextureDataDescriptor& descriptor);
 };
-
-core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor);
-void BindObject(GLTexture* object, uint32_t attachmentIndex);
 }
 
 #endif

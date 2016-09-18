@@ -1,8 +1,8 @@
 #include "GLFrameBufferObject.h"
-#include "render/ITexture.h"
+#include "GLTexture.h"
+#include "log/LogInc.h"
 
 namespace render {
-uint32_t GLFrameBufferObject::AttachmentCount = 8;
 
 /// Free functions
 inline uint32_t GetFBOTargetFromEnum(render::FrameBufferTarget target)
@@ -19,10 +19,10 @@ inline uint32_t GetFBOTargetFromEnum(render::FrameBufferTarget target)
     }
 }
 
-core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
+core::SharedPtr<IFrameBufferObject> GLFrameBufferObject::CreateFrameBufferObject(
     const FrameBufferObjectDescriptor& descriptor)
 {
-    gpu_fbo_handle handle;
+    gl::gpu_fbo_handle handle;
     handle.target = GetFBOTargetFromEnum(descriptor.target);
     glGenFramebuffers(1, &handle.id);
 
@@ -33,62 +33,71 @@ core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
     return nullptr;
 }
 
-void BindObject(GLFrameBufferObject* object, FrameBufferTarget target)
+void EnableTextures(const core::SharedPtr<ITexture> textures[8])
 {
-    if (!object) {
-        glBindFramebuffer(target, handle.id);
-    }
-    else {
-        auto handle = object->GetHandle();
-        glBindFramebuffer(target, handle.id);
-
-        uint32_t textureAttachments[GLFrameBufferObject::AttachmentCount];
-        uint32_t enabledTextureCounter = 0;
-        for (uint32_t i = 0; i < GLFrameBufferObject::AttachmentCount; i++) {
-            if (object->m_colorTextures[i]) {
-                textures[enabledTextureCounter] = i + GL_COLOR_ATTACHMENT0;
-                enabledTextureCounter++;
-            }
-
-            glDrawBuffers(enabledTextureCounter, textures);
+    uint32_t textureAttachments[GLFrameBufferObject::AttachmentCount];
+    uint32_t enabledTextureCounter = 0;
+    for (uint32_t i = 0; i < GLFrameBufferObject::AttachmentCount; i++) {
+        if (textures[i]) {
+            textureAttachments[enabledTextureCounter] = i + GL_COLOR_ATTACHMENT0;
+            enabledTextureCounter++;
         }
     }
+    glDrawBuffers(enabledTextureCounter, textureAttachments);
 }
 
-bool GetStatus(GLFrameBufferObject* object)
+void GLFrameBufferObject::BindObject(GLFrameBufferObject* object, FrameBufferTarget target)
 {
-    auto handle = object->GetHandle();
-    return glCheckFramebufferStatus(handle.target) == GL_FRAMEBUFFER_COMPLETE;
+    uint32_t fboTarget = GetFBOTargetFromEnum(target);
+
+    if (!object) {
+        glBindFramebuffer(fboTarget, 0);
+        elog::LogInfo("Unbinding FBO");
+    }
+    else {
+        elog::LogInfo("Binding FBO");
+        object->m_handle.target = fboTarget;
+        glBindFramebuffer(fboTarget, object->m_handle.id);
+        EnableTextures(object->m_colorTextures);
+    }
 }
 
 
 // implementation
 GLFrameBufferObject::GLFrameBufferObject(const gl::gpu_fbo_handle& handle)
-    : m_handle(handle)
+    : gpu_object(handle)
 {
 }
 
 GLFrameBufferObject::~GLFrameBufferObject()
 {
-    gl::FreeHandle(m_handle);
+    glDeleteFramebuffers(1, &m_handle.id);
 }
 
 void GLFrameBufferObject::Attach(core::SharedPtr<ITexture> attachment,
                                  FrameBufferAttachmentTarget attachmentTarget,
-                                 uint32_t attachmentPoint = 0)
+                                 uint32_t attachmentPoint)
 {
-    BindObject(this);
+    glBindFramebuffer(m_handle.target, m_handle.id);
+
     auto glTexure = static_cast<render::GLTexture*>(attachment.get());
+
     if (attachmentTarget == FrameBufferAttachmentTarget::Color) {
         m_colorTextures[attachmentPoint] = attachment;
         glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentPoint + GL_COLOR_ATTACHMENT0,
-                               GL_TEXTURE_2D, glTexure->Id, level);
+                               GL_TEXTURE_2D, glTexure->GetHandle().id, 0);
     }
     else if (attachmentTarget == FrameBufferAttachmentTarget::Depth) {
         m_depthTexture = attachment;
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glTexure->Id,
-                               level);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+                               glTexure->GetHandle().id, 0);
     }
-    BindObject(nullptr, attachmentTarget);
+
+    glBindFramebuffer(m_handle.target, 0);
+}
+
+bool GLFrameBufferObject::GetStatus()
+{
+    return glCheckFramebufferStatus(m_handle.target) == GL_FRAMEBUFFER_COMPLETE;
 }
 }

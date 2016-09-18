@@ -19,7 +19,7 @@ public:
         return m_handle;
     }
 
-private:
+protected:
     GpuHandleType m_handle;
 };
 

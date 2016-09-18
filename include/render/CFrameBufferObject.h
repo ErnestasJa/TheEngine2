@@ -1,4 +1,4 @@
-#ifndef CFRAMEBUFFEROBJECT_HH
+#ifndef CFRAMEBUFFEROBJECT_H
 #define CFRAMEBUFFEROBJECT_H
 
 namespace render {

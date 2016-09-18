@@ -23,7 +23,8 @@ public:
     }
 
 protected:
-    BaseMaterial(const core::SharedPtr<render::IGpuProgram>& shader) : m_shader(shader)
+    BaseMaterial(const core::SharedPtr<render::IGpuProgram>& shader)
+        : m_shader(shader)
     {
     }
 
@@ -43,7 +44,8 @@ protected:
 class PhongMaterial : public BaseMaterial
 {
 public:
-    PhongMaterial(const core::SharedPtr<render::IGpuProgram>& shader) : BaseMaterial(shader)
+    PhongMaterial(const core::SharedPtr<render::IGpuProgram>& shader)
+        : BaseMaterial(shader)
     {
         LookupUniform(MVP, "MVP");
         LookupUniform(M, "M");
@@ -62,11 +64,16 @@ public:
         glm::mat4 mvp = p * v * m;
         glm::mat3 mv3x3(v * m);
 
-        MVP->SetMat4(glm::value_ptr(mvp));
-        V->SetMat4(glm::value_ptr(v));
-        M->SetMat4(glm::value_ptr(m));
-        MV3x3->SetMat3(glm::value_ptr(mv3x3));
-        LightPosition_worldspace->Set(core::pod::Vec3<float>{ 0.0f, 5.f, 0.f });
+        if (MVP)
+            MVP->SetMat4(glm::value_ptr(mvp));
+        if (V)
+            V->SetMat4(glm::value_ptr(v));
+        if (M)
+            M->SetMat4(glm::value_ptr(m));
+        if (MV3x3)
+            MV3x3->SetMat3(glm::value_ptr(mv3x3));
+        if (LightPosition_worldspace)
+            LightPosition_worldspace->Set(core::pod::Vec3<float>{ 0.0f, 5.f, 0.f });
     }
 
 protected:
@@ -80,7 +87,8 @@ protected:
 class CellMaterial : public BaseMaterial
 {
 public:
-    CellMaterial(const core::SharedPtr<render::IGpuProgram>& shader) : BaseMaterial(shader)
+    CellMaterial(const core::SharedPtr<render::IGpuProgram>& shader)
+        : BaseMaterial(shader)
     {
         LookupUniform(MVP, "MVP");
         LookupUniform(MV3x3, "MV3x3");

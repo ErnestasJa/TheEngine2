@@ -74,21 +74,28 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
 
 core::SharedPtr<ITexture> GLRenderer::CreateTexture(const TextureDescriptor& descriptor)
 {
-    return CreateTexture(descriptor);
+    return GLTexture::CreateTexture(descriptor);
+}
+
+core::SharedPtr<IFrameBufferObject> GLRenderer::CreateFrameBufferObject(
+    const FrameBufferObjectDescriptor& descriptor)
+{
+    return GLFrameBufferObject::CreateFrameBufferObject(descriptor);
 }
 
 void GLRenderer::SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures)
 {
     for (uint32_t i = 0; i < textures.size(); i++) {
         auto texture = static_cast<GLTexture*>(textures[i].get());
-        BindObject(texture, i);
+        GLTexture::BindObject(texture, i);
     }
 }
 
-void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo, FrameBufferTarget target)
+void GLRenderer::SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
+                                      FrameBufferTarget target)
 {
     m_activeFrameBufferObject = std::static_pointer_cast<GLFrameBufferObject>(fbo);
-    BindObject(m_activeFrameBufferObject.get(), target);
+    GLFrameBufferObject::BindObject(m_activeFrameBufferObject.get(), target);
 }
 
 void GLRenderer::SetClearColor(const Vec3i& color)

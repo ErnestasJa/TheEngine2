@@ -15,10 +15,8 @@ public:
         core::SharedPtr<ITexture> attachment,
         FrameBufferAttachmentTarget attachmentTarget = FrameBufferAttachmentTarget::Color,
         uint32_t attachmentPoint = 0) = 0;
+    virtual bool GetStatus()          = 0;
 };
-
-core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
-    const FrameBufferObjectDescriptor& descriptor);
 }
 
 #endif

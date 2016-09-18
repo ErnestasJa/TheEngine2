@@ -33,6 +33,7 @@ public:
     virtual void Clear();
 
 private:
+    core::SharedPtr<GLFrameBufferObject> m_activeFrameBufferObject;
     core::UniquePtr<GLRendererDebugMessageMonitor> m_debugMessageMonitor;
 };
 

@@ -18,7 +18,7 @@ inline void SetUnpackAlignment(render::TextureDataFormat format) DFUNC
     }
 }
 
-core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor)
+core::SharedPtr<ITexture> GLTexture::CreateTexture(const TextureDescriptor& descriptor)
 {
     auto GetType = [&]() {
         switch (descriptor.type) {
@@ -39,6 +39,8 @@ core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor)
             return GL_RGB;
         case render::TextureInternalDataFormat::RGBA:
             return GL_RGBA;
+        case render::TextureInternalDataFormat::DEPTH32F:
+            return GL_DEPTH_COMPONENT32F;
         default:
             return GL_RGBA;
         }
@@ -79,8 +81,19 @@ core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor)
         }
     };
 
-    gpu_texture_handle handle;
+    auto GetDataType = [&]() {
+        switch (descriptor.internalFormat) {
+        case render::TextureInternalDataFormat::DEPTH32F:
+            return GL_FLOAT;
+        default:
+            return GL_UNSIGNED_BYTE;
+        }
+    };
+
+
+    gl::gpu_texture_handle handle;
     handle.type       = GetType();
+    handle.data_type  = GetDataType();
     handle.format     = GetFormat();
     handle.wrap_s     = GetWrapMode(descriptor.wrapModeS);
     handle.wrap_t     = GetWrapMode(descriptor.wrapModeT);
@@ -88,12 +101,13 @@ core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor)
     handle.filter_mag = GetMagFilterMode(descriptor.filterMode);
 
     glGenTextures(1, &handle.id);
-    BindHandle(handle);
+    glBindTexture(GL_TEXTURE_2D, handle.id);
     glTexParameteri(handle.type, GL_TEXTURE_WRAP_S, handle.wrap_s);
     glTexParameteri(handle.type, GL_TEXTURE_WRAP_T, handle.wrap_t);
     glTexParameteri(handle.type, GL_TEXTURE_MIN_FILTER, handle.filter_min);
     glTexParameteri(handle.type, GL_TEXTURE_MAG_FILTER, handle.filter_mag);
     glTexParameteri(handle.type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     if (gl::IsHandleValid(handle)) {
         return core::MakeShared<GLTexture>(handle);
@@ -102,7 +116,7 @@ core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor)
     return nullptr;
 }
 
-void BindObject(GLTexture* object, uint32_t attachmentIndex)
+void GLTexture::BindObject(GLTexture* object, uint32_t attachmentIndex)
 {
     glActiveTexture(GL_TEXTURE0 + attachmentIndex);
 
@@ -117,7 +131,7 @@ void BindObject(GLTexture* object, uint32_t attachmentIndex)
 
 // implementation
 GLTexture::GLTexture(const gl::gpu_texture_handle& handle)
-    : m_handle(handle)
+    : gpu_object(handle)
 {
 }
 
@@ -134,17 +148,23 @@ void GLTexture::UploadData(const TextureDataDescriptor& descriptor)
             return GL_RGB;
         case render::TextureDataFormat::RGBA:
             return GL_RGBA;
+        case render::TextureDataFormat::DEPTH32F:
+            return GL_DEPTH_COMPONENT;
         default:
             return GL_RGBA;
         }
     };
 
+    GLTexture::BindObject(this, 0);
+
     uint32_t imageFormat = GetFormat();
     glTexImage2D(m_handle.type, 0, m_handle.format, descriptor.size.x, descriptor.size.y, 0,
-                 imageFormat, GL_UNSIGNED_BYTE, descriptor.data);
+                 imageFormat, m_handle.data_type, descriptor.data);
 
     if (m_handle.filter_min == GL_LINEAR_MIPMAP_LINEAR) {
         glGenerateMipmap(m_handle.type);
     }
+
+    GLTexture::BindObject(nullptr, 0);
 }
 }
