@@ -41,3 +41,6 @@ doc/*
 
 #Python
 __pycache__/
+
+#clang
+compile_commands.json
