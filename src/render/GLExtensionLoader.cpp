@@ -1,6 +1,5 @@
 #include "GLExtensionLoader.h"
-
-#include "GLXW/glxw.h"
+#include "GLBindingInc.h"
 
 namespace render {
 GLExtensionLoader::GLExtensionLoader()
@@ -13,7 +12,7 @@ GLExtensionLoader::~GLExtensionLoader()
 
 bool GLExtensionLoader::LoadExtensions()
 {
-    return glxwInit() == 0;
+    return gladLoadGL();
 }
 
 core::SharedPtr<GLExtensionLoader> CreateExtensionLoader()

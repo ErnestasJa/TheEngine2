@@ -1,7 +1,9 @@
 cmake_minimum_required (VERSION 2.6)
 project (BUILD_SAMPLES)
 
-set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -std=c++14 -include EngineInc.h")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -std=c++14 -includeEngineInc.h")
 set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /O2 /W3 /FI EngineInc.h")
 
 #Only supporting gcc on linux, mingw(gcc)/nmake on windows
@@ -26,12 +28,12 @@ include_directories(
 	"${ENGINE_INC_PATH}"
 	"${LIB_PATH}/glm"
 	"${LIB_PATH}/glfw/include"
-	"${LIB_PATH}/glxw/include"
+	"${LIB_PATH}/glad/include"
 )
 
-set(BUILD_SOURCES 
-	"WindowCreation.cpp" 
-	"WindowInputHandler.cpp" 
+set(BUILD_SOURCES
+	"WindowCreation.cpp"
+	"WindowInputHandler.cpp"
 	"BasicLogSample.cpp"
 	"ExtensionLoadingAndDebugOutput.cpp"
 	"RenderingSample/RenderingSample.cpp"
@@ -44,8 +46,7 @@ if(WIN32)
 			"${ENGINE_LIB_PATH}/libengine.a"
 			"${ENGINE_LIB_PATH}/libphysfs.a"
 			"${ENGINE_LIB_PATH}/libglfw3.a"
-			"${ENGINE_LIB_PATH}/libglxw_wgl.a"
-			"${ENGINE_LIB_PATH}/libglxw.a"
+			"${ENGINE_LIB_PATH}/libglad.a"
 			opengl32
 			pthread
 		)
@@ -54,7 +55,7 @@ if(WIN32)
 			"${ENGINE_LIB_PATH}/engine.lib"
 			"${ENGINE_LIB_PATH}/physfs.lib"
 			"${ENGINE_LIB_PATH}/glfw3.lib"
-			"${ENGINE_LIB_PATH}/glxw.lib"
+			"${ENGINE_LIB_PATH}/libglad.a"
 			opengl32
 		)
 	endif()
@@ -64,11 +65,11 @@ else()
 		GLU
 		X11
 		Xxf86vm
-		Xinerama 
+		Xinerama
 		Xrandr
 		Xcursor
 		Xi
-		rt 
+		rt
 		m
 		pthread
 		dl
@@ -76,20 +77,19 @@ else()
 		"${ENGINE_LIB_PATH}/libengine.a"
 		"${ENGINE_LIB_PATH}/libphysfs.a"
 		"${ENGINE_LIB_PATH}/libglfw3.a"
-		"${ENGINE_LIB_PATH}/libglxw.a"
+		"${ENGINE_LIB_PATH}/libglad.a"
 	)
 endif()
 
 foreach(testsourcefile ${BUILD_SOURCES})
 
 	get_filename_component(test_filename ${testsourcefile} NAME_WE)
-    
+
     add_executable(${test_filename} ${testsourcefile})
 
-    target_link_libraries(${test_filename} 
+    target_link_libraries(${test_filename}
     	${SAMPLE_LIBS}
 	)
-	
-	
-endforeach(testsourcefile ${BUILD_SOURCES})
 
+
+endforeach(testsourcefile ${BUILD_SOURCES})

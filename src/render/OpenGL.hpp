@@ -1,6 +1,6 @@
 #ifndef OPENGLRENDER_HPP
 #define OPENGLRENDER_HPP
-#include "GLXW/glxw.h"
+#include "GLBindingInc.h"
 #include "render/BufferDescriptor.h"
 #include "render/CTexture.h"
 
