@@ -10,9 +10,6 @@
 [submodule "third_party/glfw"]
 	path = third_party/glfw
 	url = https://github.com/glfw/glfw
-[submodule "third_party/glxw"]
-	path = third_party/glxw
-	url = https://github.com/Murloc992/glxw.git
 [submodule "resources"]
 	path = resources
 	url = https://github.com/serengeor/E2Resources.git
