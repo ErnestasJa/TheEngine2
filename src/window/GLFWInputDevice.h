@@ -3,7 +3,7 @@
 
 #include "input/IInputDevice.h"
 
-class GLFWwindow;
+struct GLFWwindow;
 class GLFWInputDevice : public input::IInputDevice
 {
 public:

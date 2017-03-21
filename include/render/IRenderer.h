@@ -16,7 +16,7 @@ class IGpuBufferArrayObject;
 class IRendererDebugMessageMonitor;
 struct BufferDescriptor;
 struct TextureDescriptor;
-struct ITexture;
+class ITexture;
 class IRenderer
 {
 public:

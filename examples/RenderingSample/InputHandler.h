@@ -11,7 +11,7 @@ private:
     float m_speedPresets[3];
     int m_currentSpeedModifier;
 
-    CamInputHandler(core::SharedPtr<Camera> cam) : m_cam(cam), m_speedPresets({0.2f, 1, 10})
+    CamInputHandler(core::SharedPtr<Camera> cam) : m_cam(cam), m_speedPresets{0.2f, 1, 10}
     {
         m_mouseOld = m_mouseNew = {0, 0};
         m_currentSpeedModifier  = 0;

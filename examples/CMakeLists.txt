@@ -55,7 +55,7 @@ if(WIN32)
 			"${ENGINE_LIB_PATH}/engine.lib"
 			"${ENGINE_LIB_PATH}/physfs.lib"
 			"${ENGINE_LIB_PATH}/glfw3.lib"
-			"${ENGINE_LIB_PATH}/libglad.a"
+			"${ENGINE_LIB_PATH}/glad.lib"
 			opengl32
 		)
 	endif()
