@@ -2,15 +2,12 @@
 #include "filesystem/Path.h"
 #include <unistd.h>
 
-namespace {
-const uint32_t PATH_MAX = 1024;
-}
-
 namespace platform {
+const uint32_t FS_PATH_MAX = 1024;
 io::Path LinuxFileSystem::GetExecutableDirectory()
 {
-    char path[PATH_MAX];
-    int32_t bytesUsed = readlink("/proc/self/exe", path, PATH_MAX);
+    char path[FS_PATH_MAX];
+    int32_t bytesUsed = readlink("/proc/self/exe", path, FS_PATH_MAX);
 
     if (bytesUsed == -1) {
         return io::Path();

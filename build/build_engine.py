@@ -45,6 +45,8 @@ CMaker.Exec(enginePath.Join("third_party/glfw"),    	binPath.Join("glfw"),
 
 CMaker.Exec(enginePath.Join("third_party/glad"), 		binPath.Join("glad"))
 
+CMaker.Exec(enginePath.Join("third_party/imgui"), 		binPath.Join("imgui"))
+
 CMaker.Exec(buildPath,                              	binPath.Join("engine"),
     defines = {
         'ENGINE_PATH':'"'+str(enginePath)+'"'

@@ -44,3 +44,5 @@ __pycache__/
 
 #clang
 compile_commands.json
+
+.clang_complete

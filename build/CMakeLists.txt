@@ -34,6 +34,7 @@ include_directories("${ENGINE_INC_PATH}/"
 	"${LIB_PATH}/glm"
 	"${LIB_PATH}/glfw/include"
 	"${LIB_PATH}/glad/include"
+	"${LIB_PATH}/imgui/imgui"
 )
 
 
@@ -83,6 +84,9 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/render/GLGpuBufferArrayObject.cpp"
 	"${ENGINE_SRC_PATH}/render/GLRenderContext.cpp"
 	"${ENGINE_SRC_PATH}/render/GLTexture.cpp"
+
+	"${ENGINE_SRC_PATH}/gui/GuiImpl.cpp"
+	"${ENGINE_SRC_PATH}/gui/imgui_impl.cpp"
 )
 
 add_library(engine STATIC

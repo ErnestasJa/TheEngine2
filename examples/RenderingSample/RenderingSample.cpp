@@ -6,6 +6,7 @@
 #include "window/WindowInc.h"
 
 #define STB_IMAGE_IMPLEMENTATION
+#include "gui/IGui.h"
 #include "third_party/stb_image.h"
 
 render::SWindowDefinition GetWindowDefinition();
@@ -60,8 +61,11 @@ int main(int argc, char const* argv[])
     window->GetInputDevice().lock()->SetInputHandler(CamInputHandler::Create(cam));
     window->SetCursorMode(render::CursorMode::HiddenCapture);
 
+    auto gui = gui::CreateGui(context);
+
     renderer->SetClearColor({ 125, 125, 225 });
     while (window->ShouldClose() == false) {
+        gui->BeginRender();
         renderer->Clear();
 
         material::SharedUniforms.View       = cam->GetView();
@@ -70,6 +74,8 @@ int main(int argc, char const* argv[])
         for (const auto& obj : objs)
             obj.Render();
 
+        ImGui::Text("Hello, world!");
+        gui->EndRender();
         window->SwapBuffers();
         window->PollEvents();
         sutil::LogDebugMessagesAndFlush(dbg);

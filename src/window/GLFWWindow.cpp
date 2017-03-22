@@ -155,4 +155,9 @@ void GLFWWindow::SetCursorMode(CursorMode cursorMode)
 
     glfwSetInputMode(m_window, GLFW_CURSOR, glfwCursorMode);
 }
+
+GLFWwindow* GLFWWindow::GetUnderlyingWindow()
+{
+    return m_window;
+}
 }
