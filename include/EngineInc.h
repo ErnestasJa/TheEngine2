@@ -17,6 +17,8 @@
 #include <vector>
 
 /*Third party headers*/
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
 
 /*Engine headers*/
 #include "EngineForwardDeclares.h"

@@ -353,6 +353,11 @@ inline gpu_shader_uniform_handle GetUniform(uint32_t id, uint32_t index) DFUNC
     return gpu_shader_uniform_handle{(uint32_t)location, id, type, name};
 }
 
+inline void SetUniform(const gpu_shader_uniform_handle& handle, int value) DFUNC
+{
+	glUniform1i(handle.id, value);
+}
+
 inline void SetUniform(const gpu_shader_uniform_handle& handle, float value) DFUNC
 {
     glUniform1f(handle.id, value);

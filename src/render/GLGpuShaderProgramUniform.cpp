@@ -16,10 +16,16 @@ const core::String& GLGpuShaderProgramUniform::GetName()
     return m_handle.name;
 }
 
+const void GLGpuShaderProgramUniform::Set(int value)
+{
+	gl::SetUniform(m_handle, value);
+}
+
 const void GLGpuShaderProgramUniform::Set(float value)
 {
     gl::SetUniform(m_handle, value);
 }
+
 const void GLGpuShaderProgramUniform::Set(const core::pod::Vec2<float>& value)
 {
     gl::SetUniform(m_handle, value);

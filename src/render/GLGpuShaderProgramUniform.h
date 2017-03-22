@@ -12,7 +12,8 @@ public:
     virtual ~GLGpuShaderProgramUniform();
 
     virtual const core::String& GetName();
-    virtual const void Set(float value);
+    virtual const void Set(int value);
+	virtual const void Set(float value);
     virtual const void Set(const core::pod::Vec2<float>& value);
     virtual const void Set(const core::pod::Vec3<float>& value);
     virtual const void Set(const core::pod::Vec4<float>& value);
