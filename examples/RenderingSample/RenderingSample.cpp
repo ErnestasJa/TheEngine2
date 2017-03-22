@@ -6,6 +6,7 @@
 #include "window/WindowInc.h"
 
 #define STB_IMAGE_IMPLEMENTATION
+#include "gui/IGui.h"
 #include "third_party/stb_image.h"
 
 render::SWindowDefinition GetWindowDefinition();
@@ -73,9 +74,11 @@ int main(int argc, char const* argv[])
     window->SetCursorMode(render::CursorMode::HiddenCapture);
 
     auto fbo = AddSpecialCube(renderer, materials, textures, objs, window);
+    auto gui = gui::CreateGui(context);
 
     renderer->SetClearColor({ 125, 125, 225 });
     while (window->ShouldClose() == false) {
+        gui->BeginRender();
         material::SharedUniforms.View       = cam->GetView();
         material::SharedUniforms.Projection = cam->GetProjection();
 
@@ -89,6 +92,8 @@ int main(int argc, char const* argv[])
         for (const auto& obj : objs)
             obj.Render();
 
+        ImGui::Text("Hello, world!");
+        gui->EndRender();
         window->SwapBuffers();
         window->PollEvents();
         sutil::LogDebugMessagesAndFlush(dbg);

@@ -29,6 +29,7 @@ include_directories(
 	"${LIB_PATH}/glm"
 	"${LIB_PATH}/glfw/include"
 	"${LIB_PATH}/glad/include"
+	"${LIB_PATH}/imgui/imgui"
 )
 
 set(BUILD_SOURCES
@@ -47,6 +48,7 @@ if(WIN32)
 			"${ENGINE_LIB_PATH}/libphysfs.a"
 			"${ENGINE_LIB_PATH}/libglfw3.a"
 			"${ENGINE_LIB_PATH}/libglad.a"
+			"${ENGINE_LIB_PATH}/libimgui.a"
 			opengl32
 			pthread
 		)
@@ -56,6 +58,7 @@ if(WIN32)
 			"${ENGINE_LIB_PATH}/physfs.lib"
 			"${ENGINE_LIB_PATH}/glfw3.lib"
 			"${ENGINE_LIB_PATH}/glad.lib"
+			"${ENGINE_LIB_PATH}/imgui.lib"
 			opengl32
 		)
 	endif()
@@ -78,6 +81,7 @@ else()
 		"${ENGINE_LIB_PATH}/libphysfs.a"
 		"${ENGINE_LIB_PATH}/libglfw3.a"
 		"${ENGINE_LIB_PATH}/libglad.a"
+		"${ENGINE_LIB_PATH}/libimgui.a"
 	)
 endif()
 
