@@ -30,4 +30,8 @@ const Key Keys::Y("Y");
 const Key Keys::Z("Z");
 const Key Keys::Esc("Esc");
 const Key Keys::Unknown("Unknown");
+
+const MouseButton MouseButtons::Left("Left");
+const MouseButton MouseButtons::Right("Right");
+const MouseButton MouseButtons::Unknown("Unknown");
 }

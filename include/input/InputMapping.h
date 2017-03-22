@@ -60,6 +60,45 @@ struct Keys
     static const Key Esc;
     static const Key Unknown;
 };
+
+enum MouseButtonAction {
+	Press,
+	Release,
+	Repeat
+};
+
+class MouseButton
+{
+public:
+	MouseButton(const core::String& name) : m_name(name)
+	{
+	}
+
+	const core::String& Name() const
+	{
+		return m_name;
+	}
+
+	operator const core::String&() const
+	{
+		return m_name;
+	}
+
+private:
+	core::String m_name;
+};
+
+inline bool operator==(const MouseButton& button, const core::String& str)
+{
+	return button.Name() == str;
+}
+
+struct MouseButtons
+{
+	static const MouseButton Left;
+	static const MouseButton Right;
+	static const MouseButton Unknown;
+};
 }
 
 #endif

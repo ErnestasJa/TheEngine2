@@ -67,34 +67,49 @@ void GLFWInputDevice::SetInputHandler(const core::SharedPtr<input::InputHandler>
 
 void GLFWInputDevice::BindEventHandlers()
 {
-    auto keyHandler = [](GLFWwindow* window, int glfwKey, int scancode, int action,
-                         int mods) -> void {
-        auto handler = SWindowUserData::GetInputHandler(window);
-        if (!handler)
-            return;
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int glfwKey, int scancode, int action,
+		int mods) -> void {
+		auto handler = SWindowUserData::GetInputHandler(window);
+		if (!handler)
+			return;
 
-        const input::Key& key = input::MapKey(glfwKey);
-        switch (action) {
-        case GLFW_PRESS:
-            handler->OnKeyDown(key, false);
-            break;
-        case GLFW_RELEASE:
-            handler->OnKeyUp(key, false);
-            break;
-        case GLFW_REPEAT:
-            handler->OnKeyDown(key, true);
-            break;
-        }
-    };
+		const input::Key& key = input::MapKey(glfwKey);
+		switch (action) {
+		case GLFW_PRESS:
+			handler->OnKeyDown(key, false);
+			break;
+		case GLFW_RELEASE:
+			handler->OnKeyUp(key, false);
+			break;
+		case GLFW_REPEAT:
+			handler->OnKeyDown(key, true);
+			break;
+		}
+	});
 
-    auto mouseHandler = [](GLFWwindow* window, double xpos, double ypos) -> void {
-        auto handler = SWindowUserData::GetInputHandler(window);
-        if (!handler)
-            return;
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) -> void {
+		auto handler = SWindowUserData::GetInputHandler(window);
+		if (!handler)
+			return;
 
-        handler->OnMouseMove(xpos, ypos);
-    };
+		handler->OnMouseMove(xpos, ypos);
+	});
 
-    glfwSetKeyCallback(m_window, keyHandler);
-    glfwSetCursorPosCallback(m_window, mouseHandler);
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) -> void {
+		auto handler = SWindowUserData::GetInputHandler(window);
+		if (!handler)
+			return;
+
+		const input::MouseButton& mouseButton = input::MapMouseButton(button);
+
+		switch (action) {
+			case GLFW_PRESS:
+				handler->OnMouseDown(mouseButton);
+				break;
+			case GLFW_RELEASE:
+				handler->OnMouseUp(mouseButton);
+				break;
+		}
+		
+	});
 }

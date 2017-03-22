@@ -63,4 +63,16 @@ inline const Key& MapKey(int32_t key)
         return Keys::Unknown;
     }
 }
+
+inline const MouseButton& MapMouseButton(int32_t button)
+{
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		return MouseButtons::Right;
+	case GLFW_MOUSE_BUTTON_LEFT:
+		return MouseButtons::Left;
+	default:
+		return MouseButtons::Unknown;
+	}
+}
 }
