@@ -7,8 +7,9 @@ class IInputDevice
 {
 public:
     virtual ~IInputDevice(){};
-    virtual void PollEvents(float deltaTime)                                   = 0;
-    virtual void SetInputHandler(const core::SharedPtr<InputHandler>& handler) = 0;
+    virtual void PollEvents(float deltaTime)                                      = 0;
+    virtual void AddInputHandler(const core::SharedPtr<InputHandler>& handler)    = 0;
+    virtual void RemoveInputHandler(const core::SharedPtr<InputHandler>& handler) = 0;
 };
 }
 

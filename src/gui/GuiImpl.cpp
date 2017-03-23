@@ -2,6 +2,7 @@
 #include "../render/GLBindingInc.h"
 #include "../window/GLFWWindow.h"
 #include "GLFW/glfw3.h"
+#include "ImGuiEventHandler.h"
 #include "imgui.h"
 #include "imgui_impl.h"
 
@@ -14,9 +15,12 @@ core::SharedPtr<IGui> CreateGui(core::SharedPtr<render::IRenderContext> context)
 
 GuiImpl::GuiImpl(core::SharedPtr<render::IRenderContext> context)
 {
-    m_context   = context;
-    auto window = ((render::GLFWWindow*)m_context->GetWindow().get())->GetUnderlyingWindow();
-    ImGui_ImplGlfwGL3_Init(window, true);
+    m_context      = context;
+    auto appWindow = ((render::GLFWWindow*)m_context->GetWindow().get());
+    auto window    = appWindow->GetUnderlyingWindow();
+
+    ImGui_ImplGlfwGL3_Init(window);
+    appWindow->GetInputDevice().lock()->AddInputHandler(CreateImGuiInputHandler());
 }
 
 GuiImpl::~GuiImpl()

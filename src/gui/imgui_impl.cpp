@@ -20,6 +20,8 @@
 #include <GLFW/glfw3native.h>
 #endif
 
+#include "input/InputInc.h"
+
 // Data
 static GLFWwindow* g_Window   = NULL;
 static double g_Time          = 0.0f;
@@ -30,6 +32,41 @@ static int g_ShaderHandle = 0, g_VertHandle = 0, g_FragHandle = 0;
 static int g_AttribLocationTex = 0, g_AttribLocationProjMtx = 0;
 static int g_AttribLocationPosition = 0, g_AttribLocationUV = 0, g_AttribLocationColor = 0;
 static unsigned int g_VboHandle = 0, g_VaoHandle = 0, g_ElementsHandle = 0;
+
+class ImGuiEventHandler : public input::InputHandler
+{
+public:
+    static auto Create()
+    {
+        return core::MakeShared<ImGuiEventHandler>();
+    }
+
+public:
+    virtual ~ImGuiEventHandler()
+    {
+    }
+
+    virtual bool OnMouseDown(const input::MouseButton& key)
+    {
+        if (key == input::MouseButtons::Left)
+            g_MousePressed[0] = true;
+        if (key == input::MouseButtons::Right)
+            g_MousePressed[2] = true;
+        return false;
+    }
+
+    virtual bool OnMouseWheel(const float delta)
+    {
+        g_MouseWheel += delta;
+        return false;
+    }
+};
+
+
+core::SharedPtr<input::InputHandler> CreateImGuiInputHandler()
+{
+    return ImGuiEventHandler::Create();
+}
 
 // This is the main rendering function that you have to implement and provide to ImGui (via setting
 // up 'RenderDrawListsFn' in the ImGuiIO structure) If text or lines are blurry when integrating
@@ -169,39 +206,6 @@ static const char* ImGui_ImplGlfwGL3_GetClipboardText(void* user_data)
 static void ImGui_ImplGlfwGL3_SetClipboardText(void* user_data, const char* text)
 {
     glfwSetClipboardString((GLFWwindow*)user_data, text);
-}
-
-void ImGui_ImplGlfwGL3_MouseButtonCallback(GLFWwindow*, int button, int action, int /*mods*/)
-{
-    if (action == GLFW_PRESS && button >= 0 && button < 3)
-        g_MousePressed[button] = true;
-}
-
-void ImGui_ImplGlfwGL3_ScrollCallback(GLFWwindow*, double /*xoffset*/, double yoffset)
-{
-    g_MouseWheel += (float)yoffset; // Use fractional mouse wheel, 1.0 unit 5 lines.
-}
-
-void ImGui_ImplGlfwGL3_KeyCallback(GLFWwindow*, int key, int, int action, int mods)
-{
-    ImGuiIO& io = ImGui::GetIO();
-    if (action == GLFW_PRESS)
-        io.KeysDown[key] = true;
-    if (action == GLFW_RELEASE)
-        io.KeysDown[key] = false;
-
-    (void)mods; // Modifiers are not reliable across systems
-    io.KeyCtrl  = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-    io.KeyAlt   = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
-}
-
-void ImGui_ImplGlfwGL3_CharCallback(GLFWwindow*, unsigned int c)
-{
-    ImGuiIO& io = ImGui::GetIO();
-    if (c > 0 && c < 0x10000)
-        io.AddInputCharacter((unsigned short)c);
 }
 
 bool ImGui_ImplGlfwGL3_CreateFontsTexture()
@@ -347,7 +351,7 @@ void ImGui_ImplGlfwGL3_InvalidateDeviceObjects()
     }
 }
 
-bool ImGui_ImplGlfwGL3_Init(GLFWwindow* window, bool install_callbacks)
+bool ImGui_ImplGlfwGL3_Init(GLFWwindow* window)
 {
     g_Window = window;
 
@@ -383,13 +387,6 @@ bool ImGui_ImplGlfwGL3_Init(GLFWwindow* window, bool install_callbacks)
 #ifdef _WIN32
     io.ImeWindowHandle = glfwGetWin32Window(g_Window);
 #endif
-
-    if (install_callbacks) {
-        glfwSetMouseButtonCallback(window, ImGui_ImplGlfwGL3_MouseButtonCallback);
-        glfwSetScrollCallback(window, ImGui_ImplGlfwGL3_ScrollCallback);
-        glfwSetKeyCallback(window, ImGui_ImplGlfwGL3_KeyCallback);
-        glfwSetCharCallback(window, ImGui_ImplGlfwGL3_CharCallback);
-    }
 
     return true;
 }

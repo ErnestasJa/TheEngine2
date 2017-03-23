@@ -70,7 +70,7 @@ int main(int argc, char const* argv[])
     auto cam = core::MakeShared<Camera>((float)window->GetDimensions().w /
                                         (float)window->GetDimensions().h);
 
-    window->GetInputDevice().lock()->SetInputHandler(CamInputHandler::Create(cam));
+    window->GetInputDevice().lock()->AddInputHandler(CamInputHandler::Create(cam));
     window->SetCursorMode(render::CursorMode::HiddenCapture);
 
     auto fbo = AddSpecialCube(renderer, materials, textures, objs, window);
@@ -111,17 +111,17 @@ core::SharedPtr<render::IFrameBufferObject> AddSpecialCube(
     render::TextureDescriptor desc;
 
     auto fbo = renderer->CreateFrameBufferObject({ render::FrameBufferTarget::ReadWrite });
-	auto rbo = renderer->CreateRenderBufferObject(
-		render::RenderBufferObjectDescriptor(window->GetDimensions(), render::RenderBufferObjectInternalDataFormat::DEPTH16));
+    auto rbo = renderer->CreateRenderBufferObject(render::RenderBufferObjectDescriptor(
+        window->GetDimensions(), render::RenderBufferObjectInternalDataFormat::DEPTH16));
 
     auto fboTexture     = renderer->CreateTexture(desc);
     desc.internalFormat = render::TextureInternalDataFormat::DEPTH32F;
 
     fboTexture->UploadData(render::TextureDataDescriptor{ nullptr, render::TextureDataFormat::RGBA,
                                                           window->GetDimensions() });
-    
-	fbo->Attach(fboTexture);
-	fbo->Attach(rbo, render::FrameBufferAttachmentTarget::Depth);
+
+    fbo->Attach(fboTexture);
+    fbo->Attach(rbo, render::FrameBufferAttachmentTarget::Depth);
 
     auto textures = core::Vector<core::SharedPtr<render::ITexture>>{ fboTexture };
     auto obj = RenderObject(renderer, core::MakeShared<Mesh>(renderer), materials[2], textures);

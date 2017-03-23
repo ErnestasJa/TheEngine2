@@ -12,7 +12,9 @@ public:
     }
 
 public:
-    WindowInputHandler(render::IWindow* window) : m_quit(false), m_window(window)
+    WindowInputHandler(render::IWindow* window)
+        : m_quit(false)
+        , m_window(window)
     {
     }
 
@@ -53,7 +55,7 @@ private:
 int main(int argc, char const* argv[])
 {
     render::SWindowDefinition wDef;
-    wDef.Dimensions = {1280, 720};
+    wDef.Dimensions = { 1280, 720 };
     wDef.Title      = "Window input test app. Press 'q' to quit.";
     auto context    = render::CreateContext(wDef);
     auto window     = context->GetWindow().get();
@@ -64,7 +66,7 @@ int main(int argc, char const* argv[])
     }
 
     auto handler = WindowInputHandler::Create(window);
-    window->GetInputDevice().lock()->SetInputHandler(handler);
+    window->GetInputDevice().lock()->AddInputHandler(handler);
 
     while (window->ShouldClose() == false && handler->AppQuit() == false) {
         window->SwapBuffers();
