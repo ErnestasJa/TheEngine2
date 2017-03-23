@@ -2,7 +2,7 @@
 #define ENGINE_DEBUG_H
 
 #if !defined(NDEBUG)
-#define ENGINE_DEBUG
+//#define ENGINE_DEBUG
 #endif
 
 

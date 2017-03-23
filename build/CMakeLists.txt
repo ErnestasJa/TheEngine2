@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 
 set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -std=c++14 -include EngineInc.h")
-set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /O2 /W3 /FIEngineInc.h")
+set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /Gm- /MP /O2 /W3 /FIEngineInc.h")
 
 #Only supporting gcc on linux, mingw(gcc)/nmake on windows
 if(WIN32 AND NOT MINGW)
@@ -21,7 +21,15 @@ set(BUILD_DIR "" CACHE PATH "Set this to directory to your build dir.")
 set(ENGINE_SRC_PATH "${ENGINE_PATH}/src" )
 set(ENGINE_INC_PATH "${ENGINE_PATH}/include" )
 set(LIB_PATH "${ENGINE_PATH}/third_party" )
-set(LIBBIN_PATH "${LIB_PATH}/third_patry/bin/linux" )
+set(LIBBIN_PATH "${ENGINE_PATH}/build/lib" )
+
+#define output library path for solutions
+foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIBBIN_PATH} )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIBBIN_PATH} )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIBBIN_PATH} )
+endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 #third party lib configuration
 set(PHYSFS_INC_PATH "${ENGINE_PATH}/third_party/physfs/src" )
