@@ -12,3 +12,5 @@ rmdir workspace
 mkdir workspace
 cd workspace
 cmake %BUILD_PATH% -DBUILD_DIR="%BUILD_PATH%" -DENGINE_PATH="%ENGINE_PATH%" -G "Visual Studio 14 2015 Win64"
+
+pause

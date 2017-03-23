@@ -44,8 +44,12 @@ include_directories("${ENGINE_INC_PATH}/"
 	"${LIB_PATH}/glad/include"
 )
 
-
-#Platform independent sources
+file(GLOB_RECURSE ENGINE_INCLUDES 
+    "${ENGINE_SRC_PATH}/*.h"
+    "${ENGINE_SRC_PATH}/*.hpp"
+    "${ENGINE_INC_PATH}/*.h"
+    "${ENGINE_INC_PATH}/*.hpp"
+)
 
 
 #Platform specific
@@ -99,4 +103,5 @@ add_library(engine STATIC
 	${LINUX_SOURCES}
 	${WINDOWS_SOURCES}
 	${CROSSPLATFORM_SOURCES}
+	${ENGINE_INCLUDES}
 )
