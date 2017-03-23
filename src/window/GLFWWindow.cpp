@@ -1,10 +1,14 @@
+// clang-format off
 #include "GLFWWindow.h"
-#include "GLFW/glfw3.h"
 #include "GLFWInputDevice.h"
 #include "log/LogInc.h"
+#include "GLXW/glxw.h"
+#include "GLFW/glfw3.h"
+// clang-format on
 
 namespace render {
-GLFWWindow::GLFWWindow() : m_window(nullptr)
+GLFWWindow::GLFWWindow()
+    : m_window(nullptr)
 {
 }
 

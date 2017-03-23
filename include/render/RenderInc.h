@@ -2,6 +2,7 @@
 #define RENDERINC_H
 
 #include "BufferDescriptor.h"
+#include "IFrameBufferObject.h"
 #include "IGpuBufferArrayObject.h"
 #include "IGpuBufferObject.h"
 #include "IGpuProgram.h"

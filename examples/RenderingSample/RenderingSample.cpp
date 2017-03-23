@@ -15,6 +15,12 @@ core::Vector<RenderObject> BuildScene(
     const core::Vector<core::SharedPtr<material::BaseMaterial>>& materials,
     const core::Vector<core::SharedPtr<render::ITexture>>& textures);
 
+core::SharedPtr<render::IFrameBufferObject> AddSpecialCube(
+    render::IRenderer* renderer,
+    const core::Vector<core::SharedPtr<material::BaseMaterial>>& materials,
+    const core::Vector<core::SharedPtr<render::ITexture>>& loadedTextures,
+    core::Vector<RenderObject>& objs, render::IWindow* window);
+
 int main(int argc, char const* argv[])
 {
     auto appPath = platform::GetPlatformFileSystem()->GetExecutableDirectory();
@@ -42,9 +48,15 @@ int main(int argc, char const* argv[])
     auto cellProgram =
         material::CreateMaterialShader(renderer, fileSystem, "resources/shaders/cell");
 
+    auto phongWithoutNormalsProgram =
+        material::CreateMaterialShader(renderer, fileSystem,
+                                       "resources/shaders/phong_no_normalmap");
+
     auto materials = core::Vector<core::SharedPtr<material::BaseMaterial>>{
         core::SharedPtr<material::BaseMaterial>(new material::PhongMaterial(phongProgram)),
-        core::SharedPtr<material::BaseMaterial>(new material::CellMaterial(cellProgram))
+        core::SharedPtr<material::BaseMaterial>(new material::CellMaterial(cellProgram)),
+        core::SharedPtr<material::BaseMaterial>(
+            new material::PhongMaterial(phongWithoutNormalsProgram))
     };
 
     ImageLoader imageLoader(fsPtr, renderer);
@@ -60,13 +72,20 @@ int main(int argc, char const* argv[])
     window->GetInputDevice().lock()->SetInputHandler(CamInputHandler::Create(cam));
     window->SetCursorMode(render::CursorMode::HiddenCapture);
 
+    auto fbo = AddSpecialCube(renderer, materials, textures, objs, window);
+
     renderer->SetClearColor({ 125, 125, 225 });
     while (window->ShouldClose() == false) {
-        renderer->Clear();
-
         material::SharedUniforms.View       = cam->GetView();
         material::SharedUniforms.Projection = cam->GetProjection();
 
+        renderer->SetActiveFrameBuffer(fbo, render::FrameBufferTarget::ReadWrite);
+        renderer->Clear();
+        for (const auto& obj : objs)
+            obj.Render();
+
+        renderer->SetActiveFrameBuffer(nullptr, render::FrameBufferTarget::ReadWrite);
+        renderer->Clear();
         for (const auto& obj : objs)
             obj.Render();
 
@@ -76,6 +95,35 @@ int main(int argc, char const* argv[])
     }
 
     return 0;
+}
+
+core::SharedPtr<render::IFrameBufferObject> AddSpecialCube(
+    render::IRenderer* renderer,
+    const core::Vector<core::SharedPtr<material::BaseMaterial>>& materials,
+    const core::Vector<core::SharedPtr<render::ITexture>>& loadedTextures,
+    core::Vector<RenderObject>& objs, render::IWindow* window)
+{
+    render::TextureDescriptor desc;
+
+    auto fbo = renderer->CreateFrameBufferObject({ render::FrameBufferTarget::ReadWrite });
+
+    auto fboTexture     = renderer->CreateTexture(desc);
+    desc.internalFormat = render::TextureInternalDataFormat::DEPTH32F;
+    auto fboTextureD    = renderer->CreateTexture(desc);
+
+    fboTexture->UploadData(render::TextureDataDescriptor{ nullptr, render::TextureDataFormat::RGBA,
+                                                          window->GetDimensions() });
+    fboTextureD->UploadData(render::TextureDataDescriptor{
+        nullptr, render::TextureDataFormat::DEPTH32F, window->GetDimensions() });
+
+    fbo->Attach(fboTexture);
+    fbo->Attach(fboTextureD, render::FrameBufferAttachmentTarget::Depth);
+
+    auto textures = core::Vector<core::SharedPtr<render::ITexture>>{ fboTexture };
+    auto obj = RenderObject(renderer, core::MakeShared<Mesh>(renderer), materials[2], textures);
+    obj.Transform = glm::translate(glm::vec3(5, 25, 5));
+    objs.push_back(obj);
+    return fbo;
 }
 
 core::Vector<RenderObject> BuildScene(

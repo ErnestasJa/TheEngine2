@@ -11,12 +11,14 @@ enum class TextureFilterMode
 enum class TextureDataFormat
 {
     RGB,
-    RGBA
+    RGBA,
+    DEPTH32F
 };
 enum class TextureInternalDataFormat
 {
     RGB,
-    RGBA
+    RGBA,
+    DEPTH32F
 };
 enum class TextureWrapMode
 {
@@ -38,9 +40,11 @@ struct TextureDescriptor
     TextureWrapMode wrapModeT;
 
     TextureDescriptor()
-        : type(TextureType::T2D), internalFormat(TextureInternalDataFormat::RGBA),
-          filterMode(TextureFilterMode::BILINEAR), wrapModeS(TextureWrapMode::REPEAT),
-          wrapModeT(TextureWrapMode::REPEAT)
+        : type(TextureType::T2D)
+        , internalFormat(TextureInternalDataFormat::RGBA)
+        , filterMode(TextureFilterMode::BILINEAR)
+        , wrapModeS(TextureWrapMode::REPEAT)
+        , wrapModeT(TextureWrapMode::REPEAT)
     {
     }
 };

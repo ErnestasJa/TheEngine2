@@ -6,6 +6,23 @@
 
 namespace render {
 namespace gl {
+
+template <class GpuHandleType> class gpu_object
+{
+public:
+    gpu_object(const GpuHandleType& handle)
+        : m_handle(handle){
+
+        };
+    const GpuHandleType& GetHandle()
+    {
+        return m_handle;
+    }
+
+protected:
+    GpuHandleType m_handle;
+};
+
 struct gpu_shader_handle
 {
     uint32_t id;
@@ -37,18 +54,7 @@ struct gpu_vertex_array_object_handle
     uint32_t id;
 };
 
-struct gpu_texture_handle
-{
-    uint32_t id;
-    uint32_t type;
-    uint32_t format;
-    uint32_t wrap_s;
-    uint32_t wrap_t;
-    uint32_t filter_min;
-    uint32_t filter_mag;
-};
-
-template <class T> inline bool IsHandleValid(const T& handle) DFUNC
+template <class gpu_handle> inline bool IsHandleValid(const gpu_handle& handle) DFUNC
 {
     return handle.id != 0;
 }
@@ -66,11 +72,6 @@ inline void BindHandle(const gpu_buffer_object_handle& handle) DFUNC
 inline void BindHandle(const gpu_vertex_array_object_handle& handle) DFUNC
 {
     glBindVertexArray(handle.id);
-}
-
-inline void BindHandle(const gpu_texture_handle& handle) DFUNC
-{
-    glBindTexture(handle.type, handle.id);
 }
 
 inline void FreeHandle(const gpu_shader_handle& handle) DFUNC
@@ -95,140 +96,6 @@ inline void FreeHandle(const gpu_vertex_array_object_handle& handle) DFUNC
     glDeleteVertexArrays(1, &handle.id);
 }
 
-inline void FreeHandle(const gpu_texture_handle& handle) DFUNC
-{
-    glDeleteTextures(1, &handle.id);
-}
-
-inline void SetUnpackAlignment(render::TextureDataFormat format) DFUNC
-{
-    switch (format) {
-    case render::TextureDataFormat::RGB:
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        break;
-
-    case render::TextureDataFormat::RGBA:
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-        break;
-
-    default:
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-    }
-}
-
-inline gpu_texture_handle CreateTexture(const render::TextureDescriptor& descriptor) DFUNC
-{
-    auto GetType = [&]() {
-        switch (descriptor.type) {
-        case render::TextureType::T2D:
-            return GL_TEXTURE_2D;
-        case render::TextureType::T3D:
-            return GL_TEXTURE_3D;
-        case render::TextureType::CUBEMAP:
-            return GL_TEXTURE_CUBE_MAP;
-        default:
-            return GL_TEXTURE_2D;
-        }
-    };
-
-    auto GetFormat = [&]() {
-        switch (descriptor.internalFormat) {
-        case render::TextureInternalDataFormat::RGB:
-            return GL_RGB;
-        case render::TextureInternalDataFormat::RGBA:
-            return GL_RGBA;
-        default:
-            return GL_RGBA;
-        }
-    };
-
-    auto GetWrapMode = [](render::TextureWrapMode mode) {
-        switch (mode) {
-        case render::TextureWrapMode::REPEAT:
-            return GL_REPEAT;
-        default:
-            return GL_REPEAT;
-        }
-    };
-
-    auto GetMinFilterMode = [](render::TextureFilterMode mode) {
-        switch (mode) {
-        case render::TextureFilterMode::NEAREST:
-            return GL_NEAREST;
-        case render::TextureFilterMode::BILINEAR:
-            return GL_LINEAR;
-        case render::TextureFilterMode::TRILINEAR:
-            return GL_LINEAR_MIPMAP_LINEAR;
-        default:
-            return GL_LINEAR;
-        }
-    };
-
-    auto GetMagFilterMode = [](render::TextureFilterMode mode) {
-        switch (mode) {
-        case render::TextureFilterMode::NEAREST:
-            return GL_NEAREST;
-        case render::TextureFilterMode::BILINEAR:
-            return GL_LINEAR;
-        case render::TextureFilterMode::TRILINEAR:
-            return GL_LINEAR;
-        default:
-            return GL_LINEAR;
-        }
-    };
-
-    gpu_texture_handle handle;
-    handle.type       = GetType();
-    handle.format     = GetFormat();
-    handle.wrap_s     = GetWrapMode(descriptor.wrapModeS);
-    handle.wrap_t     = GetWrapMode(descriptor.wrapModeT);
-    handle.filter_min = GetMinFilterMode(descriptor.filterMode);
-    handle.filter_mag = GetMagFilterMode(descriptor.filterMode);
-
-    glGenTextures(1, &handle.id);
-    BindHandle(handle);
-    glTexParameteri(handle.type, GL_TEXTURE_WRAP_S, handle.wrap_s);
-    glTexParameteri(handle.type, GL_TEXTURE_WRAP_T, handle.wrap_t);
-    glTexParameteri(handle.type, GL_TEXTURE_MIN_FILTER, handle.filter_min);
-    glTexParameteri(handle.type, GL_TEXTURE_MAG_FILTER, handle.filter_mag);
-    glTexParameteri(handle.type, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-
-    return handle;
-}
-
-inline void SetTextureActiveBindingSlot(uint32_t active_binding_slot) DFUNC
-{
-    glActiveTexture(GL_TEXTURE0 + active_binding_slot);
-}
-
-inline bool TextureShouldUseMipMaps(const gpu_texture_handle& handle) DFUNC
-{
-    return handle.filter_min == GL_LINEAR_MIPMAP_LINEAR;
-}
-
-inline void UploadTextureData(const gpu_texture_handle& handle,
-                              const TextureDataDescriptor& descriptor) DFUNC
-{
-    auto GetFormat = [&]() {
-        switch (descriptor.format) {
-        case render::TextureDataFormat::RGB:
-            return GL_RGB;
-        case render::TextureDataFormat::RGBA:
-            return GL_RGBA;
-        default:
-            return GL_RGBA;
-        }
-    };
-
-    uint32_t imageFormat = GetFormat();
-    glTexImage2D(handle.type, 0, handle.format, descriptor.size.x, descriptor.size.y, 0,
-                 imageFormat, GL_UNSIGNED_BYTE, descriptor.data);
-
-    if (TextureShouldUseMipMaps(handle)) {
-        glGenerateMipmap(handle.type);
-    }
-}
-
 inline bool CheckAndPrintShaderCompileStatus(uint32_t shader) DFUNC
 {
     GLint isCompiled = 0;
@@ -236,7 +103,7 @@ inline bool CheckAndPrintShaderCompileStatus(uint32_t shader) DFUNC
 
     if (isCompiled == GL_FALSE) {
         GLint maxLength     = 1024;
-        char errorLog[1024] = {'\0'};
+        char errorLog[1024] = { '\0' };
         glGetShaderInfoLog(shader, maxLength, &maxLength, &errorLog[0]);
 
         printf("SHADER COMPILE STATUS: %s \n", errorLog);
@@ -253,7 +120,7 @@ inline bool CheckLinkStatus(const gpu_shader_handle& handle) DFUNC
 
     if (isLinked == GL_FALSE) {
         GLint maxLength     = 1024;
-        char errorLog[1024] = {'\0'};
+        char errorLog[1024] = { '\0' };
         glGetProgramiv(handle.id, GL_INFO_LOG_LENGTH, &maxLength);
         glGetProgramInfoLog(handle.id, maxLength, &maxLength, &errorLog[0]);
 
@@ -311,11 +178,11 @@ inline gpu_shader_handle CreateProgram(uint32_t vert_program, uint32_t frag_prog
 {
     uint32_t program = glCreateProgram();
 
-    gpu_shader_handle handle{program, vert_program, frag_program, geom_program};
+    gpu_shader_handle handle{ program, vert_program, frag_program, geom_program };
 
     if (LinkProgram(handle) == false) {
         FreeHandle(handle);
-        return gpu_shader_handle{0, 0, 0, 0};
+        return gpu_shader_handle{ 0, 0, 0, 0 };
     }
 
     return handle;
@@ -350,7 +217,7 @@ inline gpu_shader_uniform_handle GetUniform(uint32_t id, uint32_t index) DFUNC
 
     ASSERT(location != -1);
 
-    return gpu_shader_uniform_handle{(uint32_t)location, id, type, name};
+    return gpu_shader_uniform_handle{ (uint32_t)location, id, type, name };
 }
 
 inline void SetUniform(const gpu_shader_uniform_handle& handle, int value) DFUNC

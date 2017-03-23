@@ -8,6 +8,7 @@
 
 /*Standard c/c++ headers*/
 #include <array>
+#include <assert.h>
 #include <cstdint>
 #include <limits>
 #include <memory>

@@ -1,6 +1,8 @@
 #ifndef IRENDERER_H
 #define IRENDERER_H
 
+#include "CFrameBufferObject.h"
+
 namespace render {
 // Note: remove these
 using Vec2i = core::pod::Vec2<int32_t>;
@@ -14,9 +16,14 @@ class IGpuProgram;
 class IGpuBufferObject;
 class IGpuBufferArrayObject;
 class IRendererDebugMessageMonitor;
+class ITexture;
+class IFrameBufferObject;
+
 struct BufferDescriptor;
 struct TextureDescriptor;
+struct FrameBufferObjectDescriptor;
 class ITexture;
+
 class IRenderer
 {
 public:
@@ -28,11 +35,15 @@ public:
                                                        const core::String& fragSource = "",
                                                        const core::String& geomSource = "") = 0;
     virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
-        const core::Vector<BufferDescriptor>& descriptors)                                  = 0;
-    virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor)    = 0;
+        const core::Vector<BufferDescriptor>& descriptors)                               = 0;
+    virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) = 0;
+    virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
+        const FrameBufferObjectDescriptor& descriptor)                                      = 0;
     virtual void SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures) = 0;
-    virtual void SetClearColor(const Vec3i& color)                                          = 0;
-    virtual void Clear()                                                                    = 0;
+    virtual void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
+                                      FrameBufferTarget target) = 0;
+    virtual void SetClearColor(const Vec3i& color)              = 0;
+    virtual void Clear()                                        = 0;
 };
 }
 

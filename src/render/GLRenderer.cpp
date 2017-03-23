@@ -1,4 +1,5 @@
 #include "GLRenderer.h"
+#include "GLFrameBufferObject.h"
 #include "GLGpuBufferArrayObject.h"
 #include "GLGpuBufferObject.h"
 #include "GLGpuShaderProgram.h"
@@ -73,23 +74,28 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
 
 core::SharedPtr<ITexture> GLRenderer::CreateTexture(const TextureDescriptor& descriptor)
 {
-    auto handle = gl::CreateTexture(descriptor);
+    return GLTexture::CreateTexture(descriptor);
+}
 
-    if (gl::IsHandleValid(handle)) {
-        auto texture = core::MakeShared<GLTexture>(handle);
-        return texture;
-    }
-
-    return nullptr;
+core::SharedPtr<IFrameBufferObject> GLRenderer::CreateFrameBufferObject(
+    const FrameBufferObjectDescriptor& descriptor)
+{
+    return GLFrameBufferObject::CreateFrameBufferObject(descriptor);
 }
 
 void GLRenderer::SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures)
 {
     for (uint32_t i = 0; i < textures.size(); i++) {
-        const auto& tex = textures[i];
-        gl::SetTextureActiveBindingSlot(i);
-        static_cast<GLTexture*>(tex.get())->Bind();
+        auto texture = static_cast<GLTexture*>(textures[i].get());
+        GLTexture::BindObject(texture, i);
     }
+}
+
+void GLRenderer::SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
+                                      FrameBufferTarget target)
+{
+    m_activeFrameBufferObject = std::static_pointer_cast<GLFrameBufferObject>(fbo);
+    GLFrameBufferObject::BindObject(m_activeFrameBufferObject.get(), target);
 }
 
 void GLRenderer::SetClearColor(const Vec3i& color)
