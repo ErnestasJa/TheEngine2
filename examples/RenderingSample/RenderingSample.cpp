@@ -106,18 +106,17 @@ core::SharedPtr<render::IFrameBufferObject> AddSpecialCube(
     render::TextureDescriptor desc;
 
     auto fbo = renderer->CreateFrameBufferObject({ render::FrameBufferTarget::ReadWrite });
+	auto rbo = renderer->CreateRenderBufferObject(
+		render::RenderBufferObjectDescriptor(window->GetDimensions(), render::RenderBufferObjectInternalDataFormat::DEPTH16));
 
     auto fboTexture     = renderer->CreateTexture(desc);
     desc.internalFormat = render::TextureInternalDataFormat::DEPTH32F;
-    auto fboTextureD    = renderer->CreateTexture(desc);
 
     fboTexture->UploadData(render::TextureDataDescriptor{ nullptr, render::TextureDataFormat::RGBA,
                                                           window->GetDimensions() });
-    fboTextureD->UploadData(render::TextureDataDescriptor{
-        nullptr, render::TextureDataFormat::DEPTH32F, window->GetDimensions() });
-
-    fbo->Attach(fboTexture);
-    fbo->Attach(fboTextureD, render::FrameBufferAttachmentTarget::Depth);
+    
+	fbo->Attach(fboTexture);
+	fbo->Attach(rbo, render::FrameBufferAttachmentTarget::Depth);
 
     auto textures = core::Vector<core::SharedPtr<render::ITexture>>{ fboTexture };
     auto obj = RenderObject(renderer, core::MakeShared<Mesh>(renderer), materials[2], textures);

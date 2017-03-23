@@ -6,6 +6,7 @@
 namespace render {
 
 class ITexture;
+class IRenderBufferObject;
 class IFrameBufferObject
 {
 public:
@@ -15,7 +16,12 @@ public:
         core::SharedPtr<ITexture> attachment,
         FrameBufferAttachmentTarget attachmentTarget = FrameBufferAttachmentTarget::Color,
         uint32_t attachmentPoint = 0) = 0;
-    virtual bool GetStatus()          = 0;
+
+    virtual void Attach(
+        core::SharedPtr<IRenderBufferObject> attachment,
+        FrameBufferAttachmentTarget attachmentTarget = FrameBufferAttachmentTarget::Color) = 0;
+
+    virtual bool GetStatus() = 0;
 };
 }
 

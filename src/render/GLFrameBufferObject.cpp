@@ -1,4 +1,5 @@
 #include "GLFrameBufferObject.h"
+#include "GLRenderBufferObject.h"
 #include "GLTexture.h"
 #include "log/LogInc.h"
 
@@ -83,18 +84,49 @@ void GLFrameBufferObject::Attach(core::SharedPtr<ITexture> attachment,
     auto glTexure = static_cast<render::GLTexture*>(attachment.get());
 
     if (attachmentTarget == FrameBufferAttachmentTarget::Color) {
+        if (attachmentPoint == 0) {
+            m_renderBufferAttachment = nullptr;
+        }
+
         m_colorTextures[attachmentPoint] = attachment;
         glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentPoint + GL_COLOR_ATTACHMENT0,
                                GL_TEXTURE_2D, glTexure->GetHandle().id, 0);
     }
     else if (attachmentTarget == FrameBufferAttachmentTarget::Depth) {
-        m_depthTexture = attachment;
+        m_renderBufferAttachment = nullptr;
+        m_depthTexture           = attachment;
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
                                glTexure->GetHandle().id, 0);
     }
 
     glBindFramebuffer(m_handle.target, 0);
 }
+
+
+void GLFrameBufferObject::Attach(core::SharedPtr<IRenderBufferObject> attachment,
+                                 FrameBufferAttachmentTarget attachmentTarget)
+{
+    glBindFramebuffer(m_handle.target, m_handle.id);
+
+    auto rbo = static_cast<render::GLRenderBufferObject*>(attachment.get());
+
+    if (attachmentTarget == FrameBufferAttachmentTarget::Color) {
+        m_colorTextures[0]       = nullptr;
+        m_renderBufferAttachment = attachment;
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER,
+                               rbo->GetHandle().id, 0);
+    }
+    else if (attachmentTarget == FrameBufferAttachmentTarget::Depth) {
+        m_depthTexture           = nullptr;
+        m_renderBufferAttachment = attachment;
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
+                               rbo->GetHandle().id, 0);
+    }
+
+    glBindFramebuffer(m_handle.target, 0);
+}
+
 
 bool GLFrameBufferObject::GetStatus()
 {

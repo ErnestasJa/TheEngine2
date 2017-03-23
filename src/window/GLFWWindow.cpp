@@ -2,7 +2,7 @@
 #include "GLFWWindow.h"
 #include "GLFWInputDevice.h"
 #include "log/LogInc.h"
-#include "GLXW/glxw.h"
+#include "../render/GLBindingInc.h"
 #include "GLFW/glfw3.h"
 // clang-format on
 

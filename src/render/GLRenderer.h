@@ -24,6 +24,8 @@ public:
     virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor);
     virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
         const FrameBufferObjectDescriptor& descriptor);
+    virtual core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(
+        const RenderBufferObjectDescriptor& descriptor);
 
     virtual void SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures);
     virtual void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,

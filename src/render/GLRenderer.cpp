@@ -1,8 +1,9 @@
-#include "GLRenderer.h"
 #include "GLFrameBufferObject.h"
 #include "GLGpuBufferArrayObject.h"
 #include "GLGpuBufferObject.h"
 #include "GLGpuShaderProgram.h"
+#include "GLRenderBufferObject.h"
+#include "GLRenderer.h"
 #include "GLRendererDebugMessageMonitor.h"
 #include "GLTexture.h"
 #include "OpenGL.hpp"
@@ -81,6 +82,13 @@ core::SharedPtr<IFrameBufferObject> GLRenderer::CreateFrameBufferObject(
     const FrameBufferObjectDescriptor& descriptor)
 {
     return GLFrameBufferObject::CreateFrameBufferObject(descriptor);
+}
+
+
+core::SharedPtr<IRenderBufferObject> GLRenderer::CreateRenderBufferObject(
+    const RenderBufferObjectDescriptor& descriptor)
+{
+    return GLRenderBufferObject::Create(descriptor);
 }
 
 void GLRenderer::SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures)

@@ -2,6 +2,7 @@
 #define IRENDERER_H
 
 #include "CFrameBufferObject.h"
+#include "CRenderBufferObject.h"
 
 namespace render {
 // Note: remove these
@@ -18,6 +19,7 @@ class IGpuBufferArrayObject;
 class IRendererDebugMessageMonitor;
 class ITexture;
 class IFrameBufferObject;
+class IRenderBufferObject;
 
 struct BufferDescriptor;
 struct TextureDescriptor;
@@ -38,7 +40,9 @@ public:
         const core::Vector<BufferDescriptor>& descriptors)                               = 0;
     virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) = 0;
     virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
-        const FrameBufferObjectDescriptor& descriptor)                                      = 0;
+        const FrameBufferObjectDescriptor& descriptor) = 0;
+    virtual core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(
+        const RenderBufferObjectDescriptor& descriptor)                                     = 0;
     virtual void SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures) = 0;
     virtual void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
                                       FrameBufferTarget target) = 0;

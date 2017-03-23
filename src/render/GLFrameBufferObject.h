@@ -30,12 +30,19 @@ public:
         core::SharedPtr<ITexture> attachment,
         FrameBufferAttachmentTarget attachmentTarget = FrameBufferAttachmentTarget::Color,
         uint32_t attachmentPoint                     = 0);
+
+    virtual void Attach(
+        core::SharedPtr<IRenderBufferObject> attachment,
+        FrameBufferAttachmentTarget attachmentTarget = FrameBufferAttachmentTarget::Color);
+
+
     virtual bool GetStatus();
 
 
 private:
     core::SharedPtr<ITexture> m_depthTexture;
     core::SharedPtr<ITexture> m_colorTextures[GLFrameBufferObject::AttachmentCount];
+    core::SharedPtr<IRenderBufferObject> m_renderBufferAttachment;
 };
 }
 

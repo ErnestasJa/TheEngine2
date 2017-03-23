@@ -92,6 +92,7 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/render/GLRenderContext.cpp"
 	"${ENGINE_SRC_PATH}/render/GLTexture.cpp"
 	"${ENGINE_SRC_PATH}/render/GLFrameBufferObject.cpp"
+	"${ENGINE_SRC_PATH}/render/GLRenderBufferObject.cpp"
 )
 
 add_library(engine STATIC
