@@ -433,20 +433,17 @@ void ImGui_ImplGlfwGL3_NewFrame()
     }
 
     for (int i = 0; i < 3; i++) {
-        io.MouseDown[i] = g_MousePressed[i] || glfwGetMouseButton(g_Window, i) !=
-                                                   0; // If a mouse press event came, always pass it
-                                                      // as "mouse held this frame", so we don't
-                                                      // miss click-release events that are shorter
-                                                      // than 1 frame.
+        io.MouseDown[i] =
+            g_MousePressed[i] ||
+            glfwGetMouseButton(g_Window, i) != 0; // If a mouse press event came, always pass it
+                                                  // as "mouse held this frame", so we don't
+                                                  // miss click-release events that are shorter
+                                                  // than 1 frame.
         g_MousePressed[i] = false;
     }
 
     io.MouseWheel = g_MouseWheel;
     g_MouseWheel  = 0.0f;
-
-    // Hide OS mouse cursor if ImGui is drawing it
-    glfwSetInputMode(g_Window, GLFW_CURSOR,
-                     io.MouseDrawCursor ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL);
 
     // Start the frame
     ImGui::NewFrame();

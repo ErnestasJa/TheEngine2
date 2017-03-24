@@ -23,6 +23,8 @@ private:
 private:
     GLFWwindow* m_window;
     core::Vector<core::SharedPtr<input::InputHandler>> m_handlers;
+    core::Vector<core::SharedPtr<input::InputHandler>> m_handlersToRemove;
+    core::Vector<core::SharedPtr<input::InputHandler>> m_handlersToAdd;
 };
 
 #endif
