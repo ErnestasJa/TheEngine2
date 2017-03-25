@@ -20,6 +20,7 @@ public:
     virtual bool PollEvents();
     virtual void SwapBuffers();
     virtual bool ShouldClose();
+    virtual void Close();
     virtual core::WeakPtr<input::IInputDevice> GetInputDevice();
     virtual const SWindowDefinition& GetWindowDefinition();
     virtual void UpdateContext(); /// this is to be called after creating
@@ -31,6 +32,7 @@ private:
     SWindowDefinition m_windowDefinition;
     GLFWwindow* m_window;
     core::SharedPtr<input::IInputDevice> m_inputDevice;
+    bool m_close;
 };
 }
 

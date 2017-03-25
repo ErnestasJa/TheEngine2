@@ -9,6 +9,7 @@
 namespace render {
 GLFWWindow::GLFWWindow()
     : m_window(nullptr)
+    , m_close(false)
 {
 }
 
@@ -127,7 +128,12 @@ void GLFWWindow::SwapBuffers()
 
 bool GLFWWindow::ShouldClose()
 {
-    return m_window == nullptr || glfwWindowShouldClose(m_window);
+    return m_window == nullptr || glfwWindowShouldClose(m_window) || m_close;
+}
+
+void GLFWWindow::Close()
+{
+    m_close = true;
 }
 
 core::WeakPtr<input::IInputDevice> GLFWWindow::GetInputDevice()

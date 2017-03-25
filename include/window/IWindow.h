@@ -27,6 +27,7 @@ public:
     virtual bool PollEvents()                                              = 0;
     virtual void SwapBuffers()                                             = 0;
     virtual bool ShouldClose()                                             = 0;
+    virtual void Close()                                                   = 0;
     virtual core::WeakPtr<input::IInputDevice> GetInputDevice()            = 0;
     virtual void SetCursorMode(CursorMode cursorMode)                      = 0;
 };
