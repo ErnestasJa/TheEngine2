@@ -75,6 +75,7 @@ bool GLFWWindow::Init(const SWindowDefinition& wDef)
         glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y, wDef.Title.c_str(), NULL, NULL);
 
     glfwMakeContextCurrent(m_window);
+	glfwSwapInterval(0);
 
     if (m_window == nullptr) {
         return false;
