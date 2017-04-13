@@ -17,7 +17,6 @@ endif()
 
 
 set(ENGINE_PATH "" CACHE PATH "Set this to directory which contains 'include', 'src' directories for engine")
-set(BUILD_DIR "" CACHE PATH "Set this to directory to your build dir.")
 set(ENGINE_SRC_PATH "${ENGINE_PATH}/src" )
 set(ENGINE_INC_PATH "${ENGINE_PATH}/include" )
 set(LIB_PATH "${ENGINE_PATH}/third_party" )
@@ -45,7 +44,7 @@ include_directories("${ENGINE_INC_PATH}/"
 	"${LIB_PATH}/imgui/imgui"
 )
 
-file(GLOB_RECURSE ENGINE_INCLUDES 
+file(GLOB_RECURSE ENGINE_INCLUDES
     "${ENGINE_SRC_PATH}/*.h"
     "${ENGINE_SRC_PATH}/*.hpp"
     "${ENGINE_INC_PATH}/*.h"

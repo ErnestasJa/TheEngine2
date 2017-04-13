@@ -22,7 +22,7 @@ libPath = PathBuilder(buildPath.Join("lib"))
 
 
 compiler = GetCompiler(compiler = args.compiler)
-CMaker = CMakeCommand(compiler, defines={'BUILD_DIR':str(binPath)})
+CMaker = CMakeCommand(compiler)
 
 if args.clean:
     FileSystem.RemoveDir(str(binPath))

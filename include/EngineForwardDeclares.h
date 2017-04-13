@@ -10,6 +10,7 @@
 namespace io {
 class Path;
 class IFileReader;
+class IFileSystem;
 }
 
 /* ===== Aliases  ===== */
