@@ -29,8 +29,17 @@ template <class T> struct Vec2
         {
             T w, h;
         };
-        T val[2];
     };
+
+    Vec2()
+    {
+    }
+
+    Vec2(T _x, T _y)
+        : x(_x)
+        , y(_y)
+    {
+    }
 };
 
 template <class T> struct Vec3
@@ -45,8 +54,18 @@ template <class T> struct Vec3
         {
             T r, g, b;
         };
-        T val[3];
     };
+
+    Vec3()
+    {
+    }
+
+    Vec3(T _x, T _y, T _z)
+        : x(_x)
+        , y(_y)
+        , z(_z)
+    {
+    }
 };
 
 template <class T> struct Vec4
@@ -61,8 +80,19 @@ template <class T> struct Vec4
         {
             T r, g, b, a;
         };
-        T val[4];
     };
+
+    Vec4()
+    {
+    }
+
+    Vec4(T _x, T _y, T _z, T _w)
+        : x(_x)
+        , y(_y)
+        , z(_z)
+        , w(_w)
+    {
+    }
 };
 }
 }
