@@ -54,27 +54,27 @@ struct gpu_vertex_array_object_handle
     uint32_t id;
 };
 
-template <class gpu_handle> inline bool IsHandleValid(const gpu_handle& handle) DFUNC
+template <class gpu_handle> inline bool IsHandleValid(const gpu_handle& handle)
 {
     return handle.id != 0;
 }
 
-inline void BindHandle(const gpu_shader_handle& handle) DFUNC
+inline void BindHandle(const gpu_shader_handle& handle)
 {
     glUseProgram(handle.id);
 }
 
-inline void BindHandle(const gpu_buffer_object_handle& handle) DFUNC
+inline void BindHandle(const gpu_buffer_object_handle& handle)
 {
     glBindBuffer(handle.buffer_type, handle.id);
 }
 
-inline void BindHandle(const gpu_vertex_array_object_handle& handle) DFUNC
+inline void BindHandle(const gpu_vertex_array_object_handle& handle)
 {
     glBindVertexArray(handle.id);
 }
 
-inline void FreeHandle(const gpu_shader_handle& handle) DFUNC
+inline void FreeHandle(const gpu_shader_handle& handle)
 {
     glDeleteProgram(handle.id);
 
@@ -86,17 +86,17 @@ inline void FreeHandle(const gpu_shader_handle& handle) DFUNC
         glDeleteShader(handle.geometry_program_id);
 }
 
-inline void FreeHandle(const gpu_buffer_object_handle& handle) DFUNC
+inline void FreeHandle(const gpu_buffer_object_handle& handle)
 {
     glDeleteBuffers(1, &handle.id);
 }
 
-inline void FreeHandle(const gpu_vertex_array_object_handle& handle) DFUNC
+inline void FreeHandle(const gpu_vertex_array_object_handle& handle)
 {
     glDeleteVertexArrays(1, &handle.id);
 }
 
-inline bool CheckAndPrintShaderCompileStatus(uint32_t shader) DFUNC
+inline bool CheckAndPrintShaderCompileStatus(uint32_t shader)
 {
     GLint isCompiled = 0;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
@@ -113,7 +113,7 @@ inline bool CheckAndPrintShaderCompileStatus(uint32_t shader) DFUNC
     return true;
 }
 
-inline bool CheckLinkStatus(const gpu_shader_handle& handle) DFUNC
+inline bool CheckLinkStatus(const gpu_shader_handle& handle)
 {
     int32_t isLinked = 0;
     glGetProgramiv(handle.id, GL_LINK_STATUS, (int32_t*)&isLinked);
@@ -131,7 +131,7 @@ inline bool CheckLinkStatus(const gpu_shader_handle& handle) DFUNC
     return true;
 }
 
-inline uint32_t CreateShaderFromString(uint32_t type, const char* source) DFUNC
+inline uint32_t CreateShaderFromString(uint32_t type, const char* source)
 {
     if (source && source[0] != core::string::NullTerminator) {
         uint32_t shader = glCreateShader(type);
@@ -148,7 +148,7 @@ inline uint32_t CreateShaderFromString(uint32_t type, const char* source) DFUNC
     return 0;
 }
 
-inline bool LinkProgram(const gpu_shader_handle& handle) DFUNC
+inline bool LinkProgram(const gpu_shader_handle& handle)
 {
     if (handle.vertex_program_id)
         glAttachShader(handle.id, handle.vertex_program_id);
@@ -174,7 +174,7 @@ inline bool LinkProgram(const gpu_shader_handle& handle) DFUNC
 }
 
 inline gpu_shader_handle CreateProgram(uint32_t vert_program, uint32_t frag_program,
-                                       uint32_t geom_program) DFUNC
+                                       uint32_t geom_program)
 {
     uint32_t program = glCreateProgram();
 
@@ -190,7 +190,7 @@ inline gpu_shader_handle CreateProgram(uint32_t vert_program, uint32_t frag_prog
 
 inline gpu_shader_handle CreatePipelineFromShaderStrings(const char* vertSource,
                                                          const char* fragSource,
-                                                         const char* geomSource) DFUNC
+                                                         const char* geomSource)
 {
     uint32_t vs = CreateShaderFromString(GL_VERTEX_SHADER, vertSource);
     uint32_t fs = CreateShaderFromString(GL_FRAGMENT_SHADER, fragSource);
@@ -199,14 +199,14 @@ inline gpu_shader_handle CreatePipelineFromShaderStrings(const char* vertSource,
     return CreateProgram(vs, fs, gs);
 }
 
-inline uint32_t GetUniformCount(uint32_t id) DFUNC
+inline uint32_t GetUniformCount(uint32_t id)
 {
     int32_t count = 0;
     glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count);
     return count < 0 ? 0 : count;
 }
 
-inline gpu_shader_uniform_handle GetUniform(uint32_t id, uint32_t index) DFUNC
+inline gpu_shader_uniform_handle GetUniform(uint32_t id, uint32_t index)
 {
     int32_t name_len = -1, size = -1;
     uint32_t type = -1;
@@ -220,47 +220,44 @@ inline gpu_shader_uniform_handle GetUniform(uint32_t id, uint32_t index) DFUNC
     return gpu_shader_uniform_handle{ (uint32_t)location, id, type, name };
 }
 
-inline void SetUniform(const gpu_shader_uniform_handle& handle, int value) DFUNC
+inline void SetUniform(const gpu_shader_uniform_handle& handle, int value)
 {
-	glUniform1i(handle.id, value);
+    glUniform1i(handle.id, value);
 }
 
-inline void SetUniform(const gpu_shader_uniform_handle& handle, float value) DFUNC
+inline void SetUniform(const gpu_shader_uniform_handle& handle, float value)
 {
     glUniform1f(handle.id, value);
 }
 
-inline void SetUniform(const gpu_shader_uniform_handle& handle,
-                       const core::pod::Vec2<float>& value) DFUNC
+inline void SetUniform(const gpu_shader_uniform_handle& handle, const core::pod::Vec2<float>& value)
 {
     glUniform2fv(handle.id, 1, &value.x);
 }
 
-inline void SetUniform(const gpu_shader_uniform_handle& handle,
-                       const core::pod::Vec3<float>& value) DFUNC
+inline void SetUniform(const gpu_shader_uniform_handle& handle, const core::pod::Vec3<float>& value)
 {
     glUniform3fv(handle.id, 1, &value.x);
 }
 
-inline void SetUniform(const gpu_shader_uniform_handle& handle,
-                       const core::pod::Vec4<float>& value) DFUNC
+inline void SetUniform(const gpu_shader_uniform_handle& handle, const core::pod::Vec4<float>& value)
 {
     glUniform4fv(handle.id, 1, &value.x);
 }
 
 inline void SetUniformMat4(const gpu_shader_uniform_handle& handle, float* value,
-                           bool transpose = false) DFUNC
+                           bool transpose = false)
 {
     glUniformMatrix4fv(handle.id, 1, transpose, value);
 }
 
 inline void SetUniformMat3(const gpu_shader_uniform_handle& handle, float* value,
-                           bool transpose = false) DFUNC
+                           bool transpose = false)
 {
     glUniformMatrix3fv(handle.id, 1, transpose, value);
 }
 
-inline core::Vector<gpu_buffer_object_handle> CreateGpuStorages(uint32_t count) DFUNC
+inline core::Vector<gpu_buffer_object_handle> CreateGpuStorages(uint32_t count)
 {
     auto handles = core::Vector<gpu_buffer_object_handle>();
     auto buffers = core::UniquePtr<uint32_t[]>(new uint32_t[count]);
@@ -276,13 +273,13 @@ inline core::Vector<gpu_buffer_object_handle> CreateGpuStorages(uint32_t count) 
 }
 
 inline void UpdateBufferObject(const gpu_buffer_object_handle& handle, uint32_t buffer_size,
-                               void* data) DFUNC
+                               void* data)
 {
     glBufferData(handle.buffer_type, buffer_size * handle.component_count * handle.component_size,
                  data, GL_STATIC_DRAW);
 }
 
-inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle) DFUNC
+inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle)
 {
     if (handle.buffer_type == GL_ARRAY_BUFFER) {
         glEnableVertexAttribArray(handle.index);
@@ -291,34 +288,39 @@ inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle) DFUN
     }
 }
 
-inline gpu_vertex_array_object_handle CreateVertexArrayObject() DFUNC
+inline gpu_vertex_array_object_handle CreateVertexArrayObject()
 {
     gpu_vertex_array_object_handle handle;
     glGenVertexArrays(1, &handle.id);
     return handle;
 }
 
-inline void Render(const gpu_buffer_object_handle& handle, uint32_t count) DFUNC
+inline void Render(const gpu_buffer_object_handle& handle, uint32_t count)
 {
     glDrawElements(GL_TRIANGLES, count, handle.component_type, 0);
 }
 
-inline void SetClearColor(const core::pod::Vec3<int32_t>& color) DFUNC
+inline void RenderLines(const gpu_buffer_object_handle& handle, uint32_t count)
+{
+    glDrawElements(GL_LINES, count, handle.component_type, 0);
+}
+
+inline void SetClearColor(const core::pod::Vec3<int32_t>& color)
 {
     glClearColor(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, 1);
 }
 
-inline void Clear() DFUNC
+inline void Clear()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-inline uint32_t GetGLBufferObjectType(render::BufferObjectType type) DFUNC
+inline uint32_t GetGLBufferObjectType(render::BufferObjectType type)
 {
     return type == render::BufferObjectType::index ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
 }
 
-inline void ProcessHandle(const BufferDescriptor& desc, gpu_buffer_object_handle& handle) DFUNC
+inline void ProcessHandle(const BufferDescriptor& desc, gpu_buffer_object_handle& handle)
 {
     auto GetByteCount = [&]() {
         switch (desc.component_type) {

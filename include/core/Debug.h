@@ -7,15 +7,13 @@
 
 
 #ifdef ENGINE_DEBUG
-	#define ASSERT(assertion)                                                                          \
-		if ((assertion) == false) {                                                                    \
-			printf("ASSERT FAILED: %s\n", #assertion);                                                 \
-			exit(-1);                                                                                  \
-		}
-	#define DFUNC __attribute__((noinline))
+#define ASSERT(assertion)                                                                          \
+    if ((assertion) == false) {                                                                    \
+        printf("ASSERT FAILED: %s\n", #assertion);                                                 \
+        exit(-1);                                                                                  \
+    }
 #else
-	#define ASSERT(assertion)
-	#define DFUNC
+#define ASSERT(assertion)
 #endif
 
 #endif

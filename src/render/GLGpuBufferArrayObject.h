@@ -19,6 +19,7 @@ public:
     virtual IGpuBufferObject* GetBufferObject(uint32_t index);
     virtual uint32_t GetBufferObjectCount();
     virtual void Render(uint32_t count);
+    virtual void RenderLines(uint32_t count);
 
 public:
     void EnableBuffers();

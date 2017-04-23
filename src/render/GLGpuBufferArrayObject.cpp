@@ -52,6 +52,13 @@ void GLGpuBufferArrayObject::Render(uint32_t count)
     gl::Render(static_cast<GLGpuBufferObject*>(GetIndexBuffer())->GetHandle(), count);
 }
 
+void GLGpuBufferArrayObject::RenderLines(uint32_t count)
+{
+    gl::BindHandle(m_handle);
+    GetIndexBuffer()->Bind();
+    gl::RenderLines(static_cast<GLGpuBufferObject*>(GetIndexBuffer())->GetHandle(), count);
+}
+
 void GLGpuBufferArrayObject::EnableBuffers()
 {
     gl::BindHandle(m_handle);

@@ -2,7 +2,7 @@
 
 namespace render {
 /// free functions
-inline void SetUnpackAlignment(render::TextureDataFormat format) DFUNC
+inline void SetUnpackAlignment(render::TextureDataFormat format)
 {
     switch (format) {
     case render::TextureDataFormat::RGB:
