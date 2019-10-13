@@ -25,6 +25,9 @@ const void GLGpuShaderProgramUniform::Set(float value)
 {
     gl::SetUniform(m_handle, value);
 }
+const void GLGpuShaderProgramUniform::Set(const int size, float* vec){
+    gl::SetUniform(m_handle, size, vec);
+}
 
 const void GLGpuShaderProgramUniform::Set(const core::pod::Vec2<float>& value)
 {

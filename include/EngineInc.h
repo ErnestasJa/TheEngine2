@@ -28,5 +28,6 @@
 #include "core/POD.h"
 #include "core/StringUtil.h"
 #include "core/TypeUtils.h"
+#include "log/LogInc.h"
 
 #endif

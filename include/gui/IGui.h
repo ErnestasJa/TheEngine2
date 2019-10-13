@@ -1,8 +1,8 @@
 #ifndef GUI_INC_H
 #define GUI_INC_H
 
+#include "engine/IEngineContext.h"
 #include "imgui.h"
-#include "render/IRenderContext.h"
 
 namespace gui {
 class IGui
@@ -12,7 +12,7 @@ public:
     virtual void EndRender()   = 0;
 };
 
-core::SharedPtr<IGui> CreateGui(core::SharedPtr<render::IRenderContext> context);
+core::SharedPtr<IGui> CreateGui(core::SharedPtr<engine::IEngineContext> context);
 }
 
 #endif

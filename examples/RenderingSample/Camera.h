@@ -4,43 +4,43 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
-class Camera
-{
-public:
-    Camera(float aspectRatio, float FOV = 45.0f, float nearPlane = 0.1,
-           float farPlane = 2048.0f)
-        : m_aspectRatio(aspectRatio),
-          m_fov(FOV),
-          m_far(farPlane),
-          m_near(nearPlane)
+    class Camera
     {
-        SetRotation(glm::vec3());
-        m_projectionMatrix =
-            glm::perspective(m_fov, m_aspectRatio, m_near, m_far);
-    }
+    public:
+        Camera(float aspectRatio, float FOV = 45.0f, float nearPlane = 0.1,
+               float farPlane = 2048.0f)
+                : m_aspectRatio(aspectRatio),
+                  m_fov(FOV),
+                  m_far(farPlane),
+                  m_near(nearPlane)
+        {
+            SetRotation(glm::vec3());
+            m_projectionMatrix =
+                    glm::perspective(m_fov, m_aspectRatio, m_near, m_far);
+        }
 
-    void SetRotation(const glm::vec3& rotation)
-    {
-        m_rotation = rotation;
-        Update();
-    }
+        void SetRotation(const glm::vec3& rotation)
+        {
+            m_rotation = rotation;
+            Update();
+        }
 
-    void MoveForward(float amount)
-    {
-        m_position += m_direction * amount;
-        Update();
-    }
+        void MoveForward(float amount)
+        {
+            m_position += m_direction * amount;
+            Update();
+        }
 
-    void MoveStrafe(float amount)
-    {
-        m_position += m_right * amount;
-        Update();
-    }
+        void MoveStrafe(float amount)
+        {
+            m_position += m_right * amount;
+            Update();
+        }
 
-    const glm::vec3& GetRotation()
-    {
-        return m_rotation;
-    }
+        const glm::vec3& GetRotation()
+        {
+            return m_rotation;
+        }
 
     const glm::mat4& GetView()
     {

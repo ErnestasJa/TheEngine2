@@ -6,13 +6,13 @@ namespace gui {
 class GuiImpl : public IGui
 {
 public:
-    GuiImpl(core::SharedPtr<render::IRenderContext> context);
+    GuiImpl(core::SharedPtr<engine::IEngineContext> context);
     virtual ~GuiImpl();
     void BeginRender();
     void EndRender();
 
 private:
-    core::SharedPtr<render::IRenderContext> m_context;
+    core::SharedPtr<engine::IEngineContext> m_context;
 };
 }
 

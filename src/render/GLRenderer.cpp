@@ -1,13 +1,17 @@
+#include "GLRenderer.h"
 #include "GLFrameBufferObject.h"
 #include "GLGpuBufferArrayObject.h"
 #include "GLGpuBufferObject.h"
 #include "GLGpuShaderProgram.h"
 #include "GLRenderBufferObject.h"
-#include "GLRenderer.h"
 #include "GLRendererDebugMessageMonitor.h"
 #include "GLTexture.h"
 #include "OpenGL.hpp"
+#include "RenderContext.h"
+#include "render/BaseMesh.h"
 #include "render/CTexture.h"
+#include "render/ICamera.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace render {
 core::UniquePtr<IRenderer> CreateRenderer(
@@ -22,6 +26,7 @@ GLRenderer::GLRenderer(core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMes
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    m_renderContext = core::MakeUnique<RenderContext>(this);
 }
 GLRenderer::~GLRenderer()
 {
@@ -91,11 +96,15 @@ core::SharedPtr<IRenderBufferObject> GLRenderer::CreateRenderBufferObject(
     return GLRenderBufferObject::Create(descriptor);
 }
 
-void GLRenderer::SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures)
+void GLRenderer::SetActiveTextures(const core::Array<ITexture*,8>& textures)
 {
-    for (uint32_t i = 0; i < textures.size(); i++) {
-        auto texture = static_cast<GLTexture*>(textures[i].get());
-        GLTexture::BindObject(texture, i);
+    int slot = 0;
+    for (int32_t i = 0; i < textures.size(); i++) {
+        if(textures[i]){
+            auto texture = static_cast<GLTexture*>(textures[i]);
+            GLTexture::BindObject(texture, slot);
+            slot++;
+        }
     }
 }
 
@@ -115,4 +124,52 @@ void GLRenderer::Clear()
 {
     gl::Clear();
 }
+
+core::UniquePtr<BaseMesh> GLRenderer::CreateBaseMesh()
+{
+    core::Vector<render::BufferDescriptor> bufferDescriptors = {
+        render::BufferDescriptor{ 1, render::BufferObjectType::index,
+                                  render::BufferComponentDataType::uint32, 0 },
+
+        render::BufferDescriptor{ 2, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::float32, 0 },
+
+        render::BufferDescriptor{ 3, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::float32, 1 },
+
+        render::BufferDescriptor{ 3, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::float32, 2 },
+
+        render::BufferDescriptor{ 3, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::float32, 3 }
+    };
+
+    auto vao      = this->CreateBufferArrayObject(bufferDescriptors);
+    auto baseMesh = core::MakeUnique<BaseMesh>(vao);
+    return baseMesh;
+}
+void GLRenderer::BeginFrame()
+{
+    this->Clear();
+}
+
+void GLRenderer::EndFrame()
+{
+}
+
+void GLRenderer::RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position){
+    auto camera = m_renderContext->GetCurrentCamera();
+    auto pos = glm::translate(glm::mat4(1), position);
+    auto mvp = camera->GetProjection() * camera->GetView() * pos;
+
+    material->SetMat4("MVP", mvp);
+    SetActiveTextures(material->GetTextures());
+    mesh->Render();
+}
+
+
+IRenderContext* GLRenderer::GetRenderContext() const {
+    return m_renderContext.get();
+};
+
 }

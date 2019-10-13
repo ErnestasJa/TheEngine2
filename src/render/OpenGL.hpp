@@ -240,6 +240,24 @@ inline void SetUniform(const gpu_shader_uniform_handle& handle, const core::pod:
     glUniform3fv(handle.id, 1, &value.x);
 }
 
+inline void SetUniform(const gpu_shader_uniform_handle& handle, const int vecSize, float * vec)
+{
+    switch(vecSize) {
+    case 1:
+        glUniform1fv(handle.id, 1, vec);
+        break;
+    case 2:
+        glUniform2fv(handle.id, 1, vec);
+        break;
+    case 3:
+        glUniform3fv(handle.id, 1, vec);
+        break;
+    case 4:
+        glUniform4fv(handle.id, 1, vec);
+        break;
+    }
+}
+
 inline void SetUniform(const gpu_shader_uniform_handle& handle, const core::pod::Vec4<float>& value)
 {
     glUniform4fv(handle.id, 1, &value.x);

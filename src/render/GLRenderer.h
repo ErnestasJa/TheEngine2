@@ -1,46 +1,57 @@
 #ifndef GLRENDERER_H
 #define GLRENDERER_H
 
+#include "render/CFrameBufferObject.h"
+#include "render/CRenderBufferObject.h"
 #include "render/IRenderer.h"
 
 namespace render {
 class GLRendererDebugMessageMonitor;
 class GLFrameBufferObject;
+class IRenderContext;
 class GLRenderer : public IRenderer
 {
 public:
-    virtual ~GLRenderer();
+    ~GLRenderer();
 
     GLRenderer(core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor);
-    virtual IRendererDebugMessageMonitor* GetDebugMessageMonitor();
+    IRendererDebugMessageMonitor* GetDebugMessageMonitor() final;
 
-    virtual core::SharedPtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
-                                                       const core::String& fragSource = "",
-                                                       const core::String& geomSource = "");
+    core::SharedPtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
+                                               const core::String& fragSource = "",
+                                               const core::String& geomSource = "") final;
 
-    virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
-        const core::Vector<BufferDescriptor>& descriptors);
+    core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
+        const core::Vector<BufferDescriptor>& descriptors) final;
 
-    virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor);
-    virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
-        const FrameBufferObjectDescriptor& descriptor);
-    virtual core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(
-        const RenderBufferObjectDescriptor& descriptor);
+    core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) final;
+    core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
+        const FrameBufferObjectDescriptor& descriptor) final;
+    core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(
+        const RenderBufferObjectDescriptor& descriptor) final;
 
-    virtual void SetActiveTextures(const core::Vector<core::SharedPtr<ITexture>>& textures);
-    virtual void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
-                                      FrameBufferTarget target);
+    void SetActiveTextures(const core::Array<ITexture*,8>& textures) final;
+    void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
+                              FrameBufferTarget target) final;
 
-    virtual void SetClearColor(const Vec3i& color);
-    virtual void Clear();
+    void SetClearColor(const Vec3i& color) final;
+    void Clear() final;
+
+    core::UniquePtr<BaseMesh> CreateBaseMesh() final;
+    IRenderContext* GetRenderContext() const final;
+
+    void BeginFrame() final;
+    void EndFrame() final;
+    void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position) final;
 
 private:
+    core::UniquePtr<IRenderContext> m_renderContext;
     core::SharedPtr<GLFrameBufferObject> m_activeFrameBufferObject;
     core::UniquePtr<GLRendererDebugMessageMonitor> m_debugMessageMonitor;
 };
 
 core::UniquePtr<IRenderer> CreateRenderer(
     core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor);
-}
+} // namespace render
 
 #endif

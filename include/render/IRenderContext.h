@@ -1,22 +1,20 @@
-#ifndef IRENDERCONTEXT_H
-#define IRENDERCONTEXT_H
+#ifndef THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_IRENDERCONTEXT_H_
+#define THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_IRENDERCONTEXT_H_
 
+#include "BaseMaterial.h"
 namespace render {
-struct SWindowDefinition;
-class IWindow;
-class IRenderer;
+class ICamera;
 class IRenderContext
 {
 public:
     virtual ~IRenderContext()
     {
     }
-
-    virtual const std::unique_ptr<IWindow>& GetWindow()     = 0;
-    virtual const std::unique_ptr<IRenderer>& GetRenderer() = 0;
+    virtual core::SharedPtr<ICamera> GetCurrentCamera() const        = 0;
+    virtual void SetCurrentCamera(core::SharedPtr<ICamera> camera)   = 0;
+    virtual void SetCurrentMaterial(material::BaseMaterial* material) = 0;
+    virtual material::BaseMaterial* GetCurrentMaterial() const       = 0;
 };
+} // namespace render
 
-std::shared_ptr<IRenderContext> CreateContext(const SWindowDefinition& def);
-}
-
-#endif
+#endif // THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_IRENDERCONTEXT_H_

@@ -53,3 +53,5 @@ compile_commands.json
 .clang_complete
 
 .vs/
+
+cmake-build-debug/

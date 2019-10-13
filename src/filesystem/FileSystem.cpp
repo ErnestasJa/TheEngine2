@@ -98,7 +98,7 @@ namespace {
 void AppendFiles(void* data, const char* directory, const char* fileName)
 {
     Path path(directory);
-    path.Append(std::string(fileName));
+    path = path.Append(std::string(fileName));
 
     auto paths = static_cast<core::Vector<Path>*>(data);
     paths->push_back(path);
