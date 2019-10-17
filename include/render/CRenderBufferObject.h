@@ -21,21 +21,21 @@ struct RenderBufferObjectDescriptor
 
     RenderBufferObjectDescriptor(core::pod::Vec2<int32_t> size,
                                  RenderBufferObjectInternalDataFormat rbo_format)
-        : width(size.w)
+        : format(rbo_format)
+        , width(size.w)
         , height(size.h)
-        , format(rbo_format)
     {
     }
 
     RenderBufferObjectDescriptor(uint32_t w, uint32_t h,
                                  RenderBufferObjectInternalDataFormat rbo_format)
-        : width(w)
+        : format(rbo_format)
+        , width(w)
         , height(h)
-        , format(rbo_format)
     {
     }
 };
-}
+} // namespace render
 
 
 #endif // !CRENDERBUFFEROBJECT_H

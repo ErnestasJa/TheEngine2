@@ -57,6 +57,16 @@ public:
         return m_position;
     }
 
+    glm::vec3 GetLocalZ() const
+    {
+        return m_direction;
+    }
+
+    glm::vec3 GetLocalX() const
+    {
+        return m_right;
+    }
+
     glm::mat4 GetView() const
     {
         return m_viewMatrix;

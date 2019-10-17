@@ -8,10 +8,10 @@ namespace string {
 static const String Whitespace   = " \f\r\n\t\v";
 static const char NullTerminator = '\0';
 
-template <class... T, int32_t BufferSize = 4096> String CFormat(const char* fmt, const T&... t)
+template <class... T, int32_t BufferSize = 2048> String CFormat(const char* fmt, const T&... t)
 {
     char buffer[BufferSize];
-    snprintf(buffer, BufferSize, fmt, t...);
+    snprintf(buffer, BufferSize-1, fmt, t...);
     return buffer;
 }
 

@@ -5,7 +5,7 @@ namespace input {
 class Key
 {
 public:
-    Key(const core::String& name) : m_name(name)
+    Key(const core::String& name) : m_name(name), m_id(KeyIdentifierCounter++)
     {
     }
 
@@ -19,9 +19,15 @@ public:
         return m_name;
     }
 
+    int GetId() const{
+        return m_id;
+    }
+
 private:
-    // Later we want to have hashed name identifier here.
     core::String m_name;
+    int m_id;
+private:
+    static int KeyIdentifierCounter;
 };
 
 inline bool operator==(const Key& key, const core::String& str)
@@ -57,6 +63,7 @@ struct Keys
     static const Key X;
     static const Key Y;
     static const Key Z;
+    static const Key Space;
     static const Key Esc;
     static const Key Unknown;
 };

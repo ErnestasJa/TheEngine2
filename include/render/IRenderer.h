@@ -56,7 +56,7 @@ public:
     virtual void SetClearColor(const Vec3i& color)              = 0;
     virtual void Clear()                                        = 0;
 
-    virtual core::UniquePtr<BaseMesh> CreateBaseMesh();
+    virtual core::UniquePtr<BaseMesh> CreateBaseMesh() = 0;
 
     virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;

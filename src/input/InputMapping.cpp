@@ -2,6 +2,8 @@
 
 namespace input
 {
+int Key::KeyIdentifierCounter = 0;
+
 const Key Keys::A("A");
 const Key Keys::B("B");
 const Key Keys::C("C");
@@ -28,6 +30,7 @@ const Key Keys::W("W");
 const Key Keys::X("X");
 const Key Keys::Y("Y");
 const Key Keys::Z("Z");
+const Key Keys::Space("Space");
 const Key Keys::Esc("Esc");
 const Key Keys::Unknown("Unknown");
 
