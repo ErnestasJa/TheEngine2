@@ -38,11 +38,13 @@ public:
     void Clear() final;
 
     core::UniquePtr<BaseMesh> CreateBaseMesh() final;
+    core::UniquePtr<AnimatedMesh> CreateAnimatedMesh() final;
     IRenderContext* GetRenderContext() const final;
 
     void BeginFrame() final;
     void EndFrame() final;
     void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position) final;
+    void RenderMesh(AnimatedMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) final;
 
 private:
     core::UniquePtr<IRenderContext> m_renderContext;

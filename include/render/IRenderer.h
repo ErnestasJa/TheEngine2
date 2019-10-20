@@ -32,6 +32,7 @@ struct TextureDescriptor;
 struct FrameBufferObjectDescriptor;
 class ITexture;
 class BaseMesh;
+class AnimatedMesh;
 
 class IRenderer
 {
@@ -57,12 +58,14 @@ public:
     virtual void Clear()                                        = 0;
 
     virtual core::UniquePtr<BaseMesh> CreateBaseMesh() = 0;
+    virtual core::UniquePtr<AnimatedMesh> CreateAnimatedMesh() = 0;
 
     virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;
 
     virtual IRenderContext* GetRenderContext() const = 0;
     virtual void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position) = 0;
+    virtual void RenderMesh(AnimatedMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) = 0;
 };
 }
 

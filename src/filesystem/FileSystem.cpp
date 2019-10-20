@@ -91,7 +91,13 @@ core::SharedPtr<IFileWriter> FileSystem::OpenWrite(const Path& path)
 core::SharedPtr<IFileReader> FileSystem::OpenRead(const Path& path)
 {
     auto fileReader = std::make_shared<FileReader>();
-    return fileReader->Open(path) ? fileReader : nullptr;
+
+    if(fileReader->Open(path)){
+        return fileReader;
+    }
+
+    elog::LogWarning(core::string::CFormat("File not found: '%s'", path.AsString().c_str()));
+    return nullptr;
 }
 
 namespace {

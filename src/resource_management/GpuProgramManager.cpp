@@ -15,7 +15,7 @@ render::IGpuProgram* GpuProgramManager::LoadProgram(const core::String& path,
 {
     auto programInfo =
         std::find_if(m_loadedPrograms.begin(), m_loadedPrograms.end(),
-                     [&](const GpuProgramInfo& p) { return p.Alias == alias || p.Path == path; });
+                     [&](const GpuProgramInfo& p) { return !alias.empty() && p.Alias == alias || p.Path == path; });
 
     if (programInfo != m_loadedPrograms.end()) {
         return (*programInfo).Program.get();

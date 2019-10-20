@@ -28,7 +28,12 @@ void GLGpuShaderProgram::InitUniforms()
         for (uint32_t i = 0; i < count; i++) {
             auto handle = gl::GetUniform(id, i);
 
+            if(core::string::EndsWith(handle.name,"[0]")){
+                handle.name = core::String(handle.name, 0, handle.name.length() - 3);
+            }
+
             m_uniforms.push_back(core::Move(core::MakeUnique<GLGpuShaderProgramUniform>(handle)));
+            elog::LogInfo("Loaded uniform: " + handle.name);
         }
     };
 

@@ -72,7 +72,7 @@ bool GLFWWindow::Init(const SWindowDefinition& wDef)
     SetWindowHints(m_windowDefinition);
 
     m_window =
-        glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y, wDef.Title.c_str(), NULL, NULL);
+        glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y, wDef.Title.c_str(), wDef.Fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
 
     glfwMakeContextCurrent(m_window);
 	glfwSwapInterval(0);

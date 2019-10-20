@@ -2,6 +2,8 @@
 #define RENDERINC_H
 
 #include "BaseMesh.h"
+#include "BaseMaterial.h"
+#include "AnimatedMesh.h"
 #include "BufferDescriptor.h"
 #include "ICamera.h"
 #include "IFrameBufferObject.h"

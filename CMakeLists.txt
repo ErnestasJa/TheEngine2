@@ -98,6 +98,7 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/render/PerspectiveCamera.cpp"
 	"${ENGINE_SRC_PATH}/render/BaseMaterial.cpp"
 	"${ENGINE_SRC_PATH}/render/BaseMesh.cpp"
+	"${ENGINE_SRC_PATH}/render/AnimatedMesh.cpp"
 	"${ENGINE_SRC_PATH}/render/RenderContext.cpp"
 
 	"${ENGINE_SRC_PATH}/gui/GuiImpl.cpp"
@@ -108,8 +109,11 @@ set(CROSSPLATFORM_SOURCES
 
 	"${ENGINE_SRC_PATH}/resource_management/GpuProgramManager.cpp"
 	"${ENGINE_SRC_PATH}/resource_management/ImageLoader.cpp"
+	"${ENGINE_SRC_PATH}/resource_management/mesh/IQMLoader.cpp"
 
-	"${ENGINE_SRC_PATH}/engine/EngineContext.cpp" )
+	"${ENGINE_SRC_PATH}/engine/EngineContext.cpp"
+	"${ENGINE_SRC_PATH}/render/AnimatedMesh.cpp"
+		)
 
 
 add_library(engine STATIC

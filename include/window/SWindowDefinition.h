@@ -4,9 +4,6 @@
 namespace render {
 struct SWindowDefinition
 {
-    bool ForwardCompatible;
-    bool DebugContext;
-    bool Resizeable;
     int32_t ContextMajorVersion;
     int32_t ContextMinorVersion;
     int32_t DepthBits;
@@ -16,8 +13,13 @@ struct SWindowDefinition
     core::pod::Vec2<int32_t> Dimensions;
     std::string Title;
 
+    bool ForwardCompatible;
+    bool DebugContext;
+    bool Resizeable;
+    bool Fullscreen;
+
     SWindowDefinition()
-        : ForwardCompatible(true), DebugContext(false), Resizeable(false), ContextMajorVersion(3),
+        : ForwardCompatible(true), DebugContext(false), Resizeable(false), Fullscreen(false), ContextMajorVersion(3),
           ContextMinorVersion(3), DepthBits(24), ColorFramebufferBits({8, 8, 8, 8}),
           AccumulationBufferBits({0, 0, 0, 0}), Position({0, 0}), Dimensions({640, 480})
     {

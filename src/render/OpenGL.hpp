@@ -275,6 +275,12 @@ inline void SetUniformMat3(const gpu_shader_uniform_handle& handle, float* value
     glUniformMatrix3fv(handle.id, 1, transpose, value);
 }
 
+inline void SetUniformMat3x4(const gpu_shader_uniform_handle& handle, float* value, int count,
+                           bool transpose = false)
+{
+    glUniformMatrix3x4fv(handle.id, count, transpose, value);
+}
+
 inline core::Vector<gpu_buffer_object_handle> CreateGpuStorages(uint32_t count)
 {
     auto handles = core::Vector<gpu_buffer_object_handle>();

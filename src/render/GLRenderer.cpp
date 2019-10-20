@@ -9,6 +9,7 @@
 #include "OpenGL.hpp"
 #include "RenderContext.h"
 #include "render/BaseMesh.h"
+#include "render/AnimatedMesh.h"
 #include "render/CTexture.h"
 #include "render/ICamera.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -148,6 +149,34 @@ core::UniquePtr<BaseMesh> GLRenderer::CreateBaseMesh()
     auto baseMesh = core::MakeUnique<BaseMesh>(vao);
     return baseMesh;
 }
+
+core::UniquePtr<AnimatedMesh> GLRenderer::CreateAnimatedMesh()
+{
+    core::Vector<render::BufferDescriptor> bufferDescriptors = {
+        render::BufferDescriptor{ 1, render::BufferObjectType::index,
+                                  render::BufferComponentDataType::uint32, 0 },
+
+        render::BufferDescriptor{ 2, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::float32, 0 },
+
+        render::BufferDescriptor{ 3, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::float32, 1 },
+
+        render::BufferDescriptor{ 3, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::float32, 2 },
+
+        render::BufferDescriptor{ 4, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::uint8, 3 },
+
+        render::BufferDescriptor{ 4, render::BufferObjectType::vertex,
+                                  render::BufferComponentDataType::uint8, 4 }
+    };
+
+    auto vao      = this->CreateBufferArrayObject(bufferDescriptors);
+    auto baseMesh = core::MakeUnique<AnimatedMesh>(vao);
+    return baseMesh;
+}
+
 void GLRenderer::BeginFrame()
 {
     this->Clear();
@@ -162,6 +191,7 @@ void GLRenderer::RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, 
     auto pos = glm::translate(glm::mat4(1), position);
     auto mvp = camera->GetProjection() * camera->GetView() * pos;
 
+    material->Use();
     material->SetMat4("MVP", mvp);
     SetActiveTextures(material->GetTextures());
     mesh->Render();
@@ -170,6 +200,19 @@ void GLRenderer::RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, 
 
 IRenderContext* GLRenderer::GetRenderContext() const {
     return m_renderContext.get();
+}
+void GLRenderer::RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material,
+                            const glm::mat4 transform){
+    auto camera = m_renderContext->GetCurrentCamera();
+    auto mvp = camera->GetProjection() * camera->GetView() * transform;
+
+    auto&anim = mesh->GetAnimationData();
+
+    material->Use();
+    material->SetMat4("MVP", mvp);
+    material->SetMat3x4("Bones", anim.current_frame.data(), anim.current_frame.size());
+    SetActiveTextures(material->GetTextures());
+    mesh->Render();
 };
 
 }

@@ -53,4 +53,9 @@ const void GLGpuShaderProgramUniform::SetMat3(float* value)
 {
     gl::SetUniformMat3(m_handle, value);
 }
+
+const void GLGpuShaderProgramUniform::SetMat3x4(float* value, int count)
+{
+    gl::SetUniformMat3x4(m_handle, value, count);
+}
 }

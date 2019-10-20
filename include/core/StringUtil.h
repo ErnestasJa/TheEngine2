@@ -19,6 +19,12 @@ String Replace(const String& source, const String& toReplace, const String& repl
 String TrimEnd(const String& source, const String& delimiters = Whitespace);
 String TrimBegin(const String& source, const String& delimiters = Whitespace);
 String Trim(const String& source, const String& delimiters = Whitespace);
+
+inline bool EndsWith(const core::String & value, const core::String & ending)
+{
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
 }
 }
 
