@@ -17,10 +17,14 @@ public:
     void SetCurrentMaterial(material::BaseMaterial* material) final;
     material::BaseMaterial* GetCurrentMaterial() const final;
 
+    void SetDepthTest(bool enabled) final;
+    bool IsDepthTestEnabled() const final;
+
 private:
     material::BaseMaterial* m_currentMaterial;
     IRenderer* m_renderer;
     core::SharedPtr<ICamera> m_camera;
+    bool m_depthTest;
 };
 } // namespace render
 

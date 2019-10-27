@@ -49,15 +49,15 @@ void ReadBackContext(SWindowDefinition& def)
 void LogContext(const SWindowDefinition& def)
 {
     elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
-              core::string::CFormat("\n\n"
-                                    "==========================\n"
-                                    "Context version: %u.%u\n"
-                                    "Forward compatible: %s\n"
-                                    "Debug enabled: %s\n"
-                                    "==========================\n\n",
-                                    def.ContextMajorVersion, def.ContextMinorVersion,
-                                    def.ForwardCompatible ? "yes" : "no",
-                                    def.DebugContext ? "yes" : "no"));
+              core::string::format("\n\n"
+                                   "==========================\n"
+                                   "Context version: %u.%u\n"
+                                   "Forward compatible: %s\n"
+                                   "Debug enabled: %s\n"
+                                   "==========================\n\n",
+                                   def.ContextMajorVersion, def.ContextMinorVersion,
+                                   def.ForwardCompatible ? "yes" : "no",
+                                   def.DebugContext ? "yes" : "no"));
 }
 
 void GLFWWindow::UpdateContext()

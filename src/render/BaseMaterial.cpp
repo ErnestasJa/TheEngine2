@@ -12,6 +12,8 @@
 namespace material {
 BaseMaterial::BaseMaterial(render::IGpuProgram* shader)
     : m_shader(shader)
+    , RenderMode(MeshRenderMode::Triangles)
+    , UseDepthTest(true)
     , m_textures({ nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr })
     , m_textureListNeedsRebuild(false)
 {

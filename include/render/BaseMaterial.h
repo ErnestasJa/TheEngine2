@@ -11,13 +11,18 @@ class ITexture;
 }
 
 namespace material {
-//static struct
-//{
-//    glm::mat4 View, Projection;
-//} SharedUniforms;
+
+enum class MeshRenderMode {
+    Triangles = 1,
+    Lines
+};
 
 class BaseMaterial
 {
+public:
+    bool UseDepthTest;
+    MeshRenderMode RenderMode;
+
 public:
     BaseMaterial(render::IGpuProgram*  shader);
     virtual void Use();

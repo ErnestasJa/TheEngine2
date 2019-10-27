@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 
-set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -g -O1 -w -std=c++17 -include EngineInc.h")
+set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -w -std=c++17 -include EngineInc.h")
 set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /Gm- /MP /O2 /W3 /FIEngineInc.h")
 
 #Only supporting gcc on linux, mingw(gcc)/nmake on windows
@@ -101,6 +101,8 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/render/AnimatedMesh.cpp"
 	"${ENGINE_SRC_PATH}/render/RenderContext.cpp"
 
+	"${ENGINE_SRC_PATH}/render/debug/DebugLineMesh.cpp"
+
 	"${ENGINE_SRC_PATH}/gui/GuiImpl.cpp"
 	"${ENGINE_SRC_PATH}/gui/imgui_impl.cpp"
 	"${ENGINE_SRC_PATH}/gui/imgui_gl3_impl.h"
@@ -110,9 +112,11 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/resource_management/GpuProgramManager.cpp"
 	"${ENGINE_SRC_PATH}/resource_management/ImageLoader.cpp"
 	"${ENGINE_SRC_PATH}/resource_management/mesh/IQMLoader.cpp"
+	"${ENGINE_SRC_PATH}/resource_management/mesh/MBDLoader.cpp"
 
 	"${ENGINE_SRC_PATH}/engine/EngineContext.cpp"
 	"${ENGINE_SRC_PATH}/render/AnimatedMesh.cpp"
+
 		)
 
 

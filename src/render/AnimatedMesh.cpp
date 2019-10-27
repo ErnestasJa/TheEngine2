@@ -2,6 +2,7 @@
 #include "render/IGpuBufferArrayObject.h"
 #include "render/IGpuBufferObject.h"
 #include "utils/Math.h"
+#include <random>
 
 namespace render {
 void Animation::set_frame(uint32_t frame)
@@ -46,6 +47,7 @@ void Animation::set_interp_frame(float f)
         }
     }
 }
+
 
 AnimatedMesh::AnimatedMesh()
 {

@@ -3,6 +3,7 @@
 #include "filesystem/IFileSystem.h"
 #include "filesystem/Path.h"
 #include <cstring>
+#include <random>
 #include <render/AnimatedMesh.h>
 #include <utils/Math.h>
 
@@ -19,7 +20,6 @@ void IQMLoader::Load(render::AnimatedMesh* mesh, io::Path path)
 {
     auto file = m_fileSystem->OpenRead(path);
     if(!file){
-
         return;
     }
 
@@ -38,7 +38,9 @@ bool load_header(const uint8_t * data, iqm::iqmheader& header)
     memcpy((void*)&header, (void*)data, sizeof(header));
 
     if (!std::strcmp(iqm::IQM_MAGIC, header.magic) && header.version == iqm::IQM_VERSION && header.filesize > 0){
-        elog::LogWarning(core::string::CFormat("IQM File appears to be correct and not empty. (MAGIC:%s,VERSION:%i)", header.magic, header.version));
+        elog::LogWarning(core::string::format(
+            "IQM File appears to be correct and not empty. (MAGIC:%s,VERSION:%i)", header.magic,
+            header.version));
         return false;
     }
 
@@ -102,32 +104,46 @@ void load_mesh(render::AnimatedMesh * mesh, const core::TByteArray & data, const
 
     load_animation(mesh->GetAnimationData(), data, header);
 
-    elog::LogInfo(core::string::CFormat("IndexBuffer size:       %u", mesh->IndexBuffer.size()));
-    elog::LogInfo(core::string::CFormat("VertexBuffer size:      %u", mesh->VertexBuffer.size()));
-    elog::LogInfo(core::string::CFormat("UVBuffer size:          %u", mesh->UVBuffer.size()));
-    elog::LogInfo(core::string::CFormat("NormalBuffer size:      %u", mesh->NormalBuffer.size()));
-    elog::LogInfo(core::string::CFormat("BlendIndexBuffer size:  %u", mesh->BlendIndexBuffer.size()));
-    elog::LogInfo(core::string::CFormat("BlendWeightBuffer size: %u", mesh->BlendWeightBuffer.size()));
+    elog::LogInfo(core::string::format("IndexBuffer size:       %u", mesh->IndexBuffer.size()));
+    elog::LogInfo(core::string::format("VertexBuffer size:      %u", mesh->VertexBuffer.size()));
+    elog::LogInfo(core::string::format("UVBuffer size:          %u", mesh->UVBuffer.size()));
+    elog::LogInfo(core::string::format("NormalBuffer size:      %u", mesh->NormalBuffer.size()));
+    elog::LogInfo(
+        core::string::format("BlendIndexBuffer size:  %u", mesh->BlendIndexBuffer.size()));
+    elog::LogInfo(
+        core::string::format("BlendWeightBuffer size: %u", mesh->BlendWeightBuffer.size()));
 
     mesh->Upload();
 }
 
+void assign_bone_colors(render::Animation& animOut)
+{
+    auto randomDevice = std::random_device();
+    std::uniform_int_distribution<int> randomDistribution(0, 255);
+
+    animOut.bone_colors.resize(animOut.bones.size());
+
+    for(auto& color: animOut.bone_colors)
+    {
+        color = glm::tvec3<uint8_t>(randomDistribution(randomDevice),
+                                         randomDistribution(randomDevice),
+                                         randomDistribution(randomDevice));
+    }
+}
+
 void load_animation(render::Animation& animOut, const core::TByteArray & data, const iqm::iqmheader & header)
 {
-    elog::LogInfo(core::string::CFormat(
-        "\nnum_anims: %i\n"
-        "num_frames: %i\n"
-        "num_poses: %i\n"
-        "num_joints: %i\n"
-        , header.num_anims
-        , header.num_frames
-        , header.num_poses
-        , header.num_joints
-    ));
+    elog::LogInfo(core::string::format("\nnum_anims: %i\n"
+                                       "num_frames: %i\n"
+                                       "num_poses: %i\n"
+                                       "num_joints: %i\n",
+                                       header.num_anims, header.num_frames, header.num_poses,
+                                       header.num_joints));
 
 
     if (header.num_poses != header.num_joints){
-        elog::LogInfo(core::string::CFormat("Joint/pose mismatch. Poses: %i, Joints: %i", header.num_poses, header.num_joints ));
+        elog::LogInfo(core::string::format("Joint/pose mismatch. Poses: %i, Joints: %i",
+                                           header.num_poses, header.num_joints));
         return;
     }
 
@@ -182,25 +198,25 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
             glm::quat rotate;
             glm::vec3 translate, scale;
             translate.x = p.channeloffset[0];
-            if (p.mask & 0x01) translate.x += *frame_data++ * p.channelscale[0];
+            if (p.mask & 0x01u) translate.x += *frame_data++ * p.channelscale[0];
             translate.y = p.channeloffset[1];
-            if (p.mask & 0x02) translate.y += *frame_data++ * p.channelscale[1];
+            if (p.mask & 0x02u) translate.y += *frame_data++ * p.channelscale[1];
             translate.z = p.channeloffset[2];
-            if (p.mask & 0x04) translate.z += *frame_data++ * p.channelscale[2];
+            if (p.mask & 0x04u) translate.z += *frame_data++ * p.channelscale[2];
             rotate.x = p.channeloffset[3];
-            if (p.mask & 0x08) rotate.x += *frame_data++ * p.channelscale[3];
+            if (p.mask & 0x08u) rotate.x += *frame_data++ * p.channelscale[3];
             rotate.y = p.channeloffset[4];
-            if (p.mask & 0x10) rotate.y += *frame_data++ * p.channelscale[4];
+            if (p.mask & 0x10u) rotate.y += *frame_data++ * p.channelscale[4];
             rotate.z = p.channeloffset[5];
-            if (p.mask & 0x20) rotate.z += *frame_data++ * p.channelscale[5];
+            if (p.mask & 0x20u) rotate.z += *frame_data++ * p.channelscale[5];
             rotate.w = p.channeloffset[6];
-            if (p.mask & 0x40) rotate.w += *frame_data++ * p.channelscale[6];
+            if (p.mask & 0x40u) rotate.w += *frame_data++ * p.channelscale[6];
             scale.x = p.channeloffset[7];
-            if (p.mask & 0x80) scale.x += *frame_data++ * p.channelscale[7];
+            if (p.mask & 0x80u) scale.x += *frame_data++ * p.channelscale[7];
             scale.y = p.channeloffset[8];
-            if (p.mask & 0x100) scale.y += *frame_data++ * p.channelscale[8];
+            if (p.mask & 0x100u) scale.y += *frame_data++ * p.channelscale[8];
             scale.z = p.channeloffset[9];
-            if (p.mask & 0x200) scale.z += *frame_data++ * p.channelscale[9];
+            if (p.mask & 0x200u) scale.z += *frame_data++ * p.channelscale[9];
 
             /// Concatenate each pose with the inverse base pose to avoid doing this at animation time.
             /// If the joint has a parent, then it needs to be pre-concatenated with its parent's base pose.
@@ -227,10 +243,12 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
         ai.loop = utils::CheckBit(a.flags, iqm::IQM_LOOP);
 
 
-        elog::LogInfo(core::string::CFormat("anim name: %s, start: %i, end: %i", ai.name.c_str(), ai.start, ai.start+ai.num));
+        elog::LogInfo(core::string::format("anim name: %s, start: %i, end: %i", ai.name.c_str(),
+                                           ai.start, ai.start + ai.num));
     }
-    elog::LogInfo(core::string::CFormat("Total frames: %i", animOut.frames.size()));
-}
 
+    assign_bone_colors(animOut);
+    elog::LogInfo(core::string::format("Total frames: %i", animOut.frames.size()));
+}
 
 }

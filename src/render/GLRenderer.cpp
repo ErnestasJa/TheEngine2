@@ -191,10 +191,18 @@ void GLRenderer::RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, 
     auto pos = glm::translate(glm::mat4(1), position);
     auto mvp = camera->GetProjection() * camera->GetView() * pos;
 
+    m_renderContext->SetDepthTest(material->UseDepthTest);
     material->Use();
     material->SetMat4("MVP", mvp);
     SetActiveTextures(material->GetTextures());
-    mesh->Render();
+
+    if(material->RenderMode == material::MeshRenderMode::Triangles){
+        mesh->GetGpuBufferObject()->Render(mesh->IndexBuffer.size());
+    }
+    else
+    {
+        mesh->GetGpuBufferObject()->RenderLines(mesh->IndexBuffer.size());
+    }
 }
 
 
@@ -207,6 +215,8 @@ void GLRenderer::RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material
     auto mvp = camera->GetProjection() * camera->GetView() * transform;
 
     auto&anim = mesh->GetAnimationData();
+
+    m_renderContext->SetDepthTest(material->UseDepthTest);
 
     material->Use();
     material->SetMat4("MVP", mvp);

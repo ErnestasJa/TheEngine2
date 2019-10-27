@@ -96,7 +96,7 @@ core::SharedPtr<IFileReader> FileSystem::OpenRead(const Path& path)
         return fileReader;
     }
 
-    elog::LogWarning(core::string::CFormat("File not found: '%s'", path.AsString().c_str()));
+    elog::LogWarning(core::string::format("File not found: '%s'", path.AsString().c_str()));
     return nullptr;
 }
 

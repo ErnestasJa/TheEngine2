@@ -339,6 +339,13 @@ inline void Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+inline void SetDepthTest(bool enabled){
+    if(enabled)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+}
+
 inline uint32_t GetGLBufferObjectType(render::BufferObjectType type)
 {
     return type == render::BufferObjectType::index ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;

@@ -10,10 +10,12 @@ public:
     virtual ~IRenderContext()
     {
     }
-    virtual core::SharedPtr<ICamera> GetCurrentCamera() const        = 0;
-    virtual void SetCurrentCamera(core::SharedPtr<ICamera> camera)   = 0;
+    virtual core::SharedPtr<ICamera> GetCurrentCamera() const         = 0;
+    virtual void SetCurrentCamera(core::SharedPtr<ICamera> camera)    = 0;
     virtual void SetCurrentMaterial(material::BaseMaterial* material) = 0;
-    virtual material::BaseMaterial* GetCurrentMaterial() const       = 0;
+    virtual material::BaseMaterial* GetCurrentMaterial() const        = 0;
+    virtual void SetDepthTest(bool enabled) = 0;
+    virtual bool IsDepthTestEnabled() const = 0;
 };
 } // namespace render
 

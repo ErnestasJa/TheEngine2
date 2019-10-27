@@ -26,6 +26,10 @@ public:
     void Upload();
 
     void Render();
+
+    IGpuBufferArrayObject* GetGpuBufferObject(){
+        return m_vao.get();
+    }
 protected:
 
     core::SharedPtr<IGpuBufferArrayObject> m_vao;

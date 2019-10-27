@@ -33,11 +33,12 @@ struct Animation
     core::Vector<glm::mat3x4>           current_frame;
     core::Vector<Bone>       bones;
     core::Vector<AnimationInfo>  info;
-
+    core::Vector<glm::vec3> bone_colors;
 
 
     void set_frame(uint32_t frame);
     void set_interp_frame(float frame);
+    void AssignBoneColors();
 };
 
 struct sub_mesh
