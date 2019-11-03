@@ -2,21 +2,22 @@
 #include "render/IGpuBufferArrayObject.h"
 #include "render/IGpuBufferObject.h"
 #include "utils/Math.h"
-#include <random>
 
 namespace render {
 void Animation::set_frame(uint32_t frame)
 {
     const uint32_t offset = (frame%this->frames.size());
 
-    for (uint32_t i = 0; i < this->bones.size(); i++)
+    for (std::size_t i = 0; i < this->bones.size(); i++)
     {
         if (this->bones[i].parent >= 0) {
-            current_frame[i] = utils::mul(current_frame[this->bones[i].parent], frames[offset][i]);
+            current_frame[i] = current_frame[this->bones[i].parent] * frames[offset][i];
         }
         else {
             current_frame[i] = frames[offset][i];
         }
+
+        current_frame[i] = glm::transpose(current_frame[i]);
     }
 }
 
@@ -36,18 +37,21 @@ void Animation::set_interp_frame(float f)
     // Concatenate the result with the inverse of the base pose.
     // You would normally do animation blending and inter-frame blending here in a 3D engine.
 
-    for (uint32_t i = 0; i < bones.size(); i++)
+    //elog::LogInfo(core::string::format("Interpolating between frames: {} -> {}", frame1, frame2));
+
+    for (std::size_t i = 0; i < bones.size(); i++)
     {
-        glm::mat3x4 mat = mat1[i] * (1 - frameoffset) + mat2[i] * frameoffset;
+        auto mat = mat1[i] * (1 - frameoffset) + mat2[i] * frameoffset;
         if (bones[i].parent >= 0) {
-            current_frame[i] = utils::mul(current_frame[bones[i].parent], mat);
+            current_frame[i] = current_frame[bones[i].parent] * mat;
         }
         else {
             current_frame[i] = mat;
         }
+
+        current_frame[i] = glm::transpose(current_frame[i]);
     }
 }
-
 
 AnimatedMesh::AnimatedMesh()
 {

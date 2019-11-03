@@ -16,25 +16,24 @@ ImageLoader::ImageLoader(core::SharedPtr<io::IFileSystem> fs, render::IRenderer*
 }
 core::SharedPtr<render::ITexture> ImageLoader::LoadImage(const io::Path& path)
 {
-    using core::string::format;
     auto file = m_fileSystem->OpenRead(path);
 
     if (!file) {
-        elog::LogInfo(format("Failed to open %s\n", path.AsString().c_str()));
+        elog::LogInfo(core::string::format("Failed to open {}\n", path.AsString().c_str()));
         return nullptr;
     }
 
     core::TByteArray testByteArray;
     auto bytesRead = file->Read(testByteArray);
 
-    elog::LogInfo(format("Image size bytes: %u\n", bytesRead));
+    elog::LogInfo(core::string::format("Image size bytes: {}\n", bytesRead));
     Image img;
     img.data = core::UniquePtr<uint8_t>(
         stbi_load_from_memory((stbi_uc*)testByteArray.data(), bytesRead, &img.size.w,
                               &img.size.h, &img.channels, STBI_rgb));
 
-    elog::LogInfo(format("Image size x: %i\n", img.size.x));
-    elog::LogInfo(format("Image size y: %i\n", img.size.y));
+    elog::LogInfo(core::string::format("Image size x: {}\n", img.size.x));
+    elog::LogInfo(core::string::format("Image size y: {}\n", img.size.y));
 
     render::TextureDescriptor desc;
     desc.filterMode = render::TextureFilterMode::TRILINEAR;

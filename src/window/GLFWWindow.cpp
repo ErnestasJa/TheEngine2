@@ -51,9 +51,9 @@ void LogContext(const SWindowDefinition& def)
     elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
               core::string::format("\n\n"
                                    "==========================\n"
-                                   "Context version: %u.%u\n"
-                                   "Forward compatible: %s\n"
-                                   "Debug enabled: %s\n"
+                                   "Context version: {}.{}\n"
+                                   "Forward compatible: {}\n"
+                                   "Debug enabled: {}\n"
                                    "==========================\n\n",
                                    def.ContextMajorVersion, def.ContextMinorVersion,
                                    def.ForwardCompatible ? "yes" : "no",

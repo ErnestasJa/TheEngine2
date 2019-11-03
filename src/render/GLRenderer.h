@@ -44,6 +44,7 @@ public:
     void BeginFrame() final;
     void EndFrame() final;
     void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position) final;
+    void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) final;
     void RenderMesh(AnimatedMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) final;
 
 private:

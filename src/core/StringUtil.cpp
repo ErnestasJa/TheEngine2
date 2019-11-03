@@ -1,10 +1,7 @@
+
+
 namespace core {
 namespace string {
-/*
-Some home grown functions to do basic string manipulation.
-They are not supposed to be fast.
-Should not be used in where high performance/memory usage matters.
-*/
 
 std::string Replace(const std::string& source, const std::string& toReplace,
                     const std::string& replacement)

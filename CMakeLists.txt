@@ -8,12 +8,6 @@ MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -w -std=c++17 -include EngineInc.h")
 set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /Gm- /MP /O2 /W3 /FIEngineInc.h")
 
-#Only supporting gcc on linux, mingw(gcc)/nmake on windows
-if(WIN32 AND NOT MINGW)
-		set(CMAKE_CXX_FLAGS "${CPP_NMAKE_COMPILE_FLAGS}")
-else()
-	set(CMAKE_CXX_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
-endif()
 
 
 set(ENGINE_PATH "./")
@@ -43,6 +37,7 @@ include_directories("${ENGINE_INC_PATH}/"
 	"${LIB_PATH}/glad/include"
 	"${LIB_PATH}/imgui/imgui"
 	"${LIB_PATH}/stb_image"
+	#"${LIB_PATH}/fmt/include"
 )
 
 file(GLOB_RECURSE ENGINE_INCLUDES
@@ -120,9 +115,20 @@ set(CROSSPLATFORM_SOURCES
 		)
 
 
+add_subdirectory ("${LIB_PATH}/glad")
+add_subdirectory ("${LIB_PATH}/glfw")
+add_subdirectory ("${LIB_PATH}/imgui")
+add_subdirectory ("${LIB_PATH}/physfs")
+add_subdirectory ("${LIB_PATH}/fmt")
+
 add_library(engine STATIC
 	${LINUX_SOURCES}
 	${WINDOWS_SOURCES}
 	${CROSSPLATFORM_SOURCES}
 	${ENGINE_INCLUDES}
 )
+set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
+
+target_link_libraries(engine glad glfw imgui physfs-static fmt)
+
+add_dependencies(engine glad glfw imgui physfs-static fmt)

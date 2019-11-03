@@ -48,22 +48,22 @@ namespace res::mbd
             });
         }
 
-        elog::LogInfo(core::string::format("\nMBD Header \n{\n"
-                "magic = '%s'\n"
-                "text_offset = %i\n"
-                "text_num = %i\n"
-                "bone_offset = %i\n"
-                "bone_num = %i\n"
-                "}\n",
+        elog::LogInfo(core::string::format("\nMBD Header \n{{\n"
+                "magic = '{}'\n"
+                "text_offset = {}\n"
+                "text_num = {}\n"
+                "bone_offset = {}\n"
+                "bone_num = {}\n"
+                "}}\n",
                 header.magic,
                 header.text_offset, header.text_num,
                 header.bone_offset, header.bone_num));
 
         for(auto& bone : bones) {
-            elog::LogInfo(core::string::format("Bone [%s] = head: [%.3f,%.3f,%.3f], tail: [%.3f,%.3f,%.3f]",
+            elog::LogInfo(core::string::format("Bone [{}] = head: {}, tail: {}",
                     bone.name.c_str(),
-                    bone.head.x, bone.head.y, bone.head.z,
-                    bone.tail.x, bone.tail.y, bone.tail.z
+                    bone.head,
+                    bone.tail
                     ));
         }
 

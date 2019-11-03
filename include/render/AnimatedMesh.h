@@ -29,8 +29,8 @@ struct AnimationInfo
 
 struct Animation
 {
-    core::Vector<core::Vector<glm::mat3x4>>      frames;
-    core::Vector<glm::mat3x4>           current_frame;
+    core::Vector<core::Vector<glm::mat4>>      frames;
+    core::Vector<glm::mat4>           current_frame;
     core::Vector<Bone>       bones;
     core::Vector<AnimationInfo>  info;
     core::Vector<glm::vec3> bone_colors;

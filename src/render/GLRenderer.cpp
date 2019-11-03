@@ -187,9 +187,13 @@ void GLRenderer::EndFrame()
 }
 
 void GLRenderer::RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position){
+    RenderMesh(mesh, material, glm::translate(glm::mat4(1), position));
+}
+
+void GLRenderer::RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform){
     auto camera = m_renderContext->GetCurrentCamera();
-    auto pos = glm::translate(glm::mat4(1), position);
-    auto mvp = camera->GetProjection() * camera->GetView() * pos;
+
+    auto mvp = camera->GetProjection() * camera->GetView() * transform;
 
     m_renderContext->SetDepthTest(material->UseDepthTest);
     material->Use();
@@ -220,7 +224,7 @@ void GLRenderer::RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material
 
     material->Use();
     material->SetMat4("MVP", mvp);
-    material->SetMat3x4("Bones", anim.current_frame.data(), anim.current_frame.size());
+    material->SetMat4("Bones", anim.current_frame.data(), anim.current_frame.size());
     SetActiveTextures(material->GetTextures());
     mesh->Render();
 };

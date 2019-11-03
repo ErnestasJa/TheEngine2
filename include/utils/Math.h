@@ -14,7 +14,12 @@ inline glm::mat3x4 mul(const glm::mat3x4& m1, const glm::mat3x4& m2)
     glm::vec4 v3(m2[0] * m1[2].x + m2[1] * m1[2].y + m2[2] * m1[2].z);
     v3.w += m1[2].w;
 
-    return glm::mat3x4(v1, v2, v3);
+    glm::mat3x4 out;
+    out[0] = v1;
+    out[1] = v2;
+    out[2] = v3;
+
+    return out;
 }
 
 inline void ConvertQuat(glm::mat3x4 & mat, const glm::quat & q)
@@ -31,9 +36,7 @@ inline void ConvertQuat(glm::mat3x4 & mat, const glm::quat & q)
 
 inline void Scale(glm::vec4 & v, const glm::vec3& s)
 {
-    v.x *= s.x;
-    v.y *= s.y;
-    v.z *= s.z;
+    v *= glm::vec4(s,0);
 }
 
 inline void MakeJointMatrix(glm::mat3x4 & mat, const glm::quat & rot, const glm::vec3& pos, const glm::vec3& s)
@@ -51,11 +54,15 @@ inline void MakeJointMatrix(glm::mat3x4 & mat, const glm::quat & rot, const glm:
 
 inline void Invert(glm::mat3x4 & dest, const glm::mat3x4 & o)
 {
-    glm::mat3x3 invrot(glm::vec3(o[0].x, o[1].x, o[2].x), glm::vec3(o[0].y, o[1].y, o[2].y), glm::vec3(o[0].z, o[1].z, o[2].z));
+    glm::mat3x3 invrot(
+            glm::vec3(o[0].x, o[1].x, o[2].x),
+            glm::vec3(o[0].y, o[1].y, o[2].y),
+            glm::vec3(o[0].z, o[1].z, o[2].z)
+            );
 
-    invrot[0] /= glm::length2(invrot[0]);
-    invrot[1] /= glm::length2(invrot[1]);
-    invrot[2] /= glm::length2(invrot[2]);
+    invrot[0] /= glm::dot(invrot[0],invrot[0]);
+    invrot[1] /= glm::dot(invrot[1],invrot[1]);
+    invrot[2] /= glm::dot(invrot[2],invrot[2]);
     glm::vec3 trans(o[0].w, o[1].w, o[2].w);
 
     dest[0] = glm::vec4(invrot[0], -glm::dot(invrot[0], trans));

@@ -91,6 +91,19 @@ void BaseMaterial::SetMat3x4(const core::String& name, glm::mat3x4* uniformValue
         elog::LogError("Failed to set uniform: " + name);
     }
 }
+
+void BaseMaterial::SetMat4(const core::String& name, glm::mat4* uniformValue, int count)
+{
+    auto uniform = m_shader->GetUniform(name);
+
+    if (uniform) {
+        uniform->SetMat4(&uniformValue[0][0].x, count);
+    }
+    else {
+        elog::LogError("Failed to set uniform: " + name);
+    }
+}
+
 void BaseMaterial::SetMat4(const core::String& name, glm::mat4 uniformValue)
 {
     auto uniform = m_shader->GetUniform(name);

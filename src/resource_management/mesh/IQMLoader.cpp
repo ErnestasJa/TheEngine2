@@ -104,14 +104,14 @@ void load_mesh(render::AnimatedMesh * mesh, const core::TByteArray & data, const
 
     load_animation(mesh->GetAnimationData(), data, header);
 
-    elog::LogInfo(core::string::format("IndexBuffer size:       %u", mesh->IndexBuffer.size()));
-    elog::LogInfo(core::string::format("VertexBuffer size:      %u", mesh->VertexBuffer.size()));
-    elog::LogInfo(core::string::format("UVBuffer size:          %u", mesh->UVBuffer.size()));
-    elog::LogInfo(core::string::format("NormalBuffer size:      %u", mesh->NormalBuffer.size()));
+    elog::LogInfo(core::string::format("IndexBuffer size:       {}", mesh->IndexBuffer.size()));
+    elog::LogInfo(core::string::format("VertexBuffer size:      {}", mesh->VertexBuffer.size()));
+    elog::LogInfo(core::string::format("UVBuffer size:          {}", mesh->UVBuffer.size()));
+    elog::LogInfo(core::string::format("NormalBuffer size:      {}", mesh->NormalBuffer.size()));
     elog::LogInfo(
-        core::string::format("BlendIndexBuffer size:  %u", mesh->BlendIndexBuffer.size()));
+        core::string::format("BlendIndexBuffer size:  {}", mesh->BlendIndexBuffer.size()));
     elog::LogInfo(
-        core::string::format("BlendWeightBuffer size: %u", mesh->BlendWeightBuffer.size()));
+        core::string::format("BlendWeightBuffer size: {}", mesh->BlendWeightBuffer.size()));
 
     mesh->Upload();
 }
@@ -133,25 +133,25 @@ void assign_bone_colors(render::Animation& animOut)
 
 void load_animation(render::Animation& animOut, const core::TByteArray & data, const iqm::iqmheader & header)
 {
-    elog::LogInfo(core::string::format("\nnum_anims: %i\n"
-                                       "num_frames: %i\n"
-                                       "num_poses: %i\n"
-                                       "num_joints: %i\n",
+    elog::LogInfo(core::string::format("\nnum_anims: {}\n"
+                                       "num_frames: {}\n"
+                                       "num_poses: {}\n"
+                                       "num_joints: {}\n",
                                        header.num_anims, header.num_frames, header.num_poses,
                                        header.num_joints));
 
 
     if (header.num_poses != header.num_joints){
-        elog::LogInfo(core::string::format("Joint/pose mismatch. Poses: %i, Joints: %i",
+        elog::LogInfo(core::string::format("Joint/pose mismatch. Poses: {}, Joints: {}",
                                            header.num_poses, header.num_joints));
         return;
     }
 
-    const char* texts = (const char*)&data[header.ofs_text];
-    iqm::iqmjoint*   joints = (iqm::iqmjoint*)&data[header.ofs_joints];
-    iqm::iqmpose *   poses = (iqm::iqmpose*)&data[header.ofs_poses];
-    iqm::iqmanim *   anims = (iqm::iqmanim*)&data[header.ofs_anims];
-    uint16_t * frame_data = (uint16_t *)&data[header.ofs_frames];
+    auto texts = (const char*)&data[header.ofs_text];
+    auto joints = (iqm::iqmjoint*)&data[header.ofs_joints];
+    auto poses = (iqm::iqmpose*)&data[header.ofs_poses];
+    auto anims = (iqm::iqmanim*)&data[header.ofs_anims];
+    auto frame_data = (uint16_t *)&data[header.ofs_frames];
 
     animOut.frames.resize(header.num_frames);
 
@@ -162,31 +162,34 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
     animOut.bones.resize(header.num_joints);
     animOut.info.resize(header.num_anims);
 
-    auto base_frame = new glm::mat3x4[header.num_joints];
-    auto inverse_base_frame = new glm::mat3x4[header.num_joints];
+    auto base_frame_ptr = core::UniquePtr<glm::mat4[]>(new glm::mat4[header.num_joints]);
+    auto base_frame = base_frame_ptr.get();
+    auto inverse_base_frame_ptr = core::UniquePtr<glm::mat4[]>(new glm::mat4[header.num_joints]);
+    auto inverse_base_frame = inverse_base_frame_ptr.get();
 
     for (uint32_t i = 0; i < header.num_joints; i++)
     {
         iqm::iqmjoint &j = joints[i];
 
-        render::Bone & b = animOut.bones[i];
-        b.name = &texts[j.name];
-        b.parent = j.parent;
-        b.pos = glm::vec3(j.translate[0], j.translate[1], j.translate[2]);
-        b.scale = glm::vec3(j.scale[0], j.scale[1], j.scale[2]);
-        b.rot = glm::normalize(glm::quat(j.rotate[3], j.rotate[0], j.rotate[1], j.rotate[2]));
+        render::Bone & bone = animOut.bones[i];
+        bone.name = &texts[j.name];
+        bone.parent = j.parent;
+        bone.pos = glm::vec3(j.translate[0], j.translate[1], j.translate[2]);
+        bone.scale = glm::vec3(j.scale[0], j.scale[1], j.scale[2]);
+        bone.rot = glm::normalize(glm::quat(j.rotate[3], j.rotate[0], j.rotate[1], j.rotate[2]));
 
-        utils::MakeJointMatrix(base_frame[i],
-                        glm::normalize(glm::quat(j.rotate[3], j.rotate[0], j.rotate[1], j.rotate[2])),
-                        glm::vec3(j.translate[0], j.translate[1], j.translate[2]),
-                        glm::vec3(j.scale[0], j.scale[1], j.scale[2]));
+        auto boneTransform = glm::mat4(1.f);
+        boneTransform = glm::translate(boneTransform, bone.pos);
+        boneTransform = boneTransform * glm::toMat4(bone.rot);
+        boneTransform = glm::scale(boneTransform, bone.scale);
 
-        utils::Invert(inverse_base_frame[i], base_frame[i]);
+        base_frame[i] = boneTransform;
+        inverse_base_frame[i] = glm::inverse(base_frame[i]);
 
         if (j.parent >= 0)
         {
-            base_frame[i] = utils::mul(base_frame[j.parent], base_frame[i]);
-            inverse_base_frame[i] = utils::mul(inverse_base_frame[i], inverse_base_frame[j.parent]);
+            base_frame[i] = base_frame[j.parent] * base_frame[i];
+            inverse_base_frame[i] = inverse_base_frame[i] * inverse_base_frame[j.parent];
         }
     }
 
@@ -225,11 +228,17 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
             ///   parentPose * (parentInverseBasePose * parentBasePose) * childPose * childInverseBasePose =>
             ///   parentPose * childPose * childInverseBasePose
 
-            glm::mat3x4 mat;
-            utils::MakeJointMatrix(mat, glm::normalize(rotate), translate, scale);
+            glm::mat4 mat = glm::mat4(1.f);
+            mat = glm::translate(mat, translate);
+            mat = mat * glm::toMat4(glm::normalize(rotate));
+            mat = glm::scale(mat, scale);
 
-            if (p.parent >= 0) animOut.frames[i][j] = utils::mul(utils::mul(base_frame[p.parent], mat), inverse_base_frame[j]);
-            else animOut.frames[i][j] = utils::mul(mat, inverse_base_frame[j]);
+            if (p.parent >= 0) {
+                animOut.frames[i][j] = base_frame[p.parent] * mat * inverse_base_frame[j];
+            }
+            else {
+                animOut.frames[i][j] =  mat * inverse_base_frame[j];
+            }
         }
     }
 
@@ -243,12 +252,12 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
         ai.loop = utils::CheckBit(a.flags, iqm::IQM_LOOP);
 
 
-        elog::LogInfo(core::string::format("anim name: %s, start: %i, end: %i", ai.name.c_str(),
+        elog::LogInfo(core::string::format("anim name: {}, start: {}, end: {}", ai.name.c_str(),
                                            ai.start, ai.start + ai.num));
     }
 
     assign_bone_colors(animOut);
-    elog::LogInfo(core::string::format("Total frames: %i", animOut.frames.size()));
+    elog::LogInfo(core::string::format("Total frames: {}", animOut.frames.size()));
 }
 
 }
