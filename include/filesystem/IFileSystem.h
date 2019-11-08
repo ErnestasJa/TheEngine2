@@ -25,7 +25,7 @@ public:
     virtual core::Vector<Path> GetFilesInDirectory(const Path& directory) = 0;
 };
 
-core::SharedPtr<IFileSystem> CreateFileSystem(const Path& argv0);
+core::UniquePtr<IFileSystem> CreateFileSystem(const Path& argv0);
 }
 
 #endif

@@ -112,7 +112,7 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/engine/EngineContext.cpp"
 	"${ENGINE_SRC_PATH}/render/AnimatedMesh.cpp"
 
-		)
+        src/input/InputHandlerHandle.cpp)
 
 
 add_subdirectory ("${LIB_PATH}/glad")

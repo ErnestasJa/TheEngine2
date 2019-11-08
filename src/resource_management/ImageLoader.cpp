@@ -9,7 +9,7 @@
 #include "stb_image.h"
 namespace res {
 
-ImageLoader::ImageLoader(core::SharedPtr<io::IFileSystem> fs, render::IRenderer* renderer)
+ImageLoader::ImageLoader(io::IFileSystem* fs, render::IRenderer* renderer)
     : m_fileSystem(fs)
     , m_renderer(renderer)
 {

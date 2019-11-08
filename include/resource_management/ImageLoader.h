@@ -18,12 +18,12 @@ private:
     };
 
 public:
-    ImageLoader(core::SharedPtr<io::IFileSystem> fs, render::IRenderer* renderer);
+    ImageLoader(io::IFileSystem* fs, render::IRenderer* renderer);
 
     core::SharedPtr<render::ITexture> LoadImage(const io::Path& path);
 
 private:
-    core::SharedPtr<io::IFileSystem> m_fileSystem;
+    io::IFileSystem* m_fileSystem;
     render::IRenderer* m_renderer;
 };
 }

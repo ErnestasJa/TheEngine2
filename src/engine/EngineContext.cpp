@@ -10,7 +10,7 @@
 #include "window/WindowInc.h"
 
 namespace engine {
-std::shared_ptr<IEngineContext> CreateContext(const render::SWindowDefinition& def)
+core::UniquePtr<IEngineContext> CreateContext(const render::SWindowDefinition& def)
 {
     auto windowModule = render::CreateDefaultWindowModule();
     if (!windowModule)
@@ -34,8 +34,8 @@ std::shared_ptr<IEngineContext> CreateContext(const render::SWindowDefinition& d
     if (!renderer)
         return nullptr;
 
-    return std::make_shared<EngineContext>(std::move(windowModule), std::move(window),
-                                             std::move(renderer));
+    return core::UniquePtr<IEngineContext>(new EngineContext(std::move(windowModule), std::move(window),
+                                             std::move(renderer)));
 }
 
 EngineContext::EngineContext(std::unique_ptr<render::DefaultWindowModule>&& windowModule,

@@ -137,9 +137,9 @@ void GLFWWindow::Close()
     m_close = true;
 }
 
-core::WeakPtr<input::IInputDevice> GLFWWindow::GetInputDevice()
+input::IInputDevice* GLFWWindow::GetInputDevice()
 {
-    return m_inputDevice;
+    return m_inputDevice.get();
 }
 
 const SWindowDefinition& GLFWWindow::GetWindowDefinition()

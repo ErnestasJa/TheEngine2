@@ -16,7 +16,9 @@ void Animation::set_frame(uint32_t frame)
         else {
             current_frame[i] = frames[offset][i];
         }
+    }
 
+    for(int i = 0; i < bones.size(); i++){
         current_frame[i] = glm::transpose(current_frame[i]);
     }
 }
@@ -31,7 +33,7 @@ void Animation::set_interp_frame(float f)
     float frameoffset = f - frame1;
     frame1 %= this->frames.size();
     frame2 %= this->frames.size();
-    auto &mat1 = frames[frame1],
+    core::Vector<glm::mat4> &mat1 = frames[frame1],
         &mat2 = frames[frame2];
     // Interpolate matrixes between the two closest frames and concatenate with parent matrix if necessary.
     // Concatenate the result with the inverse of the base pose.
@@ -41,14 +43,16 @@ void Animation::set_interp_frame(float f)
 
     for (std::size_t i = 0; i < bones.size(); i++)
     {
-        auto mat = mat1[i] * (1 - frameoffset) + mat2[i] * frameoffset;
+        glm::mat4 mat = mat1[i] * (1 - frameoffset) + mat2[i] * frameoffset;
         if (bones[i].parent >= 0) {
             current_frame[i] = current_frame[bones[i].parent] * mat;
         }
         else {
             current_frame[i] = mat;
         }
+    }
 
+    for(int i = 0; i < bones.size(); i++){
         current_frame[i] = glm::transpose(current_frame[i]);
     }
 }

@@ -5,10 +5,16 @@
 #include "physfs/src/physfs.h"
 
 namespace io {
-core::SharedPtr<IFileSystem> CreateFileSystem(const Path& argv0)
+core::UniquePtr<IFileSystem> CreateFileSystem(const Path& argv0)
 {
-    auto filesystem = std::make_shared<FileSystem>();
-    return filesystem->Init(argv0) ? filesystem : nullptr;
+    auto fs = new FileSystem();
+    auto fsPtr = core::UniquePtr<IFileSystem>(fs);
+
+    if(fs->Init(argv0)){
+        return fsPtr;
+    }
+
+    return nullptr;
 }
 
 FileSystem::FileSystem()

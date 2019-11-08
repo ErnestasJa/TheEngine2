@@ -13,18 +13,18 @@ public:
     GLFWInputDevice(GLFWwindow* window);
     virtual ~GLFWInputDevice();
     virtual void PollEvents(float deltaTime);
-    virtual void AddInputHandler(const core::SharedPtr<input::InputHandler>& handler);
-    virtual void RemoveInputHandler(const core::SharedPtr<input::InputHandler>& handler);
-    const core::Vector<core::SharedPtr<input::InputHandler>>& GetInputHandlers();
+    virtual input::InputHandlerHandle AddInputHandler(input::InputHandler* handler);
+    virtual void RemoveInputHandler(input::InputHandler* handler);
+    const core::Vector<input::InputHandler*>& GetInputHandlers();
 
 private:
     virtual void BindEventHandlers();
 
 private:
     GLFWwindow* m_window;
-    core::Vector<core::SharedPtr<input::InputHandler>> m_handlers;
-    core::Vector<core::SharedPtr<input::InputHandler>> m_handlersToRemove;
-    core::Vector<core::SharedPtr<input::InputHandler>> m_handlersToAdd;
+    core::Vector<input::InputHandler*> m_handlers;
+    core::Vector<input::InputHandler*> m_handlersToRemove;
+    core::Vector<input::InputHandler*> m_handlersToAdd;
 };
 
 #endif

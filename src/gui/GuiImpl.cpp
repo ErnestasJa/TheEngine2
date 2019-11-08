@@ -18,9 +18,10 @@ GuiImpl::GuiImpl(core::SharedPtr<engine::IEngineContext> context)
     m_context      = context;
     auto appWindow = ((render::GLFWWindow*)m_context->GetWindow());
     auto window    = appWindow->GetUnderlyingWindow();
-
+    m_inputHandler = CreateImGuiInputHandler();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    appWindow->GetInputDevice().lock()->AddInputHandler(CreateImGuiInputHandler());
+
+    m_inputHandlerHandle = appWindow->GetInputDevice()->AddInputHandler(m_inputHandler.get());
 }
 
 GuiImpl::~GuiImpl()

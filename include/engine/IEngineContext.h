@@ -19,7 +19,7 @@ public:
     virtual render::IRenderer * GetRenderer() = 0;
 };
 
-std::shared_ptr<IEngineContext> CreateContext(const render::SWindowDefinition& def);
+core::UniquePtr<IEngineContext> CreateContext(const render::SWindowDefinition& def);
 }
 
 #endif

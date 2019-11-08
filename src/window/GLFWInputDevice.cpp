@@ -31,7 +31,7 @@ void GLFWInputDevice::PollEvents(float deltaTime)
 
     for (auto handler : m_handlersToRemove) {
         auto it = std::find_if(std::begin(m_handlers), std::end(m_handlers),
-                               [&](auto h) { return h.get() == handler.get(); });
+                               [&](auto h) { return h == handler; });
 
         m_handlers.erase(it);
     }
@@ -40,17 +40,17 @@ void GLFWInputDevice::PollEvents(float deltaTime)
 }
 
 
-void GLFWInputDevice::AddInputHandler(const core::SharedPtr<input::InputHandler>& handler)
+input::InputHandlerHandle GLFWInputDevice::AddInputHandler(input::InputHandler* handler)
 {
     m_handlersToAdd.push_back(handler);
 }
 
-void GLFWInputDevice::RemoveInputHandler(const core::SharedPtr<input::InputHandler>& handler)
+void GLFWInputDevice::RemoveInputHandler(input::InputHandler* handler)
 {
     m_handlersToRemove.push_back(handler);
 }
 
-const core::Vector<core::SharedPtr<input::InputHandler>>& GLFWInputDevice::GetInputHandlers()
+const core::Vector<input::InputHandler*>& GLFWInputDevice::GetInputHandlers()
 {
     return m_handlers;
 }

@@ -11,7 +11,7 @@ namespace res {
 bool load_header(const uint8_t * data, iqm::iqmheader& header);
 void load_mesh(render::AnimatedMesh * mesh, const core::TByteArray & data, const iqm::iqmheader& header);
 
-IQMLoader::IQMLoader(core::SharedPtr<io::IFileSystem> fileSystem)
+IQMLoader::IQMLoader(io::IFileSystem* fileSystem)
 : m_fileSystem(fileSystem)
 {
 
@@ -179,9 +179,9 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
         bone.rot = glm::normalize(glm::quat(j.rotate[3], j.rotate[0], j.rotate[1], j.rotate[2]));
 
         auto boneTransform = glm::mat4(1.f);
-        boneTransform = glm::translate(boneTransform, bone.pos);
-        boneTransform = boneTransform * glm::toMat4(bone.rot);
-        boneTransform = glm::scale(boneTransform, bone.scale);
+        boneTransform = glm::translate(boneTransform, bone.pos)
+                * glm::toMat4(bone.rot)
+                * glm::scale(boneTransform, bone.scale);
 
         base_frame[i] = boneTransform;
         inverse_base_frame[i] = glm::inverse(base_frame[i]);
@@ -193,11 +193,11 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
         }
     }
 
-    for (int i = 0; i < (int)header.num_frames; i++)
+    for (int frameIndex = 0; frameIndex < (int)header.num_frames; frameIndex++)
     {
-        for (int j = 0; j < (int)header.num_poses; j++)
+        for (int poseIndex = 0; poseIndex < (int)header.num_poses; poseIndex++)
         {
-            iqm::iqmpose &p = poses[j];
+            iqm::iqmpose &p = poses[poseIndex];
             glm::quat rotate;
             glm::vec3 translate, scale;
             translate.x = p.channeloffset[0];
@@ -229,15 +229,15 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
             ///   parentPose * childPose * childInverseBasePose
 
             glm::mat4 mat = glm::mat4(1.f);
-            mat = glm::translate(mat, translate);
-            mat = mat * glm::toMat4(glm::normalize(rotate));
-            mat = glm::scale(mat, scale);
+            mat = glm::translate(mat, translate)
+                * glm::toMat4(glm::normalize(rotate))
+                * glm::scale(mat, scale);
 
             if (p.parent >= 0) {
-                animOut.frames[i][j] = base_frame[p.parent] * mat * inverse_base_frame[j];
+                animOut.frames[frameIndex][poseIndex] = base_frame[p.parent] * mat * inverse_base_frame[poseIndex];
             }
             else {
-                animOut.frames[i][j] =  mat * inverse_base_frame[j];
+                animOut.frames[frameIndex][poseIndex] =  mat * inverse_base_frame[poseIndex];
             }
         }
     }

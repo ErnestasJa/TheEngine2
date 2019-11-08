@@ -21,7 +21,7 @@ public:
     virtual void SwapBuffers();
     virtual bool ShouldClose();
     virtual void Close();
-    virtual core::WeakPtr<input::IInputDevice> GetInputDevice();
+    virtual input::IInputDevice* GetInputDevice();
     virtual const SWindowDefinition& GetWindowDefinition();
     virtual void UpdateContext(); /// this is to be called after creating
                                   /// window and loading extensions.

@@ -42,6 +42,30 @@ template <class T> struct Vec2
     }
 };
 
+template <class T>
+Vec2<T> operator * (const Vec2<T> & first, const Vec2<T> & second)
+{
+    return Vec2 { first.x * second.x, first.y * second.y };
+}
+
+template <class T, class U>
+Vec2<T> operator * (const Vec2<T> & first, U val)
+{
+    return Vec2<U>{ static_cast<U>(first.x * val), static_cast<U>(first.y * val) };
+}
+
+template <class T>
+Vec2<T> operator - (const Vec2<T> & first, const Vec2<T> & second)
+{
+    return Vec2 { first.x - second.x, first.y - second.y };
+}
+
+template <class T>
+Vec2<T> operator + (const Vec2<T> & first, const Vec2<T> & second)
+{
+    return Vec2 { first.x + second.x, first.y + second.y };
+}
+
 template <class T> struct Vec3
 {
     union
