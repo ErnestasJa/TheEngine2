@@ -16,6 +16,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+#include <stack>
 #include <unordered_map>
 
 /*Third party headers*/

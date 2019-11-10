@@ -12,6 +12,8 @@ namespace res::mbd
 
     struct RawBone {
         int name;
+        int index;
+        int parent;
         float head[3];
         float tail[3];
     };
@@ -42,9 +44,11 @@ namespace res::mbd
         {
             auto& rawBone = rawBones[i];
             bones.push_back(mbd::Bone {
-                &texts[rawBone.name],
+                rawBone.index,
+                rawBone.parent,
                 {rawBone.head[0], rawBone.head[1], rawBone.head[2]},
                 {rawBone.tail[0], rawBone.tail[1], rawBone.tail[2]},
+                &texts[rawBone.name],
             });
         }
 
@@ -59,9 +63,17 @@ namespace res::mbd
                 header.text_offset, header.text_num,
                 header.bone_offset, header.bone_num));
 
+        core::Stack<Bone> boneStack;
+
+        std::find_if(std::begin(bones), std::end(bones), [](auto& b){
+            return true;
+        });
+
         for(auto& bone : bones) {
-            elog::LogInfo(core::string::format("Bone [{}] = head: {}, tail: {}",
+            elog::LogInfo(core::string::format("Bone [{}:{}] = parent: {}, head: {}, tail: {}",
+                    bone.index,
                     bone.name.c_str(),
+                    bone.parent,
                     bone.head,
                     bone.tail
                     ));

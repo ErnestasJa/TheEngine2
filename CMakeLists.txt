@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.0)
 project (ENGINE)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -114,7 +114,6 @@ set(CROSSPLATFORM_SOURCES
 
         src/input/InputHandlerHandle.cpp)
 
-
 add_subdirectory ("${LIB_PATH}/glad")
 add_subdirectory ("${LIB_PATH}/glfw")
 add_subdirectory ("${LIB_PATH}/imgui")
@@ -129,6 +128,10 @@ add_library(engine STATIC
 )
 set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
 
+target_precompile_headers(engine
+		PUBLIC
+		"${ENGINE_INC_PATH}/EngineInc.h"
+		)
 target_link_libraries(engine glad glfw imgui physfs-static fmt)
 
 add_dependencies(engine glad glfw imgui physfs-static fmt)

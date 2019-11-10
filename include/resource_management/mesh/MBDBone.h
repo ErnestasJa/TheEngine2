@@ -3,8 +3,10 @@
 namespace res::mbd {
 struct Bone
 {
-    core::String name;
+    int32_t index;
+    int32_t parent;
     glm::vec3 head, tail;
+    core::String name;
 };
 }
 #endif // THEPROJECT2_MBDBONE_H
