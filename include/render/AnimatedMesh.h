@@ -65,6 +65,7 @@ public:
     void Upload();
 
     void Render();
+    void Clear();
 
     Animation & GetAnimationData();
 

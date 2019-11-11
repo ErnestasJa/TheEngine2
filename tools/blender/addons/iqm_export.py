@@ -768,7 +768,7 @@ def collectAnim(context, armature, scale, bones, action, startframe = None, endf
     return outdata
 
 
-def collectAnims(context, armature, scale, bones, animspecs):
+def collectAnims(context, armature, scale, bones, animspecs, allAnimations):
     if not armature.animation_data:
         print('Armature has no animation data')
         return []
@@ -778,30 +778,42 @@ def collectAnims(context, armature, scale, bones, animspecs):
     scene = context.scene
     oldaction = armature.animation_data.action
     oldframe = scene.frame_current
-    for animspec in animspecs:
-        animspec = [ arg.strip() for arg in animspec.split(':') ]
-        animname = animspec[0]
-        if animname not in actions:
-            print('Action "%s" not found in current armature' % animname)
-            continue
-        try:
-            startframe = int(animspec[1])
-        except:
-            startframe = None
-        try:
-            endframe = int(animspec[2])
-        except:
-            endframe = None
-        try:
-            fps = float(animspec[3])
-        except:
+
+    
+    print('Exporting animations')
+
+    if allAnimations:
+        for action in actions:
             fps = float(scene.render.fps)
-        try:
-            flags = int(animspec[4])
-        except:
-            flags = 0
-        framedata = collectAnim(context, armature, scale, bones, actions[animname], startframe, endframe)
-        anims.append(Animation(animname, framedata, fps, flags))
+            framedata = collectAnim(context, armature, scale, bones, action, None, None)
+            anims.append(Animation(action.name, framedata, fps, 0))
+            print('Exported action "%s"' % action.name)
+    else:
+        for animspec in animspecs:
+            animspec = [ arg.strip() for arg in animspec.split(':') ]
+            animname = animspec[0]
+            if animname not in actions:
+                print('Action "%s" not found in current armature' % animname)
+                continue
+            try:
+                startframe = int(animspec[1])
+            except:
+                startframe = None
+            try:
+                endframe = int(animspec[2])
+            except:
+                endframe = None
+            try:
+                fps = float(animspec[3])
+            except:
+                fps = float(scene.render.fps)
+            try:
+                flags = int(animspec[4])
+            except:
+                flags = 0
+            framedata = collectAnim(context, armature, scale, bones, actions[animname], startframe, endframe)
+            anims.append(Animation(animname, framedata, fps, flags))
+
     armature.animation_data.action = oldaction
     scene.frame_set(oldframe)
     return anims
@@ -1008,7 +1020,7 @@ def exportIQE(file, meshes, bones, anims):
     file.write('\n')
 
 
-def exportIQM(context, filename, usemesh = True, usemods = False, useskel = True, usebbox = True, usecol = False, scale = 1.0, animspecs = None, matfun = (lambda prefix, image: image), derigify = False, boneorder = None):
+def exportIQM(context, filename, usemesh = True, usemods = False, useskel = True, usebbox = True, usecol = False, scale = 1.0, animspecs = None, matfun = (lambda prefix, image: image), derigify = False, boneorder = None, allAnimations = True):
     armature = findArmature(context)
     if useskel and not armature:
         print('No armature selected')
@@ -1051,8 +1063,8 @@ def exportIQM(context, filename, usemesh = True, usemods = False, useskel = True
         meshes = collectMeshes(context, bones, scale, matfun, useskel, usecol, usemods, filetype)
     else:
         meshes = []
-    if useskel and animspecs:
-        anims = collectAnims(context, armature, scale, bonelist, animspecs)
+    if useskel and animspecs or allAnimations:
+        anims = collectAnims(context, armature, scale, bonelist, animspecs, allAnimations)
     else:
         anims = []
 
@@ -1088,6 +1100,7 @@ class ExportIQM(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
     bl_idname = "export.iqm"
     bl_label = 'Export IQM'
     filename_ext = ".iqm"
+    allAnimations = bpy.props.BoolProperty(name="All animations", description="Export All animations", default=True)
     animspec = bpy.props.StringProperty(name="Animations", description="Animations to export", maxlen=1024, default="")
     usemesh = bpy.props.BoolProperty(name="Meshes", description="Generate meshes", default=True)
     usemods = bpy.props.BoolProperty(name="Modifiers", description="Apply modifiers", default=True)
@@ -1107,7 +1120,7 @@ class ExportIQM(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
             matfun = lambda prefix, image: prefix
         else:
             matfun = lambda prefix, image: image
-        exportIQM(context, self.properties.filepath, self.properties.usemesh, self.properties.usemods, self.properties.useskel, self.properties.usebbox, self.properties.usecol, self.properties.usescale, self.properties.animspec, matfun, self.properties.derigify, self.properties.boneorder)
+        exportIQM(context, self.properties.filepath, self.properties.usemesh, self.properties.usemods, self.properties.useskel, self.properties.usebbox, self.properties.usecol, self.properties.usescale, self.properties.animspec, matfun, self.properties.derigify, self.properties.boneorder, self.properties.allAnimations)
         return {'FINISHED'}
 
     def check(self, context):
@@ -1117,8 +1130,6 @@ class ExportIQM(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
             self.filepath = filepath
             return True
         return False
-
-
 
 def menu_func(self, context):
     self.layout.operator(ExportIQM.bl_idname, text="Inter-Quake Model (.iqm, .iqe)")

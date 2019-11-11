@@ -85,4 +85,15 @@ Animation & AnimatedMesh::GetAnimationData(){
     return m_animation;
 }
 
+void AnimatedMesh::Clear()
+{
+    IndexBuffer.clear();
+    UVBuffer.clear();
+    VertexBuffer.clear();
+    NormalBuffer.clear();
+    BlendIndexBuffer.clear();
+    BlendWeightBuffer.clear();
+    Upload();
+}
+
 }
