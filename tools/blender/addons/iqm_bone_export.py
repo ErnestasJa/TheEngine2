@@ -36,12 +36,12 @@ class Bone:
         return data
         
     def __str__(self):
-        return ("Bone(name = '" + self.name 
+        return ("\nBone(name = '" + self.name 
                 + "', head = " + str(self.head_pos)
                 + ", tail = " + str(self.tail_pos) 
                 + ", index = " + str(self.index) 
                 + ", parent = " + str(self.parent) 
-                + " )")
+                + " )\n")
     
     def __repr__(self):
         return self.__str__()

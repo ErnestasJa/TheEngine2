@@ -251,7 +251,6 @@ void load_animation(render::Animation& animOut, const core::TByteArray & data, c
         ai.num = a.num_frames;
         ai.loop = utils::CheckBit(a.flags, iqm::IQM_LOOP);
 
-
         elog::LogInfo(core::string::format("anim name: {}, start: {}, end: {}", ai.name.c_str(),
                                            ai.start, ai.start + ai.num));
     }
