@@ -19,7 +19,7 @@ public:
     virtual const void Set(const core::pod::Vec3<float>& value);
     virtual const void Set(const core::pod::Vec4<float>& value);
     virtual const void SetMat4(float* value);
-    virtual const void SetMat4(float* value, int count);
+    virtual const void SetMat4(float* value, int count, bool transpose = false);
     virtual const void SetMat3(float* value);
     virtual const void SetMat3x4(float* value, int count);
 

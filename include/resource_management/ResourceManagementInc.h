@@ -1,4 +1,4 @@
 #include "ImageLoader.h"
 #include "GpuProgramManager.h"
-#include "mesh/IQMLoader.h"
+#include "mesh/AssimpImport.h"
 #include "mesh/MBDLoader.h"

@@ -313,7 +313,7 @@ inline void EnableVertexArrayBuffer(const gpu_buffer_object_handle& handle)
 {
     if (handle.buffer_type == GL_ARRAY_BUFFER) {
         glEnableVertexAttribArray(handle.index);
-        glVertexAttribPointer(handle.index, handle.component_count, handle.component_type, GL_FALSE,
+        (glVertexAttribPointer)(handle.index, handle.component_count, handle.component_type, GL_FALSE,
                               0, 0);
     }
 }

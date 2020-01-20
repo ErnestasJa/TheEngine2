@@ -31,5 +31,6 @@
 #include "core/StringUtil.h"
 #include "core/TypeUtils.h"
 #include "log/LogInc.h"
+#include "filesystem/FileSystemInc.h"
 
 #endif

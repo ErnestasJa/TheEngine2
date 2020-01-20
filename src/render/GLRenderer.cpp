@@ -166,10 +166,10 @@ core::UniquePtr<AnimatedMesh> GLRenderer::CreateAnimatedMesh()
                                   render::BufferComponentDataType::float32, 2 },
 
         render::BufferDescriptor{ 4, render::BufferObjectType::vertex,
-                                  render::BufferComponentDataType::uint8, 3 },
+                                  render::BufferComponentDataType::float32, 3 },
 
         render::BufferDescriptor{ 4, render::BufferObjectType::vertex,
-                                  render::BufferComponentDataType::uint8, 4 }
+                                  render::BufferComponentDataType::float32, 4 }
     };
 
     auto vao      = this->CreateBufferArrayObject(bufferDescriptors);
@@ -224,7 +224,7 @@ void GLRenderer::RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material
 
     material->Use();
     material->SetMat4("MVP", mvp);
-    material->SetMat4("Bones", anim.current_frame.data(), anim.current_frame.size());
+    material->SetMat4("Bones", anim.current_frame.data(), anim.current_frame.size(), true);
     SetActiveTextures(material->GetTextures());
     mesh->Render();
 };

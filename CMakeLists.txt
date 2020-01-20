@@ -106,19 +106,30 @@ set(CROSSPLATFORM_SOURCES
 
 	"${ENGINE_SRC_PATH}/resource_management/GpuProgramManager.cpp"
 	"${ENGINE_SRC_PATH}/resource_management/ImageLoader.cpp"
-	"${ENGINE_SRC_PATH}/resource_management/mesh/IQMLoader.cpp"
+	"${ENGINE_SRC_PATH}/resource_management/mesh/AssimpImport.cpp"
 	"${ENGINE_SRC_PATH}/resource_management/mesh/MBDLoader.cpp"
 
 	"${ENGINE_SRC_PATH}/engine/EngineContext.cpp"
 	"${ENGINE_SRC_PATH}/render/AnimatedMesh.cpp"
 
-        src/input/InputHandlerHandle.cpp)
+	"${ENGINE_SRC_PATH}/input/InputHandlerHandle.cpp"
+)
 
 add_subdirectory ("${LIB_PATH}/glad")
 add_subdirectory ("${LIB_PATH}/glfw")
 add_subdirectory ("${LIB_PATH}/imgui")
 add_subdirectory ("${LIB_PATH}/physfs")
 add_subdirectory ("${LIB_PATH}/fmt")
+
+option(BUILD_SHARED_LIBS "" OFF)
+option(ASSIMP_BUILD_ASSIMP_TOOLS "" OFF)
+option(ASSIMP_BUILD_TESTS "" OFF)
+option(ASSIMP_BUILD_FBX_IMPORTER "" ON)
+
+option(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "" OFF)
+option(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT "" OFF)
+
+add_subdirectory ("${LIB_PATH}/assimp")
 
 add_library(engine STATIC
 	${LINUX_SOURCES}
@@ -128,10 +139,11 @@ add_library(engine STATIC
 )
 set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
 
-target_precompile_headers(engine
-		PUBLIC
-		"${ENGINE_INC_PATH}/EngineInc.h"
-		)
-target_link_libraries(engine glad glfw imgui physfs-static fmt)
+#target_precompile_headers(engine
+#		PUBLIC
+#		"${ENGINE_INC_PATH}/EngineInc.h"
+#		)
 
-add_dependencies(engine glad glfw imgui physfs-static fmt)
+target_link_libraries(engine glad glfw imgui physfs-static fmt assimp)
+
+add_dependencies(engine glad glfw imgui physfs-static fmt assimp)
