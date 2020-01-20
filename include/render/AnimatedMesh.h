@@ -115,57 +115,7 @@ struct AnimationData
         return false;
     }
 
-    void Animate(float time){
-        if(!current_animation){
-            return;
-        }
-
-        core::Stack<int> boneIndexStack;
-
-        for(int i = 0; i < bones.size(); i++ ){
-            if(bones[i].parent < 0){
-                boneIndexStack.push(i);
-            }
-        }
-
-        while(!boneIndexStack.empty()){
-            int index = boneIndexStack.top();
-            boneIndexStack.pop();
-
-            auto & boneData = current_animation->BoneKeys[index];
-            auto & bone = bones[index];
-
-            glm::vec3 pos;
-            glm::quat rot;
-            boneData.GetPosition(time,pos);
-            boneData.GetRotation(time, rot);
-
-
-            if(bones[index].parent < 0) {
-                current_frame[index] =
-                          glm::translate(glm::mat4(1), bone.pos + pos) * glm::toMat4(bone.rot * rot );
-            }
-            else {
-                current_frame[index] = current_frame[bones[index].parent] *
-                        (glm::translate(glm::mat4(1), bone.pos + pos) * glm::toMat4(bone.rot * rot));
-            }
-
-            /*if(bones[index].parent < 0) {
-                current_frame[index] = glm::toMat4(rot ) *
-                                       glm::translate(glm::mat4(1), pos);
-            }
-            else {
-                current_frame[index] = current_frame[bones[index].parent] * (glm::toMat4(rot) *
-                                                                             glm::translate(glm::mat4(1), pos));
-            }*/
-
-            for(int i = 0; i < bones.size(); i++){
-                if(bones[i].parent == index){
-                    boneIndexStack.push(i);
-                }
-            }
-        }
-    }
+    void Animate(float time);
 };
 
 class AnimatedMesh

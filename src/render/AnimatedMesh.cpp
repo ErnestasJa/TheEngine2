@@ -77,4 +77,49 @@ void AnimatedMesh::Clear()
     Upload();
 }
 
+void AnimationData::Animate(float time) {
+    if(!current_animation){
+        return;
+    }
+
+    core::Stack<int> boneIndexStack;
+
+    for(int i = 0; i < bones.size(); i++ ){
+        if(bones[i].parent < 0){
+            boneIndexStack.push(i);
+        }
+    }
+
+    while(!boneIndexStack.empty()){
+        int index = boneIndexStack.top();
+        boneIndexStack.pop();
+
+        auto & boneData = current_animation->BoneKeys[index];
+        auto & bone = bones[index];
+
+        glm::vec3 pos;
+        glm::quat rot;
+        boneData.GetPosition(time,pos);
+        boneData.GetRotation(time, rot);
+
+        current_frame[index] = glm::mat4(1);
+
+        auto transform = glm::translate(glm::mat4(1), pos) * glm::toMat4( rot );
+
+        if(bones[index].parent < 0) {
+            auto globalTransform = glm::mat4(1) * transform;
+            current_frame[index] = globalTransform * bone.offset;
+        }
+        else {
+            auto globalTransform =  current_frame[bones[index].parent] * glm::mat4(1) * transform;
+            current_frame[index] = globalTransform * bone.offset;
+        }
+
+        for(int i = 0; i < bones.size(); i++){
+            if(bones[i].parent == index){
+                boneIndexStack.push(i);
+            }
+        }
+    }
+}
 }
