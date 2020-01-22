@@ -33,6 +33,7 @@ struct AnimKey{
 struct BoneKeyCollection {
     uint32_t BoneIndex;
     core::Vector<AnimKey<glm::vec3>> PositionKeys;
+    core::Vector<AnimKey<glm::vec3>> ScaleKeys;
     core::Vector<AnimKey<glm::quat>> RotationKeys;
 
     template <class TValue>
@@ -64,6 +65,10 @@ struct BoneKeyCollection {
         return GetInterpolatedKey<glm::vec3>(time, PositionKeys, out);
     }
 
+    bool GetScale(float time, glm::vec3& out){
+        return GetInterpolatedKey<glm::vec3>(time, ScaleKeys, out);
+    }
+
     bool GetRotation(float time, glm::quat& out){
         return GetInterpolatedKey<glm::quat>(time, RotationKeys, out);
     }
@@ -76,6 +81,7 @@ struct AnimationInfo
     float fps;
     float duration;
 
+    BoneKeyCollection ArmatureKeys;
     core::Vector<BoneKeyCollection> BoneKeys;
 };
 
@@ -86,6 +92,7 @@ struct AnimationData
     core::Vector<Bone>       bones;
     core::Vector<AnimationInfo>  animations;
     AnimationInfo* current_animation;
+    glm::mat4 GlobalInverseTransform;
 
     AnimationData(){
         current_animation = nullptr;

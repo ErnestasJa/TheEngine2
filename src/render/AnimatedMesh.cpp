@@ -52,8 +52,8 @@ void AnimatedMesh::Upload()
     m_vao->GetBufferObject(4)->UpdateBuffer(BlendIndexBuffer.size(), BlendIndexBuffer.data());
     m_vao->GetBufferObject(5)->UpdateBuffer(BlendWeightBuffer.size(), BlendWeightBuffer.data());
 
-    dump_buffer("BlendIndexBuffer", BlendIndexBuffer);
-    dump_buffer("BlendWeightBuffer", BlendWeightBuffer);
+    //dump_buffer("BlendIndexBuffer", BlendIndexBuffer);
+    //dump_buffer("BlendWeightBuffer", BlendWeightBuffer);
 }
 
 
@@ -77,47 +77,68 @@ void AnimatedMesh::Clear()
     Upload();
 }
 
+struct BoneTransform {
+    int index;
+    glm::mat4 ParentTransform;
+};
+
 void AnimationData::Animate(float time) {
     if(!current_animation){
         return;
     }
 
-    core::Stack<int> boneIndexStack;
+    core::Stack<BoneTransform> boneIndexStack;
 
     for(int i = 0; i < bones.size(); i++ ){
         if(bones[i].parent < 0){
-            boneIndexStack.push(i);
+            boneIndexStack.push(BoneTransform {
+                i,
+                glm::mat4(1)
+            });
         }
     }
 
     while(!boneIndexStack.empty()){
-        int index = boneIndexStack.top();
+        BoneTransform boneInfo = boneIndexStack.top();
         boneIndexStack.pop();
 
-        auto & boneData = current_animation->BoneKeys[index];
-        auto & bone = bones[index];
+        auto & boneData = current_animation->BoneKeys[boneInfo.index];
+        auto & armatureData = current_animation->ArmatureKeys;
+        auto & bone = bones[boneInfo.index];
 
-        glm::vec3 pos;
+
+        glm::vec3 apos, ascale;
+        glm::quat arot;
+        armatureData.GetPosition(time, apos);
+        armatureData.GetScale(time, ascale);
+        armatureData.GetRotation(time, arot);
+        /*auto armatureTransform = glm::translate(glm::mat4(1), apos) *
+                                 glm::toMat4( arot ) *
+                                 glm::scale(glm::mat4(1), ascale);
+
+        armatureTransform = glm::inverse(armatureTransform);*/
+
+        glm::vec3 pos, scale;
         glm::quat rot;
         boneData.GetPosition(time,pos);
+        boneData.GetScale(time,scale);
         boneData.GetRotation(time, rot);
 
-        current_frame[index] = glm::mat4(1);
+        auto transform = glm::translate(glm::mat4(1), pos)
+                       * glm::toMat4( rot )
+                       * glm::scale(glm::mat4(1), scale);
 
-        auto transform = glm::translate(glm::mat4(1), pos) * glm::toMat4( rot );
 
-        if(bones[index].parent < 0) {
-            auto globalTransform = glm::mat4(1) * transform;
-            current_frame[index] = globalTransform * bone.offset;
-        }
-        else {
-            auto globalTransform =  current_frame[bones[index].parent] * glm::mat4(1) * transform;
-            current_frame[index] = globalTransform * bone.offset;
-        }
+        auto globalTransform = boneInfo.ParentTransform * transform;
+        current_frame[boneInfo.index] = GlobalInverseTransform * globalTransform * bone.offset;
+
 
         for(int i = 0; i < bones.size(); i++){
-            if(bones[i].parent == index){
-                boneIndexStack.push(i);
+            if(bones[i].parent == boneInfo.index){
+                boneIndexStack.push(BoneTransform {
+                    i,
+                    globalTransform
+                });
             }
         }
     }

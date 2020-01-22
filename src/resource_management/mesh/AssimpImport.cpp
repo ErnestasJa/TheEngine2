@@ -83,10 +83,12 @@ static void MapBoneWeights(const aiMesh* aMesh, render::AnimatedMesh * mesh){
     mesh->BlendWeightBuffer = boneWeights;
 }
 
-static void MapBoneHierarchy(const aiMesh* aMesh, render::AnimatedMesh * mesh){
-    auto& bones = mesh->GetAnimationData().bones;
-    mesh->GetAnimationData().bones.resize(aMesh->mNumBones);
-    mesh->GetAnimationData().current_frame.resize(aMesh->mNumBones);
+static void MapBoneHierarchy(const aiMesh* aMesh, render::AnimatedMesh * mesh, const aiScene* scene){
+    auto& animData = mesh->GetAnimationData();
+    auto& bones = animData.bones;
+    bones.resize(aMesh->mNumBones);
+    animData.current_frame.resize(aMesh->mNumBones);
+    animData.GlobalInverseTransform = glm::inverse(ToGlm(scene->mRootNode->mTransformation));
 
     for(auto iBone = 0; iBone < aMesh->mNumBones; iBone++) {
         auto aBone = aMesh->mBones[iBone];
@@ -176,12 +178,6 @@ static void ReadAnimations(render::AnimatedMesh * mesh, const aiScene* scene)
             core::String boneName(pNodeAnim->mNodeName.C_Str());
             int boneIndex = FindBoneIndex(mesh, boneName);
 
-            if(boneIndex < 0)
-            {
-                elog::LogError(core::string::format("Bone not found: {}", boneName.c_str()));
-                continue;
-            }
-
             if(pNodeAnim->mNumScalingKeys == 0 &&
                pNodeAnim->mNumPositionKeys == 0 &&
                pNodeAnim->mNumRotationKeys == 0)
@@ -208,10 +204,27 @@ static void ReadAnimations(render::AnimatedMesh * mesh, const aiScene* scene)
                 boneKeys.RotationKeys.push_back(rotKey);
             }
 
+            for(int scaleKeyIndex = 0; scaleKeyIndex < pNodeAnim->mNumPositionKeys; scaleKeyIndex++){
+                auto key = pNodeAnim->mScalingKeys[scaleKeyIndex];
+                render::AnimKey<glm::vec3> scaleKey;
+                scaleKey.Value = glm::vec3(key.mValue.x, key.mValue.y, key.mValue.z);
+                scaleKey.Time = key.mTime;
+                boneKeys.ScaleKeys.push_back(scaleKey);
+            }
+
+            if(boneIndex < 0)
+            {
+
+                boneKeys.BoneIndex = 0;
+                animInfo.ArmatureKeys = boneKeys;
+                elog::LogInfo(core::string::format("Armature bone?: {}", boneName.c_str()));
+                continue;
+            }
+
             boneKeys.BoneIndex = boneIndex;
             animInfo.BoneKeys[boneIndex] = boneKeys;
-            elog::LogError(core::string::format("Bone {} position key count: {}", boneName.c_str(), boneKeys.PositionKeys.size()));
-            elog::LogError(core::string::format("Bone {} rotation key count: {}", boneName.c_str(), boneKeys.RotationKeys.size()));
+            elog::LogInfo(core::string::format("Bone {} position key count: {}", boneName.c_str(), boneKeys.PositionKeys.size()));
+            elog::LogInfo(core::string::format("Bone {} rotation key count: {}", boneName.c_str(), boneKeys.RotationKeys.size()));
         }
 
         mesh->GetAnimationData().animations.push_back(animInfo);
@@ -298,7 +311,7 @@ core::UniquePtr<render::AnimatedMesh> AssimpImport::LoadMesh(io::Path path)
             }
         }
 
-        MapBoneHierarchy(assimpMesh, mesh.get());
+        MapBoneHierarchy(assimpMesh, mesh.get(), scene);
         ReadAnimations(mesh.get(), scene);
     }
 
