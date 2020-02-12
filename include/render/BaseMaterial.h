@@ -36,6 +36,9 @@ public:
     void SetTexture(int slot, render::ITexture * texture);
     const core::Array<render::ITexture*, 8>& GetTextures();
 
+    virtual core::SharedPtr<BaseMaterial> Instance();
+
+
 protected:
     core::Array<render::ITexture*,8> m_textures;
     render::IGpuProgram* m_shader;

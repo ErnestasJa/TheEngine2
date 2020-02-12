@@ -12,6 +12,11 @@ struct BufferDescriptor;
 class IGpuBufferArrayObject;
 class IRenderer;
 
+struct BoneTransform {
+  int index;
+  glm::mat4 ParentTransform;
+};
+
 struct Bone
 {
     int32_t parent;
@@ -20,10 +25,12 @@ struct Bone
     glm::quat rot;
     glm::vec3 scale;
     glm::mat4 offset;
+    glm::mat4 bone_end;
+    glm::mat4 transform;
 };
 
 template <class TValue>
-struct AnimKey{
+struct AnimKey {
     TValue Value;
     float Time;
 
@@ -37,7 +44,7 @@ struct BoneKeyCollection {
     core::Vector<AnimKey<glm::quat>> RotationKeys;
 
     template <class TValue>
-    bool GetInterpolatedKey(float time, const core::Vector<AnimKey<TValue>>& keys,  TValue& out){
+    bool GetInterpolatedKey(float time, const core::Vector<AnimKey<TValue>>& keys,  TValue& out) const{
         int size = keys.size();
 
         for(int i = 0; i < size; i++) {
@@ -61,16 +68,28 @@ struct BoneKeyCollection {
         return false;
     }
 
-    bool GetPosition(float time, glm::vec3& out){
+    bool GetPosition(float time, glm::vec3& out) const{
         return GetInterpolatedKey<glm::vec3>(time, PositionKeys, out);
     }
 
-    bool GetScale(float time, glm::vec3& out){
+    bool GetScale(float time, glm::vec3& out) const{
         return GetInterpolatedKey<glm::vec3>(time, ScaleKeys, out);
     }
 
-    bool GetRotation(float time, glm::quat& out){
+    bool GetRotation(float time, glm::quat& out) const{
         return GetInterpolatedKey<glm::quat>(time, RotationKeys, out);
+    }
+
+    glm::mat4 GetTransform(float time) const{
+      glm::vec3 pos, scale;
+      glm::quat rot;
+      GetInterpolatedKey<glm::vec3>(time, PositionKeys, pos);
+      GetInterpolatedKey<glm::vec3>(time, ScaleKeys, scale);
+      GetInterpolatedKey<glm::quat>(time, RotationKeys, rot);
+
+      return glm::translate(glm::mat4(1), pos)
+          * glm::toMat4( rot )
+          * glm::scale(glm::mat4(1), scale);
     }
 };
 

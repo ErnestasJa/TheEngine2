@@ -124,5 +124,17 @@ const core::Array<render::ITexture*, 8>& BaseMaterial::GetTextures()
 {
     return m_textures;
 }
+core::SharedPtr<BaseMaterial> BaseMaterial::Instance() {
+  auto mat = new BaseMaterial(m_shader);
+  mat->m_textureListNeedsRebuild = mat->m_textureListNeedsRebuild;
+  mat->RenderMode = RenderMode;
+  mat->UseDepthTest = UseDepthTest;
+
+  for(int i = 0; i < m_textures.size(); i++){
+    mat->m_textures[i] = m_textures[i];
+  }
+
+  return core::SharedPtr<BaseMaterial>(mat);
+}
 
 }

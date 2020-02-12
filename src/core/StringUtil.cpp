@@ -3,20 +3,20 @@
 namespace core {
 namespace string {
 
-std::string Replace(const std::string& source, const std::string& toReplace,
-                    const std::string& replacement)
+core::String Replace(const core::String& source, const core::String& toReplace,
+                    const core::String& replacement)
 {
     if (toReplace.empty())
         return source;
     uint32_t toReplaceSize = toReplace.size();
 
     std::size_t prevIndex = 0, index = 0;
-    std::string src;
+    core::String src;
 
     while (true) {
         index = source.find(toReplace, prevIndex);
 
-        if (index == std::string::npos) {
+        if (index == core::String::npos) {
             src += source.substr(prevIndex);
             break;
         }
@@ -28,7 +28,7 @@ std::string Replace(const std::string& source, const std::string& toReplace,
     return src;
 }
 
-std::string TrimEnd(const std::string& s, const std::string& delimiters)
+core::String TrimEnd(const core::String& s, const core::String& delimiters)
 {
     if (s.size() == 0)
         return s;
@@ -41,7 +41,7 @@ std::string TrimEnd(const std::string& s, const std::string& delimiters)
     return s.substr(0, pos + 1);
 }
 
-std::string TrimBegin(const std::string& s, const std::string& delimiters)
+core::String TrimBegin(const core::String& s, const core::String& delimiters)
 {
     if (s.size() == 0)
         return s;
@@ -53,7 +53,7 @@ std::string TrimBegin(const std::string& s, const std::string& delimiters)
     return s.substr(pos);
 }
 
-std::string Trim(const std::string& s, const std::string& delimiters)
+core::String Trim(const core::String& s, const core::String& delimiters)
 {
     if (s.size() == 0)
         return s;

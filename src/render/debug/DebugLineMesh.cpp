@@ -41,4 +41,16 @@ void DebugLineMesh::Upload()
     }
 }
 
+void DebugLineMesh::AddGrid(int count, int spacing, glm::tvec3<uint8_t> color){
+  count = count + (count%2);
+
+  float end = (count * spacing / 2);
+  float start = end * -1;
+  for(int i = 0; i < count; i++){
+    float offset = start + (i * spacing);
+    AddLine(glm::vec3(start, 0, offset), glm::vec3(end, 0, offset), color);
+    AddLine(glm::vec3(offset, 0, start), glm::vec3(offset, 0, end), color);
+  }
+}
+
 }

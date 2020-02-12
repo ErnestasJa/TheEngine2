@@ -77,10 +77,7 @@ void AnimatedMesh::Clear()
     Upload();
 }
 
-struct BoneTransform {
-    int index;
-    glm::mat4 ParentTransform;
-};
+
 
 void AnimationData::Animate(float time) {
     if(!current_animation){
@@ -103,35 +100,12 @@ void AnimationData::Animate(float time) {
         boneIndexStack.pop();
 
         auto & boneData = current_animation->BoneKeys[boneInfo.index];
-        auto & armatureData = current_animation->ArmatureKeys;
         auto & bone = bones[boneInfo.index];
 
-
-        glm::vec3 apos, ascale;
-        glm::quat arot;
-        armatureData.GetPosition(time, apos);
-        armatureData.GetScale(time, ascale);
-        armatureData.GetRotation(time, arot);
-        /*auto armatureTransform = glm::translate(glm::mat4(1), apos) *
-                                 glm::toMat4( arot ) *
-                                 glm::scale(glm::mat4(1), ascale);
-
-        armatureTransform = glm::inverse(armatureTransform);*/
-
-        glm::vec3 pos, scale;
-        glm::quat rot;
-        boneData.GetPosition(time,pos);
-        boneData.GetScale(time,scale);
-        boneData.GetRotation(time, rot);
-
-        auto transform = glm::translate(glm::mat4(1), pos)
-                       * glm::toMat4( rot )
-                       * glm::scale(glm::mat4(1), scale);
-
+        auto transform = boneData.GetTransform(time);
 
         auto globalTransform = boneInfo.ParentTransform * transform;
         current_frame[boneInfo.index] = GlobalInverseTransform * globalTransform * bone.offset;
-
 
         for(int i = 0; i < bones.size(); i++){
             if(bones[i].parent == boneInfo.index){

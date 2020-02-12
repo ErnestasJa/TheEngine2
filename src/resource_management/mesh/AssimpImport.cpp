@@ -102,7 +102,31 @@ static void MapBoneHierarchy(const aiMesh* aMesh, render::AnimatedMesh * mesh, c
         bone.pos = glm::vec3(pos.x, pos.y, pos.z);
         bone.scale = glm::vec3(scale.x, scale.y, scale.z);
         bone.rot = glm::quat(rot.w, rot.x, rot.y, rot.z);
+        bone.transform = ToGlm(aBone->mNode->mTransformation);
         bone.offset = ToGlm(aBone->mOffsetMatrix);
+
+        core::String currentBoneName(aBone->mNode->mName.C_Str());
+        for(int i = 0; i < aBone->mNode->mNumChildren; i++){
+            core::String childBoneName(aBone->mNode->mChildren[i]->mName.C_Str());
+            elog::LogInfo(
+                    core::string::format(
+                            "bone: '{}', child: {}",
+                            aBone->mNode->mName.C_Str(),
+                            childBoneName
+                    ));
+            if(currentBoneName  + "_end" == childBoneName)
+            {
+                auto boneEndNode = aBone->mNode->mChildren[i];
+                bone.bone_end = ToGlm(boneEndNode->mTransformation);
+                elog::LogInfo(
+                    core::string::format(
+                    "Loading bone end for: '{}'",
+                    aBone->mNode->mName.C_Str()
+                    ));
+                break;
+            }
+        }
+
 
         mesh->GetAnimationData().bones[iBone] = bone;
     }
@@ -246,7 +270,8 @@ core::UniquePtr<render::AnimatedMesh> AssimpImport::LoadMesh(io::Path path)
     Assimp::Importer importer;
 
     const aiScene* scene = importer.ReadFileFromMemory( array.data(), array.size(),
-                                              //aiProcess_CalcTangentSpace       |
+                                              aiProcess_CalcTangentSpace       |
+                                              aiProcess_FlipUVs |
                                               aiProcess_Triangulate            |
                                               //aiProcess_JoinIdenticalVertices  |
                                               aiProcess_PopulateArmatureData  |
