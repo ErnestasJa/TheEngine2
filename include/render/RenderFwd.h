@@ -6,6 +6,7 @@ namespace render {
 class BaseMesh;
 class AnimatedMesh;
 class ITexture;
+class IRenderer;
 
 namespace debug {
 class DebugLineMesh;

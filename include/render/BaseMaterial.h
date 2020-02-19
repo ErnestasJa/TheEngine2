@@ -32,7 +32,7 @@ public:
     void SetMat3(const core::String & name, glm::mat3 uniformValue);
     void SetMat3x4(const core::String& name, glm::mat3x4* uniformValue, int count);
     void SetMat4(const core::String & name, glm::mat4 uniformValue);
-    void SetMat4(const core::String & name, glm::mat4* uniformValue, int count, bool transpose = false);
+    void SetMat4(const core::String & name, const glm::mat4* uniformValue, int count, bool transpose = false);
     void SetTexture(int slot, render::ITexture * texture);
     const core::Array<render::ITexture*, 8>& GetTextures();
 

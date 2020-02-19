@@ -5,11 +5,11 @@
 
 namespace render {
 
-BaseMesh::BaseMesh()
+BaseMesh::BaseMesh(): m_useColorBuffer(true)
 {
 }
 
-BaseMesh::BaseMesh(core::SharedPtr<IGpuBufferArrayObject> vao)
+BaseMesh::BaseMesh(core::SharedPtr<IGpuBufferArrayObject> vao): m_useColorBuffer(true)
 {
     m_vao = vao;
 }

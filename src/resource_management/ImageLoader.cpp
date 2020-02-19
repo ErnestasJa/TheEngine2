@@ -14,7 +14,8 @@ ImageLoader::ImageLoader(io::IFileSystem* fs, render::IRenderer* renderer)
     , m_renderer(renderer)
 {
 }
-core::SharedPtr<render::ITexture> ImageLoader::LoadImage(const io::Path& path)
+
+core::UniquePtr<render::ITexture> ImageLoader::LoadTexture(const io::Path& path)
 {
     auto file = m_fileSystem->OpenRead(path);
 
@@ -36,7 +37,7 @@ core::SharedPtr<render::ITexture> ImageLoader::LoadImage(const io::Path& path)
     elog::LogInfo(core::string::format("Image size y: {}\n", img.size.y));
 
     render::TextureDescriptor desc;
-    desc.filterMode = render::TextureFilterMode::TRILINEAR;
+    desc.filterMode = render::TextureFilterMode::NEAREST;
     auto texture    = m_renderer->CreateTexture(desc);
     texture->UploadData(render::TextureDataDescriptor{
         (void*)img.data.get(), render::TextureDataFormat::RGB, img.size });

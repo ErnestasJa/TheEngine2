@@ -15,7 +15,7 @@ public:
     virtual const void SetMat4(float* value)                    = 0;
     virtual const void SetMat3(float* value)                    = 0;
     virtual const void SetMat3x4(float* value, int count)       = 0;
-    virtual const void SetMat4(float* value, int count, bool transpose = false)       = 0;
+    virtual const void SetMat4(const float* value, int count, bool transpose = false)       = 0;
 };
 }
 

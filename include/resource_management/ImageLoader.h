@@ -7,20 +7,22 @@
 
 #include <render/IRenderer.h>
 namespace res {
+
+struct Image
+{
+    int32_t channels;
+    core::pod::Vec2<int32_t> size;
+    core::UniquePtr<uint8_t> data;
+};
+
 class ImageLoader
 {
 private:
-    struct Image
-    {
-        int32_t channels;
-        core::pod::Vec2<int32_t> size;
-        core::UniquePtr<uint8_t> data;
-    };
 
 public:
     ImageLoader(io::IFileSystem* fs, render::IRenderer* renderer);
 
-    core::SharedPtr<render::ITexture> LoadImage(const io::Path& path);
+    core::UniquePtr<render::ITexture> LoadTexture(const io::Path& path);
 
 private:
     io::IFileSystem* m_fileSystem;

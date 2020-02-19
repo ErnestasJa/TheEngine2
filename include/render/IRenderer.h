@@ -46,7 +46,7 @@ public:
                                                        const core::String& geomSource = "") = 0;
     virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
         const core::Vector<BufferDescriptor>& descriptors)                               = 0;
-    virtual core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) = 0;
+    virtual core::UniquePtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) = 0;
     virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
         const FrameBufferObjectDescriptor& descriptor) = 0;
     virtual core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(

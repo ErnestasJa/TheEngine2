@@ -20,8 +20,8 @@
 #include <unordered_map>
 
 /*Third party headers*/
-//#include "glm/glm.hpp"
-//#include "glm/ext.hpp"
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/quaternion_float.hpp>
 
 /*Engine headers*/
 #include "EngineForwardDeclares.h"

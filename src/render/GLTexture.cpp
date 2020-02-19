@@ -18,7 +18,7 @@ inline void SetUnpackAlignment(render::TextureDataFormat format)
     }
 }
 
-core::SharedPtr<ITexture> GLTexture::CreateTexture(const TextureDescriptor& descriptor)
+core::UniquePtr<ITexture> GLTexture::CreateTexture(const TextureDescriptor& descriptor)
 {
     auto GetType = [&]() {
         switch (descriptor.type) {
@@ -110,7 +110,7 @@ core::SharedPtr<ITexture> GLTexture::CreateTexture(const TextureDescriptor& desc
     glBindTexture(GL_TEXTURE_2D, 0);
 
     if (gl::IsHandleValid(handle)) {
-        return core::MakeShared<GLTexture>(handle);
+        return core::MakeUnique<GLTexture>(handle);
     }
 
     return nullptr;

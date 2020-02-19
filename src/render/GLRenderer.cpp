@@ -79,7 +79,7 @@ core::SharedPtr<IGpuBufferArrayObject> GLRenderer::CreateBufferArrayObject(
     return vao;
 }
 
-core::SharedPtr<ITexture> GLRenderer::CreateTexture(const TextureDescriptor& descriptor)
+core::UniquePtr<ITexture> GLRenderer::CreateTexture(const TextureDescriptor& descriptor)
 {
     return GLTexture::CreateTexture(descriptor);
 }
@@ -213,18 +213,19 @@ void GLRenderer::RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, 
 IRenderContext* GLRenderer::GetRenderContext() const {
     return m_renderContext.get();
 }
+
 void GLRenderer::RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material,
                             const glm::mat4 transform){
     auto camera = m_renderContext->GetCurrentCamera();
     auto mvp = camera->GetProjection() * camera->GetView() * transform;
 
-    auto&anim = mesh->GetAnimationData();
+    auto& anim = mesh->GetAnimations();
 
     m_renderContext->SetDepthTest(material->UseDepthTest);
 
     material->Use();
     material->SetMat4("MVP", mvp);
-    material->SetMat4("Bones", anim.current_frame.data(), anim.current_frame.size(), true);
+    //material->SetMat4("Bones", anim.current_frame.data(), anim.current_frame.size(), true);
     SetActiveTextures(material->GetTextures());
     mesh->Render();
 };

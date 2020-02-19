@@ -22,7 +22,7 @@ struct gpu_texture_handle
 class GLTexture : public ITexture, public gl::gpu_object<gl::gpu_texture_handle>
 {
 public:
-    static core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor);
+    static core::UniquePtr<ITexture> CreateTexture(const TextureDescriptor& descriptor);
     static void BindObject(GLTexture* object, uint32_t attachmentIndex);
 
 public:

@@ -4,28 +4,12 @@
 #include "utils/Math.h"
 
 namespace render {
-
-template<>
-glm::vec3 AnimKey<glm::vec3>::Interpolate(const AnimKey<glm::vec3> & nextKey, float animTime) const {
-    float delta = nextKey.Time - Time;
-    float interpFactor = (animTime - Time) /  delta;
-    return Value + interpFactor * (nextKey.Value - Value);
-}
-
-template<>
-glm::quat AnimKey<glm::quat>::Interpolate(const AnimKey<glm::quat> & nextKey, float animTime) const {
-    float delta = nextKey.Time - Time;
-    float interpFactor = (animTime - Time) /  delta;
-    return glm::mix(Value, nextKey.Value, interpFactor);
-}
-
 AnimatedMesh::AnimatedMesh()
 {
 }
 
-AnimatedMesh::AnimatedMesh(core::SharedPtr<IGpuBufferArrayObject> vao)
+AnimatedMesh::AnimatedMesh(core::SharedPtr<IGpuBufferArrayObject> vao): BaseMesh(vao)
 {
-    m_vao = vao;
 }
 
 void dump_buffer(core::String name, const core::Vector<glm::vec4> & buffer){
@@ -59,11 +43,7 @@ void AnimatedMesh::Upload()
 
 void AnimatedMesh::Render()
 {
-    m_vao->Render(IndexBuffer.size());
-}
-
-AnimationData & AnimatedMesh::GetAnimationData(){
-    return m_animation;
+    BaseMesh::Render();
 }
 
 void AnimatedMesh::Clear()
@@ -77,44 +57,10 @@ void AnimatedMesh::Clear()
     Upload();
 }
 
-
-
-void AnimationData::Animate(float time) {
-    if(!current_animation){
-        return;
-    }
-
-    core::Stack<BoneTransform> boneIndexStack;
-
-    for(int i = 0; i < bones.size(); i++ ){
-        if(bones[i].parent < 0){
-            boneIndexStack.push(BoneTransform {
-                i,
-                glm::mat4(1)
-            });
-        }
-    }
-
-    while(!boneIndexStack.empty()){
-        BoneTransform boneInfo = boneIndexStack.top();
-        boneIndexStack.pop();
-
-        auto & boneData = current_animation->BoneKeys[boneInfo.index];
-        auto & bone = bones[boneInfo.index];
-
-        auto transform = boneData.GetTransform(time);
-
-        auto globalTransform = boneInfo.ParentTransform * transform;
-        current_frame[boneInfo.index] = GlobalInverseTransform * globalTransform * bone.offset;
-
-        for(int i = 0; i < bones.size(); i++){
-            if(bones[i].parent == boneInfo.index){
-                boneIndexStack.push(BoneTransform {
-                    i,
-                    globalTransform
-                });
-            }
-        }
-    }
+void AnimatedMesh::SetArmature(const render::anim::Armature& armature)
+{
+    m_armature = armature;
 }
+
+
 }

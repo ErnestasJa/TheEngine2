@@ -92,7 +92,7 @@ void BaseMaterial::SetMat3x4(const core::String& name, glm::mat3x4* uniformValue
     }
 }
 
-void BaseMaterial::SetMat4(const core::String& name, glm::mat4* uniformValue, int count, bool transpose)
+void BaseMaterial::SetMat4(const core::String& name, const glm::mat4* uniformValue, int count, bool transpose)
 {
     auto uniform = m_shader->GetUniform(name);
 

@@ -113,7 +113,9 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/render/AnimatedMesh.cpp"
 
 	"${ENGINE_SRC_PATH}/input/InputHandlerHandle.cpp"
-)
+	"${ENGINE_SRC_PATH}/resource_management/ResourceManager.cpp"
+	"${ENGINE_SRC_PATH}/render/animation/BoneKeyCollection.cpp"
+	"${ENGINE_SRC_PATH}/render/animation/AnimationController.cpp")
 
 add_subdirectory ("${LIB_PATH}/glad")
 add_subdirectory ("${LIB_PATH}/glfw")

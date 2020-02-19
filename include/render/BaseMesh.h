@@ -12,27 +12,35 @@ class IRenderer;
 class BaseMesh
 {
 public:
+    core::Vector<uint32_t> IndexBuffer;
     core::Vector<glm::vec2> UVBuffer;
     core::Vector<glm::vec3> VertexBuffer;
     core::Vector<glm::vec3> NormalBuffer;
     core::Vector<glm::vec3> ColorBuffer;
 
-    core::Vector<uint32_t> IndexBuffer;
-
     BaseMesh();
 
     BaseMesh(core::SharedPtr<IGpuBufferArrayObject> vao);
 
-    void Upload();
+    virtual void Upload();
 
-    void Render();
+    virtual void Render();
 
     IGpuBufferArrayObject* GetGpuBufferObject(){
         return m_vao.get();
     }
-protected:
 
-    core::SharedPtr<IGpuBufferArrayObject> m_vao;
+    void SetUseColorBuffer(bool use){
+        m_useColorBuffer = use;
+    }
+
+    bool ShouldUseColorBuffer(){
+        return m_useColorBuffer;
+    }
+
+protected:
+    core::SharedPtr<render::IGpuBufferArrayObject> m_vao;
+    bool m_useColorBuffer;
 };
 
 }

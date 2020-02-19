@@ -24,7 +24,7 @@ public:
     core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
         const core::Vector<BufferDescriptor>& descriptors) final;
 
-    core::SharedPtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) final;
+    core::UniquePtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) final;
     core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
         const FrameBufferObjectDescriptor& descriptor) final;
     core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(
