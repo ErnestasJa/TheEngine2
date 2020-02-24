@@ -15,8 +15,8 @@ bool GLExtensionLoader::LoadExtensions()
     return gladLoadGL();
 }
 
-core::SharedPtr<GLExtensionLoader> CreateExtensionLoader()
+core::UniquePtr<GLExtensionLoader> CreateExtensionLoader()
 {
-    return core::MakeShared<GLExtensionLoader>();
+    return core::MakeUnique<GLExtensionLoader>();
 }
 }

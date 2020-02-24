@@ -6,6 +6,7 @@ namespace render::anim {
 AnimationController::AnimationController(render::AnimatedMesh* mesh)
 :m_animatedMesh(mesh), m_currentAnimation(nullptr), m_animationTime(0) {
     m_currentFrame.resize(m_animatedMesh->GetArmature().GetBones().size(), glm::mat4(1));
+    m_boneTransformNoOffset.resize(m_animatedMesh->GetArmature().GetBones().size(), glm::mat4(1));
 }
 
 bool AnimationController::SetAnimation(int animationIndex)
@@ -87,7 +88,8 @@ void AnimationController::Animate(float deltaTimeInSeconds)
         auto transform = boneData.GetTransform(m_animationTime);
 
         auto globalTransform = boneInfo.ParentTransform * transform;
-        m_currentFrame[boneInfo.index] = armature.GetGlobalInverseTransform() * globalTransform * bone.offset;
+        m_boneTransformNoOffset[boneInfo.index] = armature.GetGlobalInverseTransform() * globalTransform;
+        m_currentFrame[boneInfo.index] = m_boneTransformNoOffset[boneInfo.index] * bone.offset;
 
         for(int i = 0; i < bones.size(); i++){
             if(bones[i].parent == boneInfo.index){
@@ -98,6 +100,21 @@ void AnimationController::Animate(float deltaTimeInSeconds)
             }
         }
     }
+}
+glm::mat4 AnimationController::GetBoneTransformation(core::String name)
+{
+    auto& bones = m_animatedMesh->GetArmature().GetBones();
+
+    for(int i = 0; i < bones.size(); i++){
+        auto& bone = bones[i];
+
+        if(bone.name == name){
+            return m_boneTransformNoOffset[i];
+        }
+    }
+
+    elog::LogWarning("Bone transform not found: " + name);
+    return glm::mat4(1);
 }
 
 

@@ -8,9 +8,9 @@
 
 namespace gui {
 
-core::SharedPtr<IGui> CreateGui(core::SharedPtr<engine::IEngineContext> context)
+core::UniquePtr<IGui> CreateGui(core::SharedPtr<engine::IEngineContext> context)
 {
-    return std::make_shared<GuiImpl>(context);
+    return core::MakeUnique<GuiImpl>(context);
 }
 
 GuiImpl::GuiImpl(core::SharedPtr<engine::IEngineContext> context)

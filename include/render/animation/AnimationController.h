@@ -17,9 +17,11 @@ public:
     bool SetAnimation(core::String animationName);
 
     void Animate(float deltaTimeInSeconds);
+    glm::mat4 GetBoneTransformation(core::String name);
 
 protected:
     core::Vector<glm::mat4> m_currentFrame;
+    core::Vector<glm::mat4> m_boneTransformNoOffset;
     float m_animationTime;
     render::AnimatedMesh* m_animatedMesh;
     const render::anim::Animation* m_currentAnimation;

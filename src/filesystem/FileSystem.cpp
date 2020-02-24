@@ -88,15 +88,21 @@ bool FileSystem::Delete(const Path& path)
     return PHYSFS_delete(path.AsString().c_str());
 }
 
-core::SharedPtr<IFileWriter> FileSystem::OpenWrite(const Path& path)
+core::UniquePtr<IFileWriter> FileSystem::OpenWrite(const Path& path)
 {
-    auto fileWriter = std::make_shared<FileWriter>();
-    return fileWriter->Open(path) ? fileWriter : nullptr;
+    auto fileWriter = core::MakeUnique<FileWriter>();
+
+    if(fileWriter->Open(path)){
+        return fileWriter;
+    }
+
+    elog::LogWarning(core::string::format("File could not be opened for writing: '{}'", path.AsString().c_str()));
+    return nullptr;
 }
 
-core::SharedPtr<IFileReader> FileSystem::OpenRead(const Path& path)
+core::UniquePtr<IFileReader> FileSystem::OpenRead(const Path& path)
 {
-    auto fileReader = std::make_shared<FileReader>();
+    auto fileReader = core::MakeUnique<FileReader>();
 
     if(fileReader->Open(path)){
         return fileReader;

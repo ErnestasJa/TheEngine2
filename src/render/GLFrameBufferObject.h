@@ -19,7 +19,7 @@ public:
     static const uint32_t AttachmentCount = 8;
     friend void BindObject(GLFrameBufferObject* object, FrameBufferTarget target);
     static void BindObject(GLFrameBufferObject* object, FrameBufferTarget target);
-    static core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
+    static core::UniquePtr<IFrameBufferObject> CreateFrameBufferObject(
         const FrameBufferObjectDescriptor& descriptor);
 
 public:

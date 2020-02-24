@@ -3,6 +3,7 @@
 
 namespace render::anim {
 class Animation;
+class Armature;
 class Bone;
 class BoneKeyCollection;
 class AnimationController;

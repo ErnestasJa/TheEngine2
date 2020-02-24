@@ -9,6 +9,6 @@ public:
     virtual ~GLExtensionLoader();
     virtual bool LoadExtensions();
 };
-core::SharedPtr<GLExtensionLoader> CreateExtensionLoader();
+core::UniquePtr<GLExtensionLoader> CreateExtensionLoader();
 }
 #endif

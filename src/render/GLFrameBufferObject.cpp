@@ -20,7 +20,7 @@ inline uint32_t GetFBOTargetFromEnum(render::FrameBufferTarget target)
     }
 }
 
-core::SharedPtr<IFrameBufferObject> GLFrameBufferObject::CreateFrameBufferObject(
+core::UniquePtr<IFrameBufferObject> GLFrameBufferObject::CreateFrameBufferObject(
     const FrameBufferObjectDescriptor& descriptor)
 {
     gl::gpu_fbo_handle handle;
@@ -28,7 +28,7 @@ core::SharedPtr<IFrameBufferObject> GLFrameBufferObject::CreateFrameBufferObject
     glGenFramebuffers(1, &handle.id);
 
     if (gl::IsHandleValid(handle)) {
-        return core::MakeShared<GLFrameBufferObject>(handle);
+        return core::MakeUnique<GLFrameBufferObject>(handle);
     }
 
     return nullptr;

@@ -41,6 +41,7 @@ public:
                     res::mesh::AssimpImport* assimpImporter);
 
     render::ITexture* LoadTexture(core::String path);
+    ///todo: this should return UniquePtr.
     core::SharedPtr<material::BaseMaterial> LoadMaterial(core::String path);
     core::UniquePtr<game::obj::AnimatedMeshActor> LoadAssimp(core::String meshName,
                                                              core::String textureName,

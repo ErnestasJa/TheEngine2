@@ -12,7 +12,7 @@ public:
     virtual void EndRender()   = 0;
 };
 
-core::SharedPtr<IGui> CreateGui(core::SharedPtr<engine::IEngineContext> context);
+core::UniquePtr<IGui> CreateGui(core::SharedPtr<engine::IEngineContext> context);
 }
 
 #endif

@@ -14,6 +14,7 @@ struct GpuProgramInfo
     core::SharedPtr<render::IGpuProgram> Program;
 };
 
+///todo: remove, ResourceManager now loads materials/shaders.
 class GpuProgramManager
 {
 public:

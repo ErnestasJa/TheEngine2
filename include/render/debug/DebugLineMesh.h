@@ -6,6 +6,7 @@ namespace render {
 class BaseMesh;
 
 namespace debug {
+///todo: remove from engine.
 class DebugLineMesh {
 public:
     DebugLineMesh(core::SharedPtr<BaseMesh> mesh, core::SharedPtr<material::BaseMaterial> material);
