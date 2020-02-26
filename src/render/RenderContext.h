@@ -20,10 +20,12 @@ public:
     void SetDepthTest(bool enabled) final;
     bool IsDepthTestEnabled() const final;
 
+    void SetWindowSize(core::pod::Vec2<uint32_t> windowSize);
 private:
     material::BaseMaterial* m_currentMaterial;
     IRenderer* m_renderer;
     core::SharedPtr<ICamera> m_camera;
+    core::pod::Vec2<uint32_t> m_windowSize;
     bool m_depthTest;
 };
 } // namespace render

@@ -67,6 +67,7 @@ public:
     virtual void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position) = 0;
     virtual void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) = 0;
     virtual void RenderMesh(AnimatedMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) = 0;
+    virtual void WindowResized(core::pod::Vec2<uint32_t> size) = 0;
 };
 }
 

@@ -81,11 +81,18 @@ bool GLFWWindow::Init(const SWindowDefinition& wDef)
         return false;
     }
 
+    glfwSetWindowUserPointer(m_window, this);
+
     m_inputDevice = GLFWInputDevice::Create(m_window);
 
     if (m_inputDevice == nullptr) {
         return false;
     }
+
+    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height){
+       GLFWWindow * currentWindow = (GLFWWindow*)glfwGetWindowUserPointer(window);
+       currentWindow->m_onWindowResize(core::pod::Vec2<uint32_t>{(uint32_t)width, (uint32_t)height});
+    });
 
     return true;
 }

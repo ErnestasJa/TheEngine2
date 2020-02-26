@@ -47,6 +47,9 @@ public:
     void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) final;
     void RenderMesh(AnimatedMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) final;
 
+public:
+    void WindowResized(core::pod::Vec2<uint32_t> size);
+
 private:
     core::UniquePtr<IRenderContext> m_renderContext;
     core::SharedPtr<GLFrameBufferObject> m_activeFrameBufferObject;

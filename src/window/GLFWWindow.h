@@ -3,6 +3,7 @@
 
 #include "window/IWindow.h"
 #include "window/SWindowDefinition.h"
+#include <functional>
 
 struct GLFWwindow;
 
@@ -28,7 +29,14 @@ public:
     virtual void SetCursorMode(CursorMode cursorMode);
     GLFWwindow* GetUnderlyingWindow();
 
+    ///todo: cleanup
+    template <class TResizeCallback>
+    void SetWindowResizeCallback(TResizeCallback resizeCallback){
+        m_onWindowResize = resizeCallback;
+    }
+
 private:
+    std::function<void(core::pod::Vec2<uint32_t>)> m_onWindowResize;
     SWindowDefinition m_windowDefinition;
     GLFWwindow* m_window;
     core::SharedPtr<input::IInputDevice> m_inputDevice;

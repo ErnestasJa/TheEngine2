@@ -16,6 +16,7 @@ public:
     virtual material::BaseMaterial* GetCurrentMaterial() const        = 0;
     virtual void SetDepthTest(bool enabled) = 0;
     virtual bool IsDepthTestEnabled() const = 0;
+    virtual void SetWindowSize(core::pod::Vec2<uint32_t> windowSize) = 0;
 };
 } // namespace render
 

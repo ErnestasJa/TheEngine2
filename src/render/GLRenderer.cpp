@@ -228,6 +228,10 @@ void GLRenderer::RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material
     //material->SetMat4("Bones", anim.current_frame.data(), anim.current_frame.size(), true);
     SetActiveTextures(material->GetTextures());
     mesh->Render();
+}
+
+void GLRenderer::WindowResized(core::pod::Vec2<uint32_t> size){
+    m_renderContext->SetWindowSize(size);
 };
 
 }

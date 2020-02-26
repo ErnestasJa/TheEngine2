@@ -8,6 +8,7 @@ class ICamera
 {
 public:
     virtual ~ICamera(){};
+    virtual void SetAspectRatio(float aspectRatio) = 0;
     virtual glm::vec3 GetPosition() const = 0;
     virtual glm::vec3 GetRotation() const = 0;
     virtual glm::vec3 GetLocalZ() const = 0;
@@ -16,6 +17,8 @@ public:
     virtual glm::mat4 GetProjection() const = 0;
     virtual void SetPosition(glm::vec3 position) = 0;
     virtual void SetRotation(glm::vec3 rotation) = 0;
+    virtual void SetFOV(float fov) = 0;
+    virtual float GetFOV()  = 0;
 };
 
 }

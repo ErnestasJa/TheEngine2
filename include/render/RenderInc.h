@@ -15,6 +15,7 @@
 #include "IRendererDebugMessageMonitor.h"
 #include "ITexture.h"
 #include "PerspectiveCamera.h"
+#include "OrbitCamera.h"
 #include "IRenderContext.h"
 #include "engine/IEngineContext.h" //fixme: move this to engine include
 

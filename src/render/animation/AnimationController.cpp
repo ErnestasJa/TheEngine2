@@ -13,8 +13,15 @@ bool AnimationController::SetAnimation(int animationIndex)
 {
     auto& animations = m_animatedMesh->GetAnimations();
 
+    if(animationIndex < 0){
+      m_animationTime = 0;
+      m_currentAnimation = nullptr;
+      elog::LogInfo("Pausing animation");
+    }
+
     if(animationIndex < animations.size()){
         m_currentAnimation = &animations[animationIndex];
+        m_fps = m_currentAnimation->Fps;
         m_animationTime = 0;
         elog::LogInfo(core::string::format("Successfully set animation[{}]: {}", animationIndex, m_currentAnimation->Name.c_str()));
         return true;
@@ -32,6 +39,7 @@ bool AnimationController::SetAnimation(core::String animationName)
     for(int i = 0; i < animations.size(); i++){
         if(animations[i].Name == animationName){
             m_currentAnimation = &animations[i];
+            m_fps = m_currentAnimation->Fps;
             m_animationTime = 0;
             elog::LogInfo(core::string::format("Successfully set animation: {}", animationName.c_str()));
             return true;
@@ -63,7 +71,7 @@ void AnimationController::Animate(float deltaTimeInSeconds)
     auto & armature = m_animatedMesh->GetArmature();
     auto & bones = armature.GetBones();
 
-    m_animationTime += deltaTimeInSeconds * m_currentAnimation->Fps;
+    m_animationTime += deltaTimeInSeconds * m_fps;
     m_animationTime = glm::mod(m_animationTime, m_currentAnimation->Duration);
 
 
@@ -115,6 +123,16 @@ glm::mat4 AnimationController::GetBoneTransformation(core::String name)
 
     elog::LogWarning("Bone transform not found: " + name);
     return glm::mat4(1);
+}
+
+const render::anim::Animation* AnimationController::GetCurrentAnimation()
+{
+    return m_currentAnimation;
+}
+
+void AnimationController::OverrideFps(float fps)
+{
+  m_fps = fps;
 }
 
 

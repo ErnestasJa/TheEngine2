@@ -15,6 +15,8 @@ core::SharedPtr<ICamera> RenderContext::GetCurrentCamera() const {
 
 void RenderContext::SetCurrentCamera(core::SharedPtr<ICamera> camera) {
     m_camera = camera;
+    elog::LogInfo(core::string::format("Setting aspect ratio {} / {}", m_windowSize.w,  m_windowSize.h));
+    m_camera->SetAspectRatio(m_windowSize.w / m_windowSize.h);
 }
 
 void RenderContext::SetCurrentMaterial(material::BaseMaterial* material)
@@ -38,6 +40,10 @@ void RenderContext::SetDepthTest(bool enabled)
 bool RenderContext::IsDepthTestEnabled() const
 {
     return m_depthTest;
+}
+void RenderContext::SetWindowSize(core::pod::Vec2<uint32_t> windowSize)
+{
+    m_windowSize = windowSize;
 }
 
 }

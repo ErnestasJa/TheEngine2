@@ -1,30 +1,26 @@
-#ifndef PERSPECTIVE_CAMERA_CPP
-#define PERSPECTIVE_CAMERA_CPP
-
-#include "glm/glm.hpp"
-#include "glm/ext.hpp"
+#ifndef THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_ORBITCAMERA_H_
+#define THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_ORBITCAMERA_H_
 #include "ICamera.h"
 
 namespace render {
-
-class PerspectiveCamera : public ICamera
+class OrbitCamera: public ICamera
 {
 public:
-    PerspectiveCamera(float aspectRatio, float FOV = 45.0f, float nearPlane = 0.1,
+    OrbitCamera(float FOV = 90.0f, float nearPlane = 0.1,
                       float farPlane = 2048.0f)
-        : m_aspectRatio(aspectRatio)
-        , m_fov(FOV)
+        : m_fov(FOV)
         , m_far(farPlane)
         , m_near(nearPlane)
         , m_position(0, 0, 0)
         , m_rotation(0, 0, 0)
+        , m_distance(2.f)
     {
         SetRotation(glm::vec3());
         RecalcProjection();
     }
 
-    void RecalcProjection(){
-        m_projectionMatrix = glm::perspective(m_fov, m_aspectRatio, m_near, m_far);
+    void SetDistance(float distance){
+        m_distance = distance;
     }
 
     void SetAspectRatio(float aspectRatio){
@@ -39,6 +35,10 @@ public:
 
     float GetFOV(){
         return m_fov;
+    }
+
+    void RecalcProjection(){
+        m_projectionMatrix = glm::perspective(glm::radians(m_fov), m_aspectRatio, m_near, m_far);
     }
 
     void SetRotation(glm::vec3 rotation)
@@ -110,8 +110,8 @@ private:
 
         m_up = glm::cross(m_right, m_direction);
 
-        m_viewMatrix = glm::lookAt(m_position,               //
-                                   m_position + m_direction, //
+        m_viewMatrix = glm::lookAt(m_position - m_direction * m_distance,               //
+                                   m_position , //
                                    m_up);
     }
 
@@ -128,7 +128,8 @@ private:
     float m_fov;
     float m_far;
     float m_near;
+    float m_distance;
 };
 }
 
-#endif
+#endif // THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_ORBITCAMERA_H_

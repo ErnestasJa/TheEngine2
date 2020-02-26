@@ -7,6 +7,8 @@ class BaseMesh;
 class AnimatedMesh;
 class ITexture;
 class IRenderer;
+class PerspectiveCamera;
+class OrbitCamera;
 
 namespace debug {
 class DebugLineMesh;

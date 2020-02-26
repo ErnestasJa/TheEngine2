@@ -26,7 +26,8 @@ core::UniquePtr<IEngineContext> CreateContext(const render::SWindowDefinition& d
     if (!extensionLoader->LoadExtensions())
         return nullptr;
 
-    static_cast<render::GLFWWindow*>(window.get())->UpdateContext();
+    auto wnd = static_cast<render::GLFWWindow*>(window.get());
+    wnd->UpdateContext();
 
     auto debugMonitor = render::CreateRendererDebugMessageMonitor();
 
@@ -34,8 +35,15 @@ core::UniquePtr<IEngineContext> CreateContext(const render::SWindowDefinition& d
     if (!renderer)
         return nullptr;
 
-    return core::UniquePtr<IEngineContext>(new EngineContext(std::move(windowModule), std::move(window),
-                                             std::move(renderer)));
+
+    renderer->WindowResized({ (uint32_t)def.Dimensions.x, (uint32_t)def.Dimensions.y });
+
+    wnd->SetWindowResizeCallback([&renderer](core::pod::Vec2<uint32_t> size){
+        renderer->WindowResized(size);
+    });
+
+    return core::MakeUnique<EngineContext>(std::move(windowModule), std::move(window),
+                                             std::move(renderer));
 }
 
 EngineContext::EngineContext(std::unique_ptr<render::DefaultWindowModule>&& windowModule,

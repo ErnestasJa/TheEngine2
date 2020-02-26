@@ -47,7 +47,8 @@ core::String GpuProgramManager::LoadShaderSource(const core::String& path)
     auto file = m_fileSystem->OpenRead(path);
     if (file) {
         file->Read(fileContents);
-        elog::LogInfo(fileContents);
+        //elog::LogInfo(fileContents);
+        elog::LogInfo("Loaded shader: " + path);
     }
     else {
         elog::LogInfo("Failed to read shader source: " + path);
