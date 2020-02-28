@@ -23,6 +23,10 @@ public:
     ImageLoader(io::IFileSystem* fs, render::IRenderer* renderer);
 
     core::UniquePtr<render::ITexture> LoadTexture(const io::Path& path);
+    core::UniquePtr<render::ITexture> LoadAtlasAs2DTexture(const io::Path& path, uint32_t subImageSize);
+private:
+    Image LoadImage(const io::Path& path);
+
 
 private:
     io::IFileSystem* m_fileSystem;

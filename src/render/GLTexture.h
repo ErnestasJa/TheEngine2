@@ -16,6 +16,10 @@ struct gpu_texture_handle
     uint32_t wrap_t;
     uint32_t filter_min;
     uint32_t filter_mag;
+    uint32_t layerCount;
+    uint32_t width;
+    uint32_t height;
+    uint32_t sizedFormat;
 };
 }
 
@@ -29,6 +33,7 @@ public:
     GLTexture(const gl::gpu_texture_handle& handle);
     virtual ~GLTexture();
     virtual void UploadData(const TextureDataDescriptor& descriptor);
+private:
 };
 }
 

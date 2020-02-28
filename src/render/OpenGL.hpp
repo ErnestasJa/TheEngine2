@@ -148,6 +148,32 @@ inline uint32_t CreateShaderFromString(uint32_t type, const char* source)
     return 0;
 }
 
+inline uint32_t GetSizedTextureFormat(render::TextureDataFormat format){
+    switch (format) {
+    case render::TextureDataFormat::RGB:
+        return GL_RGB8;
+    case render::TextureDataFormat::RGBA:
+        return GL_RGBA8;
+    case render::TextureDataFormat::DEPTH32F:
+        return GL_DEPTH_COMPONENT32F;
+    default:
+        return GL_RGBA8;
+    }
+}
+
+inline uint32_t GetBaseTextureFormat(render::TextureDataFormat format){
+    switch (format) {
+    case render::TextureDataFormat::RGB:
+        return GL_RGB;
+    case render::TextureDataFormat::RGBA:
+        return GL_RGBA;
+    case render::TextureDataFormat::DEPTH32F:
+        return GL_DEPTH_COMPONENT;
+    default:
+        return GL_RGBA;
+    }
+}
+
 inline bool LinkProgram(const gpu_shader_handle& handle)
 {
     if (handle.vertex_program_id)
