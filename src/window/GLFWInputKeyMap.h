@@ -58,11 +58,23 @@ inline const Key& MapKey(int32_t key)
     case GLFW_KEY_Z:
         return Keys::Z;
     case GLFW_KEY_SPACE:
-        return Keys::Space;
+        return Keys::SPACE;
+    case GLFW_KEY_LEFT_CONTROL:
+        return Keys::L_CTRL;
+    case GLFW_KEY_LEFT_SHIFT:
+        return Keys::L_SHIFT;
+    case GLFW_KEY_RIGHT_CONTROL:
+        return Keys::R_CTRL;
+    case GLFW_KEY_RIGHT_SHIFT:
+        return Keys::R_SHIFT;
+    case GLFW_KEY_TAB:
+        return Keys::TAB;
+    case GLFW_KEY_GRAVE_ACCENT:
+        return Keys::GRAVE_ACCENT;
     case GLFW_KEY_ESCAPE:
-        return Keys::Esc;
+        return Keys::ESC;
     default:
-        return Keys::Unknown;
+        return Keys::UNKNOWN;
     }
 }
 
@@ -74,7 +86,7 @@ inline const MouseButton& MapMouseButton(int32_t button)
 	case GLFW_MOUSE_BUTTON_LEFT:
 		return MouseButtons::Left;
 	default:
-		return MouseButtons::Unknown;
+		return MouseButtons::UNKNOWN;
 	}
 }
 }

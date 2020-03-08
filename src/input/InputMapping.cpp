@@ -3,6 +3,7 @@
 namespace input
 {
 int Key::KeyIdentifierCounter = 0;
+int MouseButton::ButtonIdentifierCounter = 0;
 
 const Key Keys::A("A");
 const Key Keys::B("B");
@@ -30,11 +31,17 @@ const Key Keys::W("W");
 const Key Keys::X("X");
 const Key Keys::Y("Y");
 const Key Keys::Z("Z");
-const Key Keys::Space("Space");
-const Key Keys::Esc("Esc");
-const Key Keys::Unknown("Unknown");
+const Key Keys::SPACE("Space");
+const Key Keys::L_CTRL("LeftControl");
+const Key Keys::L_SHIFT("LeftShift");
+const Key Keys::R_CTRL("RightControl");
+const Key Keys::R_SHIFT("RightShift");
+const Key Keys::GRAVE_ACCENT("GraveAccent");
+const Key Keys::TAB("TAB");
+const Key Keys::ESC("Esc");
+const Key Keys::UNKNOWN("Unknown");
 
 const MouseButton MouseButtons::Left("Left");
 const MouseButton MouseButtons::Right("Right");
-const MouseButton MouseButtons::Unknown("Unknown");
+const MouseButton MouseButtons::UNKNOWN("Unknown");
 }

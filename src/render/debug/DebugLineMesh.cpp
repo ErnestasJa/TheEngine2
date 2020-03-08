@@ -7,6 +7,8 @@ namespace render::debug {
 DebugLineMesh::DebugLineMesh(core::SharedPtr<BaseMesh> mesh, core::SharedPtr<material::BaseMaterial> material)
 : m_mesh(mesh), m_material(material), m_isUploaded(false)
 {
+    m_material->UseDepthTest = false;
+    m_material->RenderMode = material::MeshRenderMode::Lines;
 }
 
 void DebugLineMesh::AddLine(glm::vec3 start, glm::vec3 end, glm::tvec3<uint8_t> color)

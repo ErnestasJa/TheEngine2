@@ -70,6 +70,11 @@ public:
         return m_rotation;
     }
 
+    glm::vec3 GetDirection() const override
+    {
+        return m_direction;
+    }
+
     glm::vec3 GetPosition() const
     {
         return m_position;
