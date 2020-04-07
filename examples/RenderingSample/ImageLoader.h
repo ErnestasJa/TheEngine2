@@ -36,13 +36,13 @@ public:
         core::TByteArray testByteArray;
         auto bytesRead = file->Read(testByteArray);
 
-        elog::LogInfo(CFormat("Image size bytes: %u\n", bytesRead));
+        elog::LogInfo(CFormat("\nImage size bytes: %u", bytesRead));
         Image img;
         img.data = core::UniquePtr<uint8_t>(stbi_load_from_memory(
             (stbi_uc*)testByteArray.data(), bytesRead, &img.size.w, &img.size.h,
             &img.channels, STBI_rgb));
 
-        elog::LogInfo(CFormat("Image size x: %i\n", img.size.x));
+        elog::LogInfo(CFormat("Image size x: %i", img.size.x));
         elog::LogInfo(CFormat("Image size y: %i\n", img.size.y));
 
         render::TextureDescriptor desc;

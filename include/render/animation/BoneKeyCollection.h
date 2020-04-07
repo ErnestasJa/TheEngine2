@@ -47,7 +47,30 @@ struct BoneKeyCollection
         return false;
     }
 
-    bool GetPosition(float time, glm::vec3& out) const
+    void GetTransform(float time, glm::vec3& pos, glm::vec3 & scale, glm::quat& rot) const
+    {
+        GetInterpolatedKey<glm::vec3>(time, PositionKeys, pos);
+        GetInterpolatedKey<glm::vec3>(time, ScaleKeys, scale);
+        GetInterpolatedKey<glm::quat>(time, RotationKeys, rot);
+    }
+
+    glm::mat4 GetTransform(float time) const
+    {
+        glm::vec3 pos, scale;
+        glm::quat rot;
+
+        bool hasAnyTransform = GetInterpolatedKey<glm::vec3>(time, PositionKeys, pos) &&
+        GetInterpolatedKey<glm::vec3>(time, ScaleKeys, scale) &&
+        GetInterpolatedKey<glm::quat>(time, RotationKeys, rot);
+
+        if(!hasAnyTransform)
+            return glm::mat4(1);
+
+        return glm::translate(glm::mat4(1), pos) * glm::toMat4(rot) *
+               glm::scale(glm::mat4(1), scale);
+    }
+
+    /*bool GetPosition(float time, glm::vec3& out) const
     {
         return GetInterpolatedKey<glm::vec3>(time, PositionKeys, out);
     }
@@ -60,19 +83,8 @@ struct BoneKeyCollection
     bool GetRotation(float time, glm::quat& out) const
     {
         return GetInterpolatedKey<glm::quat>(time, RotationKeys, out);
-    }
+    }*/
 
-    glm::mat4 GetTransform(float time) const
-    {
-        glm::vec3 pos, scale;
-        glm::quat rot;
-        GetInterpolatedKey<glm::vec3>(time, PositionKeys, pos);
-        GetInterpolatedKey<glm::vec3>(time, ScaleKeys, scale);
-        GetInterpolatedKey<glm::quat>(time, RotationKeys, rot);
-
-        return glm::translate(glm::mat4(1), pos) * glm::toMat4(rot) *
-               glm::scale(glm::mat4(1), scale);
-    }
 };
 }
 #endif // THEPROJECT2_LIBS_THEENGINE2_SRC_RENDER_ANIMATEDMESH_CPP_BONEKEYCOLLECTION_H_

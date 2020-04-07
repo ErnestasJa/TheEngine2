@@ -42,7 +42,7 @@ public:
         m_animations.push_back(animation);
     }
 
-    const core::Vector<render::anim::Animation>& GetAnimations(){
+    core::Vector<render::anim::Animation>& GetAnimations() {
         return m_animations;
     }
 
