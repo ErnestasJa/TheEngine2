@@ -128,6 +128,7 @@ void AnimationController::Animate(float deltaTimeInSeconds)
 
         for(auto& activePlayback: activeAnimationPlaybacks){
             auto & boneData = activePlayback.GetAnimation()->BoneKeys[boneInfo.index];
+            if(activePlayback.PlaybackOptions.AnimateOnlyActiveBones == false || boneData.PositionKeys.size() > 2 || boneData.RotationKeys.size() > 2)
             boneData.GetTransform(activePlayback.GetCurrentTime(), channels.pos, channels.scale, channels.rot);
         }
 

@@ -54,7 +54,7 @@ struct BoneKeyCollection
         GetInterpolatedKey<glm::quat>(time, RotationKeys, rot);
     }
 
-    glm::mat4 GetTransform(float time) const
+    /*glm::mat4 GetTransform(float time) const
     {
         glm::vec3 pos, scale;
         glm::quat rot;
@@ -68,7 +68,7 @@ struct BoneKeyCollection
 
         return glm::translate(glm::mat4(1), pos) * glm::toMat4(rot) *
                glm::scale(glm::mat4(1), scale);
-    }
+    }*/
 
     /*bool GetPosition(float time, glm::vec3& out) const
     {

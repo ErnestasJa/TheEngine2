@@ -313,11 +313,11 @@ core::UniquePtr<render::AnimatedMesh> AssimpImport::LoadMesh(io::Path path)
             core::string::format("Failed to load mesh from file '{}'", filename.c_str()));
         return nullptr;
     }
-
+/*
     core::String nodeLog;
     WriteNodeJSON(nodeLog, scene->mRootNode);
     elog::LogInfo(nodeLog);
-
+*/
 
     if (scene->mNumMeshes < 1) {
         elog::LogError(

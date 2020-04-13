@@ -12,17 +12,23 @@ struct AnimationPlaybackOptions
     bool Loop;
     int Fps;
     int AnimationSlot;
+    /// When true only bones that have more than 2 keyframes are animated
+    /// by default each bone has two active keyframes which are equal to ?initial pose?
+    bool AnimateOnlyActiveBones;
 
-    AnimationPlaybackOptions(bool loop = true, int fps = -1, int animationSlot = 0)
+    AnimationPlaybackOptions(bool loop = true, int fps = -1, int animationSlot = 0, bool animateOnlyActiveBones = false)
     {
         Loop          = loop;
         Fps           = fps;
         AnimationSlot = animationSlot;
+        AnimateOnlyActiveBones = animateOnlyActiveBones;
     }
 };
 
 class AnimationPlayback
 {
+public:
+    AnimationPlaybackOptions PlaybackOptions;
 public:
     AnimationPlayback(){
         m_animation = nullptr;
@@ -31,30 +37,30 @@ public:
     }
 
     AnimationPlayback(Animation* animation, AnimationPlaybackOptions playbackOptions)
-        : m_playbackOptions(playbackOptions)
+        : PlaybackOptions(playbackOptions)
         , m_animation(animation)
         , CurrentTime(0)
         , Done(false)
     {
-        if (m_playbackOptions.Fps == -1) {
-            m_playbackOptions.Fps = m_animation->Fps;
+        if (PlaybackOptions.Fps == -1) {
+            PlaybackOptions.Fps = m_animation->Fps;
         }
     }
 
     AnimationPlayback(const AnimationPlayback& other)
         : m_animation(other.m_animation)
         , CurrentTime(other.CurrentTime)
-        , m_playbackOptions(other.m_playbackOptions)
+        , PlaybackOptions(other.PlaybackOptions)
     {
-        if (m_playbackOptions.Fps == -1) {
-            m_playbackOptions.Fps = m_animation->Fps;
+        if (PlaybackOptions.Fps == -1) {
+            PlaybackOptions.Fps = m_animation->Fps;
         }
     }
 
     void AdvanceAnimationTime(float deltaTimeInSeconds)
     {
-        CurrentTime += deltaTimeInSeconds * m_playbackOptions.Fps;
-        Done = m_playbackOptions.Loop == false && utils::math::gequal(GetCurrentTime(), GetDuration());
+        CurrentTime += deltaTimeInSeconds * PlaybackOptions.Fps;
+        Done = PlaybackOptions.Loop == false && utils::math::gequal(GetCurrentTime(), GetDuration());
         CurrentTime = glm::mod(CurrentTime, GetDuration());
     }
 
@@ -72,16 +78,6 @@ public:
         return m_animation->Duration;
     }
 
-    int GetFps() const
-    {
-        return m_playbackOptions.Fps;
-    }
-
-    bool WillLoop() const
-    {
-        return m_playbackOptions.Loop;
-    }
-
     float GetCurrentTime() const
     {
         return CurrentTime;
@@ -93,11 +89,10 @@ public:
     }
 
     int GetPlaybackSlot(){
-        return m_playbackOptions.AnimationSlot;
+        return PlaybackOptions.AnimationSlot;
     }
 
 private:
-    AnimationPlaybackOptions m_playbackOptions;
     render::anim::Animation* m_animation;
     float CurrentTime;
     bool Done = false;
