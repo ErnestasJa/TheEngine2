@@ -13,28 +13,28 @@ struct AnimationPlaybackOptions
     int Fps;
     int AnimationSlot;
 
-    AnimationPlaybackOptions(bool loop = true, int fps = -1)
+    AnimationPlaybackOptions(bool loop = true, int fps = -1, int animationSlot = 0)
     {
         Loop          = loop;
         Fps           = fps;
-        AnimationSlot = 0;
+        AnimationSlot = animationSlot;
     }
 };
 
 class AnimationPlayback
 {
 public:
-    float CurrentTime;
-
-public:
     AnimationPlayback(){
         m_animation = nullptr;
+        Done = true;
+
     }
 
     AnimationPlayback(Animation* animation, AnimationPlaybackOptions playbackOptions)
-        : m_animation(animation)
+        : m_playbackOptions(playbackOptions)
+        , m_animation(animation)
         , CurrentTime(0)
-        , m_playbackOptions(playbackOptions)
+        , Done(false)
     {
         if (m_playbackOptions.Fps == -1) {
             m_playbackOptions.Fps = m_animation->Fps;
@@ -44,14 +44,22 @@ public:
     AnimationPlayback(const AnimationPlayback& other)
         : m_animation(other.m_animation)
         , CurrentTime(other.CurrentTime)
-        , m_playbackOptions(m_playbackOptions)
+        , m_playbackOptions(other.m_playbackOptions)
     {
+        if (m_playbackOptions.Fps == -1) {
+            m_playbackOptions.Fps = m_animation->Fps;
+        }
     }
 
     void AdvanceAnimationTime(float deltaTimeInSeconds)
     {
         CurrentTime += deltaTimeInSeconds * m_playbackOptions.Fps;
+        Done = m_playbackOptions.Loop == false && utils::math::gequal(GetCurrentTime(), GetDuration());
         CurrentTime = glm::mod(CurrentTime, GetDuration());
+    }
+
+    Animation* GetAnimation() const {
+        return m_animation;
     }
 
     const core::String& GetName() const
@@ -81,12 +89,18 @@ public:
 
     bool IsFinished() const
     {
-        return !m_animation || utils::math::gequal(GetCurrentTime(), GetDuration());
+        return !m_animation || Done;
+    }
+
+    int GetPlaybackSlot(){
+        return m_playbackOptions.AnimationSlot;
     }
 
 private:
-    render::anim::Animation* m_animation;
     AnimationPlaybackOptions m_playbackOptions;
+    render::anim::Animation* m_animation;
+    float CurrentTime;
+    bool Done = false;
 };
 
 class AnimationController
@@ -96,26 +110,23 @@ public:
     ~AnimationController()
     {
     }
-    const core::Vector<glm::mat4>& GetCurrentFrame() const;
+    [[nodiscard]] const core::Vector<glm::mat4>& GetCurrentFrame() const;
 
     bool SetAnimation(int animationIndex);
     bool SetAnimation(core::String animationName, AnimationPlaybackOptions playbackOptions = render::anim::AnimationPlaybackOptions());
-    void OverrideFps(float fps);
-    const render::anim::Animation* GetCurrentAnimation();
+
+    [[nodiscard]] bool IsAnimationPlaying(core::String animation) const;
 
     void Animate(float deltaTimeInSeconds);
     glm::mat4 GetBoneTransformation(core::String name);
 
 protected:
-    bool IsPlaying() const;
+    [[nodiscard]] bool IsPlaying() const;
 
 protected:
     core::Vector<glm::mat4> m_currentFrame;
     core::Vector<glm::mat4> m_boneTransformNoOffset;
-    float m_animationTime;
-    float m_fps;
     render::AnimatedMesh* m_animatedMesh;
-    const render::anim::Animation* m_currentAnimation;
     core::Array<AnimationPlayback, 4> m_animations;
 };
 

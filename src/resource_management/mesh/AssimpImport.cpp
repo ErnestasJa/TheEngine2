@@ -1,7 +1,8 @@
 #include "resource_management/mesh/AssimpImport.h"
 #include "render/animation/Bone.h"
 #include "render/animation/BoneKeyCollection.h"
-#include <assimp/Importer.hpp>  // C++ importer interface
+#include <assimp/Importer.hpp> // C++ importer interface
+#include <assimp/include/assimp/cimport.h>
 #include <assimp/postprocess.h> // Post processing flags
 #include <assimp/scene.h>       // Output data structure
 #include <glm/gtx/quaternion.hpp>
@@ -183,6 +184,24 @@ static int FindBoneIndex(render::AnimatedMesh* mesh, core::String boneName)
     return -1;
 }
 
+void WriteNodeJSON(core::String& out, aiNode* node){
+    out += "{\n\"";
+    out += node->mName.C_Str();
+    out += "\" : ";
+
+    out += "\n [";
+
+    for(int i = 0; i < node->mNumChildren; i++){
+        out += "\n";
+        WriteNodeJSON(out, node->mChildren[i]);
+
+        if(i != node->mNumChildren - 1)
+            out+= ",";
+    }
+
+    out += "]\n}\n";
+}
+
 static void ReadAnimations(render::AnimatedMesh* mesh, const aiScene* scene)
 {
     core::Vector<render::anim::Animation> animations;
@@ -272,26 +291,33 @@ AssimpImport::AssimpImport(io::IFileSystem* fs, render::IRenderer* renderer)
 
 core::UniquePtr<render::AnimatedMesh> AssimpImport::LoadMesh(io::Path path)
 {
+    auto filename = path.AsString();
     auto file = m_fileSystem->OpenRead(path);
     core::TByteArray array;
     file->Read(array);
 
     Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFileFromMemory( (const char*)array.data(), array.size(),
+                                                        aiProcess_Triangulate |
+                                                            aiProcess_PopulateArmatureData |
+                                                            aiProcess_CalcTangentSpace |
+                                                            aiProcess_FlipUVs);
 
-    const aiScene* scene =
-        importer.ReadFileFromMemory(array.data(), array.size(),
-                                    aiProcess_CalcTangentSpace | aiProcess_FlipUVs |
-                                        aiProcess_Triangulate |
-                                        // aiProcess_JoinIdenticalVertices  |
-                                        aiProcess_PopulateArmatureData |
-                                        // aiProcess_SortByPType |
-                                        aiProcess_GenBoundingBoxes);
+    auto errorstr = importer.GetErrorString();
+    if (errorstr) {
+        elog::LogError(errorstr);
+    }
 
-    if (!scene) {
-        elog::LogError(importer.GetErrorString());
+    if(!scene){
+        elog::LogError(
+            core::string::format("Failed to load mesh from file '{}'", filename.c_str()));
         return nullptr;
     }
-    auto filename = path.AsString();
+
+    core::String nodeLog;
+    WriteNodeJSON(nodeLog, scene->mRootNode);
+    elog::LogInfo(nodeLog);
+
 
     if (scene->mNumMeshes < 1) {
         elog::LogError(
@@ -307,10 +333,12 @@ core::UniquePtr<render::AnimatedMesh> AssimpImport::LoadMesh(io::Path path)
     for (auto iMesh = 0; iMesh < 1 /*scene->mNumMeshes*/; iMesh++) {
         auto assimpMesh = scene->mMeshes[iMesh];
 
-        elog::LogInfo(core::string::format("AABB: 'min: [{},{},{}]', max: [{},{},{}]'",
+        elog::LogInfo(core::string::format("Mesh '{}', num bones: '{}'", filename.c_str(), assimpMesh->mNumBones));
+
+        /*elog::LogInfo(core::string::format("AABB: 'min: [{},{},{}]', max: [{},{},{}]'",
                                            assimpMesh->mAABB.mMin.x, assimpMesh->mAABB.mMin.y,
                                            assimpMesh->mAABB.mMin.z, assimpMesh->mAABB.mMax.x,
-                                           assimpMesh->mAABB.mMax.y, assimpMesh->mAABB.mMax.z));
+                                           assimpMesh->mAABB.mMax.y, assimpMesh->mAABB.mMax.z));*/
 
         elog::LogInfo(core::string::format("Mesh vertex count: '{}'", assimpMesh->mNumVertices));
         elog::LogInfo(core::string::format("Mesh face count: '{}'", assimpMesh->mNumFaces));

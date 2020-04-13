@@ -4,14 +4,14 @@
 namespace render::anim {
 
 AnimationController::AnimationController(render::AnimatedMesh* mesh)
-:m_animatedMesh(mesh), m_currentAnimation(nullptr), m_animationTime(0) {
+:m_animatedMesh(mesh){
     m_currentFrame.resize(m_animatedMesh->GetArmature().GetBones().size(), glm::mat4(1));
     m_boneTransformNoOffset.resize(m_animatedMesh->GetArmature().GetBones().size(), glm::mat4(1));
 }
 
 bool AnimationController::SetAnimation(int animationIndex)
 {
-    auto& animations = m_animatedMesh->GetAnimations();
+    /*auto& animations = m_animatedMesh->GetAnimations();
 
     if(animationIndex < 0){
       m_animationTime = 0;
@@ -28,7 +28,7 @@ bool AnimationController::SetAnimation(int animationIndex)
     }
 
     elog::LogInfo(core::string::format("Failed to set animation, requested anim index: {}", animationIndex));
-    m_currentAnimation = nullptr;
+    m_currentAnimation = nullptr;*/
     return false;
 }
 
@@ -93,7 +93,7 @@ void AnimationController::Animate(float deltaTimeInSeconds)
         }
     }
 
-    if(activeAnimationPlaybacks.size() != 0){
+    if(activeAnimationPlaybacks.size() == 0){
         return;
     }
 
@@ -102,6 +102,10 @@ void AnimationController::Animate(float deltaTimeInSeconds)
 
     for(auto& playback: activeAnimationPlaybacks){
         playback.AdvanceAnimationTime(deltaTimeInSeconds);
+    }
+
+    for(auto& playback: activeAnimationPlaybacks){
+        m_animations[playback.GetPlaybackSlot()] = playback;
     }
 
     core::Stack<BoneTransform> boneIndexStack;
@@ -123,8 +127,8 @@ void AnimationController::Animate(float deltaTimeInSeconds)
         auto & bone = bones[boneInfo.index];
 
         for(auto& activePlayback: activeAnimationPlaybacks){
-            auto & boneData = m_currentAnimation->BoneKeys[boneInfo.index];
-            boneData.GetTransform(m_animationTime, channels.pos, channels.scale, channels.rot);
+            auto & boneData = activePlayback.GetAnimation()->BoneKeys[boneInfo.index];
+            boneData.GetTransform(activePlayback.GetCurrentTime(), channels.pos, channels.scale, channels.rot);
         }
 
         auto globalTransform = boneInfo.ParentTransform * channels.FullTransform();
@@ -158,14 +162,15 @@ glm::mat4 AnimationController::GetBoneTransformation(core::String name)
     return glm::mat4(1);
 }
 
-const render::anim::Animation* AnimationController::GetCurrentAnimation()
+bool AnimationController::IsAnimationPlaying(core::String animation) const
 {
-    return m_currentAnimation;
-}
+    for(const auto & anim: m_animations){
+        if(anim.IsFinished() == false && anim.GetName() == animation){
+            return true;
+        }
+    }
 
-void AnimationController::OverrideFps(float fps)
-{
-  m_fps = fps;
+    return false;
 }
 
 
