@@ -1,8 +1,7 @@
 #include "input/InputMapping.h"
 
-namespace input
-{
-int Key::KeyIdentifierCounter = 0;
+namespace input {
+int Key::KeyIdentifierCounter            = 0;
 int MouseButton::ButtonIdentifierCounter = 0;
 
 const Key Keys::A("A");
@@ -44,4 +43,4 @@ const Key Keys::UNKNOWN("Unknown");
 const MouseButton MouseButtons::Left("Left");
 const MouseButton MouseButtons::Right("Right");
 const MouseButton MouseButtons::UNKNOWN("Unknown");
-}
+} // namespace input

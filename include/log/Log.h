@@ -10,16 +10,16 @@ void CleanDeadStreams();
 // shorthand methods for engine logs
 inline void LogInfo(const core::String& log)
 {
-    Log(LogSource::Engine, LogSeverity::Info, log);
+  Log(LogSource::Engine, LogSeverity::Info, log);
 }
 inline void LogWarning(const core::String& log)
 {
-    Log(LogSource::Engine, LogSeverity::Warn, log);
+  Log(LogSource::Engine, LogSeverity::Warn, log);
 }
 inline void LogError(const core::String& log)
 {
-    Log(LogSource::Engine, LogSeverity::Error, log);
+  Log(LogSource::Engine, LogSeverity::Error, log);
 }
-}
+} // namespace elog
 
 #endif

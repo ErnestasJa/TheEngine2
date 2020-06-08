@@ -4,8 +4,8 @@
 namespace elog {
 enum class LogSource
 {
-    Engine,
-    Other
+  Engine,
+  Other
 };
 }
 

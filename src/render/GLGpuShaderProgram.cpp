@@ -3,53 +3,53 @@
 #include "OpenGL.hpp"
 
 namespace render {
-GLGpuShaderProgram::GLGpuShaderProgram(const gl::gpu_shader_handle& handle) : m_handle(handle)
+GLGpuShaderProgram::GLGpuShaderProgram(const gl::gpu_shader_handle& handle)
+    : m_handle(handle)
 {
-    InitUniforms();
+  InitUniforms();
 }
 
 GLGpuShaderProgram::~GLGpuShaderProgram()
 {
-    gl::FreeHandle(m_handle);
+  gl::FreeHandle(m_handle);
 }
 
 void GLGpuShaderProgram::Bind()
 {
-    gl::BindHandle(m_handle);
+  gl::BindHandle(m_handle);
 }
 
 void GLGpuShaderProgram::InitUniforms()
 {
-    Bind();
+  Bind();
 
-    auto query = [this](uint32_t id) {
-        uint32_t count = gl::GetUniformCount(id);
+  auto query = [this](uint32_t id) {
+    uint32_t count = gl::GetUniformCount(id);
 
-        for (uint32_t i = 0; i < count; i++) {
-            auto handle = gl::GetUniform(id, i);
+    for (uint32_t i = 0; i < count; i++) {
+      auto handle = gl::GetUniform(id, i);
 
-            if(core::string::EndsWith(handle.name,"[0]")){
-                handle.name = core::String(handle.name, 0, handle.name.length() - 3);
-            }
+      if (core::string::EndsWith(handle.name, "[0]")) {
+        handle.name = core::String(handle.name, 0, handle.name.length() - 3);
+      }
 
-            m_uniforms.push_back(core::Move(core::MakeUnique<GLGpuShaderProgramUniform>(handle)));
-            elog::LogInfo("Loaded uniform: " + handle.name);
-        }
-    };
+      m_uniforms.push_back(core::Move(core::MakeUnique<GLGpuShaderProgramUniform>(handle)));
+      elog::LogInfo("Loaded uniform: " + handle.name);
+    }
+  };
 
-    query(m_handle.id);
+  query(m_handle.id);
 }
 
 const core::Vector<core::UniquePtr<IGpuProgramUniform>>& GLGpuShaderProgram::GetUniforms()
 {
-    return m_uniforms;
+  return m_uniforms;
 }
 
 IGpuProgramUniform* GLGpuShaderProgram::GetUniform(const core::String& name)
 {
-    auto it = core::alg::find_if(m_uniforms, [&name](const auto& uniform) {
-        return uniform->GetName() == name;
-    });
-    return it != m_uniforms.end() ? (*it).get() : nullptr;
+  auto it = core::alg::find_if(m_uniforms,
+                               [&name](const auto& uniform) { return uniform->GetName() == name; });
+  return it != m_uniforms.end() ? (*it).get() : nullptr;
 }
-}
+} // namespace render

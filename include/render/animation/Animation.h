@@ -5,13 +5,13 @@
 namespace render::anim {
 struct Animation
 {
-    core::String Name;
-    float Fps;
-    float Duration;
+  core::String Name;
+  float Fps;
+  float Duration;
 
-    BoneKeyCollection ArmatureKeys;
-    core::Vector<BoneKeyCollection> BoneKeys;
+  BoneKeyCollection ArmatureKeys;
+  core::Vector<BoneKeyCollection> BoneKeys;
 };
-}
+} // namespace render::anim
 
 #endif // THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_ANIMATIONDATA_H_

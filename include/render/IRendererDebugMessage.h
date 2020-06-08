@@ -4,13 +4,13 @@
 namespace render {
 class IRendererDebugMessage
 {
-public:
-    virtual ~IRendererDebugMessage()
-    {
-    }
+  public:
+  virtual ~IRendererDebugMessage()
+  {
+  }
 
-    virtual core::String AsString() const = 0;
+  virtual core::String AsString() const = 0;
 };
-}
+} // namespace render
 
 #endif

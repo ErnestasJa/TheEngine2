@@ -8,11 +8,11 @@ class Path;
 namespace platform {
 class IPlatformFileSystem
 {
-public:
-    virtual io::Path GetExecutableDirectory() = 0;
+  public:
+  virtual io::Path GetExecutableDirectory() = 0;
 };
 
 core::UniquePtr<IPlatformFileSystem> GetPlatformFileSystem();
-}
+} // namespace platform
 
 #endif

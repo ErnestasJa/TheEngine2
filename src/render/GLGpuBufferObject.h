@@ -7,20 +7,21 @@
 namespace render {
 class GLGpuBufferObject : public IGpuBufferObject
 {
-public:
-    GLGpuBufferObject(const gl::gpu_buffer_object_handle& handle);
-    virtual ~GLGpuBufferObject();
+  public:
+  GLGpuBufferObject(const gl::gpu_buffer_object_handle& handle);
+  virtual ~GLGpuBufferObject();
 
-    virtual void Bind();
-    virtual void UpdateBuffer(uint32_t count, void* data);
+  virtual void Bind();
+  virtual void UpdateBuffer(uint32_t count, void* data);
+  virtual void UpdateBufferSubData(uint32_t offset, uint32_t count, void* data);
 
-public:
-    void Enable();
-    const gl::gpu_buffer_object_handle& GetHandle();
+  public:
+  void Enable();
+  const gl::gpu_buffer_object_handle& GetHandle();
 
-private:
-    gl::gpu_buffer_object_handle m_handle;
+  private:
+  gl::gpu_buffer_object_handle m_handle;
 };
-}
+} // namespace render
 
 #endif

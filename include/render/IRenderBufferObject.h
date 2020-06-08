@@ -5,12 +5,12 @@
 namespace render {
 class IRenderBufferObject
 {
-public:
-    virtual ~IRenderBufferObject()
-    {
-    }
+  public:
+  virtual ~IRenderBufferObject()
+  {
+  }
 };
-}
+} // namespace render
 
 
 #endif

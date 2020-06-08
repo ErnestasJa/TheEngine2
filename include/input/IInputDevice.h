@@ -7,12 +7,12 @@ class InputHandler;
 
 class IInputDevice
 {
-public:
-    virtual ~IInputDevice(){};
-    virtual void PollEvents(float deltaTime)                                      = 0;
-    virtual InputHandlerHandle AddInputHandler(InputHandler* handler)    = 0;
-    virtual void RemoveInputHandler(InputHandler* handler) = 0;
+  public:
+  virtual ~IInputDevice(){};
+  virtual void PollEvents(float deltaTime)                          = 0;
+  virtual InputHandlerHandle AddInputHandler(InputHandler* handler) = 0;
+  virtual void RemoveInputHandler(InputHandler* handler)            = 0;
 };
-}
+} // namespace input
 
 #endif

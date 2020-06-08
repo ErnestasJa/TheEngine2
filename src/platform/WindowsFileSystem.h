@@ -6,9 +6,9 @@
 namespace platform {
 class WindowsFileSystem : public IPlatformFileSystem
 {
-public:
-    virtual io::Path GetExecutableDirectory();
+  public:
+  virtual io::Path GetExecutableDirectory();
 };
-}
+} // namespace platform
 
 #endif

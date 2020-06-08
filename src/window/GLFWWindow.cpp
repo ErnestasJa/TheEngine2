@@ -15,167 +15,167 @@ GLFWWindow::GLFWWindow()
 
 GLFWWindow::~GLFWWindow()
 {
-    if (m_window)
-        glfwDestroyWindow(m_window);
+  if (m_window)
+    glfwDestroyWindow(m_window);
 }
 
 void SetWindowHints(const SWindowDefinition& wDef)
 {
-    // glfwDefaultWindowHints();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, wDef.ContextMajorVersion);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, wDef.ContextMinorVersion);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, wDef.ForwardCompatible);
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, wDef.DebugContext);
-    glfwWindowHint(GLFW_RED_BITS, wDef.ColorFramebufferBits.r);
-    glfwWindowHint(GLFW_GREEN_BITS, wDef.ColorFramebufferBits.g);
-    glfwWindowHint(GLFW_BLUE_BITS, wDef.ColorFramebufferBits.b);
-    glfwWindowHint(GLFW_ALPHA_BITS, wDef.ColorFramebufferBits.a);
-    glfwWindowHint(GLFW_DEPTH_BITS, wDef.DepthBits);
-    glfwWindowHint(GLFW_RESIZABLE, wDef.Resizeable);
+  // glfwDefaultWindowHints();
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, wDef.ContextMajorVersion);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, wDef.ContextMinorVersion);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, wDef.ForwardCompatible);
+  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, wDef.DebugContext);
+  glfwWindowHint(GLFW_RED_BITS, wDef.ColorFramebufferBits.r);
+  glfwWindowHint(GLFW_GREEN_BITS, wDef.ColorFramebufferBits.g);
+  glfwWindowHint(GLFW_BLUE_BITS, wDef.ColorFramebufferBits.b);
+  glfwWindowHint(GLFW_ALPHA_BITS, wDef.ColorFramebufferBits.a);
+  glfwWindowHint(GLFW_DEPTH_BITS, wDef.DepthBits);
+  glfwWindowHint(GLFW_RESIZABLE, wDef.Resizeable);
 }
 
 void ReadBackContext(SWindowDefinition& def)
 {
-    // int32_t flags = 0;
-    // glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-    // def.ForwardCompatible = flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT;
-    // def.DebugContext = flags & GL_CONTEXT_FLAG_DEBUG_BIT;
+  // int32_t flags = 0;
+  // glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+  // def.ForwardCompatible = flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT;
+  // def.DebugContext = flags & GL_CONTEXT_FLAG_DEBUG_BIT;
 
-    // glGetIntegerv(GL_MAJOR_VERSION, &def.ContextMajorVersion);
-    // glGetIntegerv(GL_MINOR_VERSION, &def.ContextMinorVersion);
+  // glGetIntegerv(GL_MAJOR_VERSION, &def.ContextMajorVersion);
+  // glGetIntegerv(GL_MINOR_VERSION, &def.ContextMinorVersion);
 }
 
 void LogContext(const SWindowDefinition& def)
 {
-    elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
-              core::string::format("\n\n"
-                                   "==========================\n"
-                                   "Context version: {}.{}\n"
-                                   "Forward compatible: {}\n"
-                                   "Debug enabled: {}\n"
-                                   "==========================\n\n",
-                                   def.ContextMajorVersion, def.ContextMinorVersion,
-                                   def.ForwardCompatible ? "yes" : "no",
-                                   def.DebugContext ? "yes" : "no"));
+  elog::Log(elog::LogSource::Engine, elog::LogSeverity::Info,
+            core::string::format("\n\n"
+                                 "==========================\n"
+                                 "Context version: {}.{}\n"
+                                 "Forward compatible: {}\n"
+                                 "Debug enabled: {}\n"
+                                 "==========================\n\n",
+                                 def.ContextMajorVersion, def.ContextMinorVersion,
+                                 def.ForwardCompatible ? "yes" : "no",
+                                 def.DebugContext ? "yes" : "no"));
 }
 
 void GLFWWindow::UpdateContext()
 {
-    ReadBackContext(m_windowDefinition);
-    LogContext(m_windowDefinition);
+  ReadBackContext(m_windowDefinition);
+  LogContext(m_windowDefinition);
 }
 
 bool GLFWWindow::Init(const SWindowDefinition& wDef)
 {
-    m_windowDefinition = wDef;
-    SetWindowHints(m_windowDefinition);
+  m_windowDefinition = wDef;
+  SetWindowHints(m_windowDefinition);
 
-    m_window =
-        glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y, wDef.Title.c_str(), wDef.Fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
+  m_window = glfwCreateWindow(wDef.Dimensions.x, wDef.Dimensions.y, wDef.Title.c_str(),
+                              wDef.Fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
 
-    glfwMakeContextCurrent(m_window);
-	glfwSwapInterval(0);
+  glfwMakeContextCurrent(m_window);
+  glfwSwapInterval(0);
 
-    if (m_window == nullptr) {
-        return false;
-    }
+  if (m_window == nullptr) {
+    return false;
+  }
 
-    glfwSetWindowUserPointer(m_window, this);
+  glfwSetWindowUserPointer(m_window, this);
 
-    m_inputDevice = GLFWInputDevice::Create(m_window);
+  m_inputDevice = GLFWInputDevice::Create(m_window);
 
-    if (m_inputDevice == nullptr) {
-        return false;
-    }
+  if (m_inputDevice == nullptr) {
+    return false;
+  }
 
-    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height){
-       GLFWWindow * currentWindow = (GLFWWindow*)glfwGetWindowUserPointer(window);
-       currentWindow->m_onWindowResize(core::pod::Vec2<uint32_t>{(uint32_t)width, (uint32_t)height});
-    });
+  glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+    GLFWWindow* currentWindow = (GLFWWindow*)glfwGetWindowUserPointer(window);
+    currentWindow->m_onWindowResize(core::pod::Vec2<uint32_t>{ (uint32_t)width, (uint32_t)height });
+  });
 
-    return true;
+  return true;
 }
 
 core::pod::Vec2<int32_t> GLFWWindow::GetDimensions()
 {
-    core::pod::Vec2<int32_t> dim;
-    glfwGetWindowSize(m_window, &dim.x, &dim.y);
-    return dim;
+  core::pod::Vec2<int32_t> dim;
+  glfwGetWindowSize(m_window, &dim.x, &dim.y);
+  return dim;
 }
 
 void GLFWWindow::SetDimensions(const core::pod::Vec2<int32_t>& dimensions)
 {
-    glfwSetWindowSize(m_window, dimensions.x, dimensions.y);
+  glfwSetWindowSize(m_window, dimensions.x, dimensions.y);
 }
 
 core::pod::Vec2<int32_t> GLFWWindow::GetPosition()
 {
-    core::pod::Vec2<int32_t> pos;
-    glfwGetWindowPos(m_window, &pos.x, &pos.y);
-    return pos;
+  core::pod::Vec2<int32_t> pos;
+  glfwGetWindowPos(m_window, &pos.x, &pos.y);
+  return pos;
 }
 
 void GLFWWindow::SetPosition(const core::pod::Vec2<int32_t>& position)
 {
-    glfwSetWindowPos(m_window, position.x, position.y);
+  glfwSetWindowPos(m_window, position.x, position.y);
 }
 
 bool GLFWWindow::PollEvents()
 {
-    m_inputDevice->PollEvents(0);
-    glfwPollEvents();
-    return true;
+  m_inputDevice->PollEvents(0);
+  glfwPollEvents();
+  return true;
 }
 
 void GLFWWindow::SwapBuffers()
 {
-    if (m_window)
-        glfwSwapBuffers(m_window);
+  if (m_window)
+    glfwSwapBuffers(m_window);
 }
 
 bool GLFWWindow::ShouldClose()
 {
-    return m_window == nullptr || glfwWindowShouldClose(m_window) || m_close;
+  return m_window == nullptr || glfwWindowShouldClose(m_window) || m_close;
 }
 
 void GLFWWindow::Close()
 {
-    m_close = true;
+  m_close = true;
 }
 
 input::IInputDevice* GLFWWindow::GetInputDevice()
 {
-    return m_inputDevice.get();
+  return m_inputDevice.get();
 }
 
 const SWindowDefinition& GLFWWindow::GetWindowDefinition()
 {
-    return m_windowDefinition;
+  return m_windowDefinition;
 }
 
 void GLFWWindow::SetCursorMode(CursorMode cursorMode)
 {
-    uint32_t glfwCursorMode = GLFW_CURSOR_NORMAL;
+  uint32_t glfwCursorMode = GLFW_CURSOR_NORMAL;
 
-    switch (cursorMode) {
-    case CursorMode::Normal:
-        glfwCursorMode = GLFW_CURSOR_NORMAL;
-        break;
-    case CursorMode::Hidden:
-        glfwCursorMode = GLFW_CURSOR_HIDDEN;
-        break;
+  switch (cursorMode) {
+  case CursorMode::Normal:
+    glfwCursorMode = GLFW_CURSOR_NORMAL;
+    break;
+  case CursorMode::Hidden:
+    glfwCursorMode = GLFW_CURSOR_HIDDEN;
+    break;
 
-    case CursorMode::HiddenCapture:
-        glfwCursorMode = GLFW_CURSOR_DISABLED;
-        break;
-    }
+  case CursorMode::HiddenCapture:
+    glfwCursorMode = GLFW_CURSOR_DISABLED;
+    break;
+  }
 
-    glfwSetInputMode(m_window, GLFW_CURSOR, glfwCursorMode);
+  glfwSetInputMode(m_window, GLFW_CURSOR, glfwCursorMode);
 }
 
 GLFWwindow* GLFWWindow::GetUnderlyingWindow()
 {
-    return m_window;
+  return m_window;
 }
-}
+} // namespace render

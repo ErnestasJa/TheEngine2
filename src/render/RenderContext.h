@@ -6,27 +6,28 @@ namespace render {
 class IRenderer;
 class RenderContext : public IRenderContext
 {
-public:
-    RenderContext(IRenderer* renderer);
-    virtual ~RenderContext()
-    {
-    }
-    core::SharedPtr<ICamera> GetCurrentCamera() const final;
-    void SetCurrentCamera(core::SharedPtr<ICamera> camera) final;
+  public:
+  RenderContext(IRenderer* renderer);
+  virtual ~RenderContext()
+  {
+  }
+  core::SharedPtr<ICamera> GetCurrentCamera() const final;
+  void SetCurrentCamera(core::SharedPtr<ICamera> camera) final;
 
-    void SetCurrentMaterial(material::BaseMaterial* material) final;
-    material::BaseMaterial* GetCurrentMaterial() const final;
+  void SetCurrentMaterial(material::BaseMaterial* material) final;
+  material::BaseMaterial* GetCurrentMaterial() const final;
 
-    void SetDepthTest(bool enabled) final;
-    bool IsDepthTestEnabled() const final;
+  void SetDepthTest(bool enabled) final;
+  bool IsDepthTestEnabled() const final;
 
-    void SetWindowSize(core::pod::Vec2<uint32_t> windowSize);
-private:
-    material::BaseMaterial* m_currentMaterial;
-    IRenderer* m_renderer;
-    core::SharedPtr<ICamera> m_camera;
-    core::pod::Vec2<uint32_t> m_windowSize;
-    bool m_depthTest;
+  void SetWindowSize(core::pod::Vec2<uint32_t> windowSize);
+
+  private:
+  material::BaseMaterial* m_currentMaterial;
+  IRenderer* m_renderer;
+  core::SharedPtr<ICamera> m_camera;
+  core::pod::Vec2<uint32_t> m_windowSize;
+  bool m_depthTest;
 };
 } // namespace render
 

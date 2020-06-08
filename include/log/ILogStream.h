@@ -4,14 +4,13 @@
 #include "ELogSeverity.h"
 #include "ELogSource.h"
 
-namespace elog
-{
+namespace elog {
 class ILogStream
 {
-public:
-    virtual void Log(const LogSource source, const LogSeverity severity,
-                     const core::String& logString) = 0;
+  public:
+  virtual void Log(const LogSource source, const LogSeverity severity,
+                   const core::String& logString) = 0;
 };
-}
+} // namespace elog
 
 #endif

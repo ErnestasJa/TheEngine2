@@ -3,7 +3,7 @@ Language: Cpp
 Standard: Auto
 BasedOnStyle: LLVM
 ColumnLimit: 100
-IndentWidth: 4
+IndentWidth: 2
 AccessModifierOffset : -4
 AlignTrailingComments: true
 MaxEmptyLinesToKeep: 2

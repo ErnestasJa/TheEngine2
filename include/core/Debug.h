@@ -8,10 +8,10 @@
 
 #ifdef ENGINE_DEBUG
 #define ASSERT(assertion)                                                                          \
-    if ((assertion) == false) {                                                                    \
-        printf("ASSERT FAILED: %s\n", #assertion);                                                 \
-        exit(-1);                                                                                  \
-    }
+  if ((assertion) == false) {                                                                      \
+    printf("ASSERT FAILED: %s\n", #assertion);                                                     \
+    exit(-1);                                                                                      \
+  }
 #else
 #define ASSERT(assertion)
 #endif

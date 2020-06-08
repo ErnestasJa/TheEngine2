@@ -7,8 +7,8 @@ namespace res::mbd {
 
 class MBDLoader
 {
-public:
-    core::Vector<Bone> LoadMBD(io::IFileSystem* fs, io::Path path);
+  public:
+  core::Vector<Bone> LoadMBD(io::IFileSystem* fs, io::Path path);
 };
 } // namespace res::mbd
 

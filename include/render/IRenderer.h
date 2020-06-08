@@ -36,39 +36,42 @@ class AnimatedMesh;
 
 class IRenderer
 {
-public:
-    virtual ~IRenderer()
-    {
-    }
-    virtual IRendererDebugMessageMonitor* GetDebugMessageMonitor() = 0;
-    virtual core::SharedPtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
-                                                       const core::String& fragSource = "",
-                                                       const core::String& geomSource = "") = 0;
-    virtual core::SharedPtr<IGpuBufferArrayObject> CreateBufferArrayObject(
-        const core::Vector<BufferDescriptor>& descriptors)                               = 0;
-    virtual core::UniquePtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) = 0;
-    virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
-        const FrameBufferObjectDescriptor& descriptor) = 0;
-    virtual core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(
-        const RenderBufferObjectDescriptor& descriptor)                                     = 0;
-    virtual void SetActiveTextures(const core::Array<ITexture*,8>& textures) = 0;
-    virtual void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
-                                      FrameBufferTarget target) = 0;
-    virtual void SetClearColor(const Vec3i& color)              = 0;
-    virtual void Clear()                                        = 0;
+  public:
+  virtual ~IRenderer()
+  {
+  }
+  virtual IRendererDebugMessageMonitor* GetDebugMessageMonitor()                          = 0;
+  virtual core::SharedPtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
+                                                     const core::String& fragSource = "",
+                                                     const core::String& geomSource = "") = 0;
+  virtual core::UniquePtr<IGpuBufferArrayObject> CreateBufferArrayObject(
+      const core::Vector<BufferDescriptor>& descriptors)                               = 0;
+  virtual core::UniquePtr<ITexture> CreateTexture(const TextureDescriptor& descriptor) = 0;
+  virtual core::SharedPtr<IFrameBufferObject> CreateFrameBufferObject(
+      const FrameBufferObjectDescriptor& descriptor) = 0;
+  virtual core::SharedPtr<IRenderBufferObject> CreateRenderBufferObject(
+      const RenderBufferObjectDescriptor& descriptor)                       = 0;
+  virtual void SetActiveTextures(const core::Array<ITexture*, 8>& textures) = 0;
+  virtual void SetActiveFrameBuffer(core::SharedPtr<IFrameBufferObject> fbo,
+                                    FrameBufferTarget target)               = 0;
+  virtual void SetClearColor(const Vec3i& color)                            = 0;
+  virtual void Clear()                                                      = 0;
 
-    virtual core::UniquePtr<BaseMesh> CreateBaseMesh() = 0;
-    virtual core::UniquePtr<AnimatedMesh> CreateAnimatedMesh() = 0;
+  virtual core::UniquePtr<BaseMesh> CreateBaseMesh()         = 0;
+  virtual core::UniquePtr<AnimatedMesh> CreateAnimatedMesh() = 0;
 
-    virtual void BeginFrame() = 0;
-    virtual void EndFrame() = 0;
+  virtual void BeginFrame() = 0;
+  virtual void EndFrame()   = 0;
 
-    virtual IRenderContext* GetRenderContext() const = 0;
-    virtual void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::vec3 position) = 0;
-    virtual void RenderMesh(BaseMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) = 0;
-    virtual void RenderMesh(AnimatedMesh * mesh, material::BaseMaterial * material, const glm::mat4 transform) = 0;
-    virtual void WindowResized(core::pod::Vec2<uint32_t> size) = 0;
+  virtual IRenderContext* GetRenderContext() const           = 0;
+  virtual void RenderMesh(BaseMesh* mesh, material::BaseMaterial* material,
+                          const glm::vec3 position)          = 0;
+  virtual void RenderMesh(BaseMesh* mesh, material::BaseMaterial* material,
+                          const glm::mat4 transform)         = 0;
+  virtual void RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material,
+                          const glm::mat4 transform)         = 0;
+  virtual void WindowResized(core::pod::Vec2<uint32_t> size) = 0;
 };
-}
+} // namespace render
 
 #endif

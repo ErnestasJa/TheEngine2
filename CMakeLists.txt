@@ -115,7 +115,10 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/input/InputHandlerHandle.cpp"
 	"${ENGINE_SRC_PATH}/resource_management/ResourceManager.cpp"
 	"${ENGINE_SRC_PATH}/render/animation/BoneKeyCollection.cpp"
-	"${ENGINE_SRC_PATH}/render/animation/AnimationController.cpp" include/render/OrbitCamera.cpp include/render/OrbitCamera.h)
+	"${ENGINE_SRC_PATH}/render/animation/AnimationController.cpp"
+	"${ENGINE_SRC_PATH}/render/OrbitCamera.cpp"
+	"${ENGINE_SRC_PATH}/render/debug/DebugRenderer.cpp"
+)
 
 add_subdirectory ("${LIB_PATH}/glad")
 add_subdirectory ("${LIB_PATH}/glfw")

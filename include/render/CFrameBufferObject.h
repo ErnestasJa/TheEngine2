@@ -4,20 +4,20 @@
 namespace render {
 enum class FrameBufferTarget
 {
-    Read = 0,
-    Write,
-    ReadWrite
+  Read = 0,
+  Write,
+  ReadWrite
 };
 
 struct FrameBufferObjectDescriptor
 {
-    FrameBufferTarget target;
+  FrameBufferTarget target;
 };
 
 enum class FrameBufferAttachmentTarget
 {
-    Color,
-    Depth,
+  Color,
+  Depth,
 };
 
 // struct FrameBufferAttachment
@@ -31,6 +31,6 @@ enum class FrameBufferAttachmentTarget
 //     {
 //     }
 // }
-}
+} // namespace render
 
 #endif

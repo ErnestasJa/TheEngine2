@@ -12,11 +12,11 @@ GLExtensionLoader::~GLExtensionLoader()
 
 bool GLExtensionLoader::LoadExtensions()
 {
-    return gladLoadGL();
+  return gladLoadGL();
 }
 
 core::UniquePtr<GLExtensionLoader> CreateExtensionLoader()
 {
-    return core::MakeUnique<GLExtensionLoader>();
+  return core::MakeUnique<GLExtensionLoader>();
 }
-}
+} // namespace render

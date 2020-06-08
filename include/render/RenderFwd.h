@@ -10,6 +10,7 @@ class IGpuBufferArrayObject;
 class IRenderer;
 class PerspectiveCamera;
 class OrbitCamera;
+class DebugRenderer;
 
 namespace debug {
 class DebugLineMesh;

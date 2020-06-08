@@ -4,41 +4,41 @@
 namespace render {
 class DefaultWindowModule
 {
-public:
-    virtual ~DefaultWindowModule()
-    {
-        glfwTerminate();
-    }
+  public:
+  virtual ~DefaultWindowModule()
+  {
+    glfwTerminate();
+  }
 
-    bool Initialize()
-    {
-        if (glfwInit() == false)
-            return false;
+  bool Initialize()
+  {
+    if (glfwInit() == false)
+      return false;
 
-        return true;
-    }
+    return true;
+  }
 
-    virtual core::UniquePtr<IWindow> CreateWindow(const SWindowDefinition& windowDefinition)
-    {
-        auto window = core::MakeUnique<GLFWWindow>();
+  virtual core::UniquePtr<IWindow> CreateWindow(const SWindowDefinition& windowDefinition)
+  {
+    auto window = core::MakeUnique<GLFWWindow>();
 
-        if (window->Init(windowDefinition))
-            return window;
+    if (window->Init(windowDefinition))
+      return window;
 
-        return nullptr;
-    }
+    return nullptr;
+  }
 
-private:
+  private:
 };
 
 core::UniquePtr<DefaultWindowModule> CreateDefaultWindowModule()
 {
-    auto module = std::make_unique<DefaultWindowModule>();
+  auto module = std::make_unique<DefaultWindowModule>();
 
-    if (module->Initialize()) {
-        return module;
-    }
+  if (module->Initialize()) {
+    return module;
+  }
 
-    return nullptr;
+  return nullptr;
 }
-}
+} // namespace render

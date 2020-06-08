@@ -15,110 +15,106 @@ namespace core {
 namespace pod {
 template <class T> struct Vec2
 {
-    union
+  union
+  {
+    struct
     {
-        struct
-        {
-            T x, y;
-        };
-        struct
-        {
-            T u, v;
-        };
-        struct
-        {
-            T w, h;
-        };
+      T x, y;
     };
-
-    Vec2()
+    struct
     {
-    }
-
-    Vec2(T _x, T _y)
-        : x(_x)
-        , y(_y)
+      T u, v;
+    };
+    struct
     {
-    }
+      T w, h;
+    };
+  };
+
+  Vec2()
+  {
+  }
+
+  Vec2(T _x, T _y)
+      : x(_x)
+      , y(_y)
+  {
+  }
 };
 
-template <class T>
-Vec2<T> operator * (const Vec2<T> & first, const Vec2<T> & second)
+template <class T> Vec2<T> operator*(const Vec2<T>& first, const Vec2<T>& second)
 {
-    return Vec2 { first.x * second.x, first.y * second.y };
+  return Vec2{ first.x * second.x, first.y * second.y };
 }
 
-template <class T, class U>
-Vec2<T> operator * (const Vec2<T> & first, U val)
+template <class T, class U> Vec2<T> operator*(const Vec2<T>& first, U val)
 {
-    return Vec2<U>{ static_cast<U>(first.x * val), static_cast<U>(first.y * val) };
+  return Vec2<U>{ static_cast<U>(first.x * val), static_cast<U>(first.y * val) };
 }
 
-template <class T>
-Vec2<T> operator - (const Vec2<T> & first, const Vec2<T> & second)
+template <class T> Vec2<T> operator-(const Vec2<T>& first, const Vec2<T>& second)
 {
-    return Vec2 { first.x - second.x, first.y - second.y };
+  return Vec2{ first.x - second.x, first.y - second.y };
 }
 
-template <class T>
-Vec2<T> operator + (const Vec2<T> & first, const Vec2<T> & second)
+template <class T> Vec2<T> operator+(const Vec2<T>& first, const Vec2<T>& second)
 {
-    return Vec2 { first.x + second.x, first.y + second.y };
+  return Vec2{ first.x + second.x, first.y + second.y };
 }
 
 template <class T> struct Vec3
 {
-    union
+  union
+  {
+    struct
     {
-        struct
-        {
-            T x, y, z;
-        };
-        struct
-        {
-            T r, g, b;
-        };
+      T x, y, z;
     };
-
-    Vec3()
+    struct
     {
-    }
+      T r, g, b;
+    };
+  };
 
-    Vec3(T _x, T _y, T _z)
-        : x(_x)
-        , y(_y)
-        , z(_z)
-    {
-    }
+  Vec3()
+  {
+  }
+
+  Vec3(T _x, T _y, T _z)
+      : x(_x)
+      , y(_y)
+      , z(_z)
+  {
+  }
 };
 
 template <class T> struct Vec4
 {
-    union
+  union
+  {
+    struct
     {
-        struct
-        {
-            T x, y, z, w;
-        };
-        struct
-        {
-            T r, g, b, a;
-        };
+      T x, y, z, w;
     };
-
-    Vec4()
+    struct
     {
-    }
+      T r, g, b, a;
+    };
+  };
 
-    Vec4(T _x, T _y, T _z, T _w)
-        : x(_x)
-        , y(_y)
-        , z(_z)
-        , w(_w)
-    {
-    }
+  Vec4()
+  {
+  }
+
+  Vec4(T _x, T _y, T _z, T _w)
+      : x(_x)
+      , y(_y)
+      , z(_z)
+      , w(_w)
+  {
+  }
 };
-}
-}
+} // namespace pod
+} // namespace core
 
 #endif
