@@ -35,6 +35,10 @@ core::UniquePtr<IEngineContext> CreateContext(const render::SWindowDefinition& d
   if (!renderer)
     return nullptr;
 
+  if(def.DebugContext){
+    renderer->GetDebugMessageMonitor()->SetDebugging(true);
+  }
+
 
   renderer->WindowResized({ (uint32_t)def.Dimensions.x, (uint32_t)def.Dimensions.y });
 

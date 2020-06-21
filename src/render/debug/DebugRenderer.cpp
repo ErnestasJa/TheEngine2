@@ -5,6 +5,7 @@
 #include <render/IGpuBufferObject.h>
 #include <render/IRenderContext.h>
 #include <render/IRenderer.h>
+#include <render/ICamera.h>
 #include <resource_management/ResourceManagementInc.h>
 
 namespace render {
@@ -26,7 +27,7 @@ DebugMesh::DebugMesh(core::UniquePtr<render::IGpuBufferArrayObject> vao, int32_t
 
 void DebugMesh::Init()
 {
-  m_vao->GetBufferObject(0)->UpdateBuffer(m_bufferSize, nullptr);
+  //m_vao->GetBufferObject(0)->UpdateBuffer(m_bufferSize, nullptr);
   m_vao->GetBufferObject(1)->UpdateBuffer(m_bufferSize, nullptr);
   m_vao->GetBufferObject(2)->UpdateBuffer(m_bufferSize, nullptr);
 
@@ -38,18 +39,18 @@ void DebugMesh::Init()
     IndexBuffer[i] = i;
   }
 
-  m_vao->GetBufferObject(0)->UpdateBuffer(m_bufferSize, nullptr);
+  m_vao->GetBufferObject(0)->UpdateBuffer(m_bufferSize, IndexBuffer.data());
 }
 
 void DebugMesh::PartialUpdate(int32_t start, int32_t count)
 {
-  m_vao->GetBufferObject(1)->UpdateBufferSubData(start, count, VertexBuffer.data() + start);
-  m_vao->GetBufferObject(2)->UpdateBufferSubData(start, count, ColorBuffer.data() + start);
+  m_vao->GetBufferObject(1)->UpdateBufferSubData(start, count, &VertexBuffer[start]);
+  m_vao->GetBufferObject(2)->UpdateBufferSubData(start, count, &ColorBuffer[start]);
 }
 
 void DebugMesh::Render(int32_t count)
 {
-  m_vao->Render(count);
+  m_vao->RenderLines(count);
 }
 
 void UpdateBuffer(DebugMesh* mesh, const DebugLineObject& obj)
@@ -76,11 +77,11 @@ DebugRenderer::DebugRenderer(int32_t maxObjects, IRenderer* renderer,
                                 render::BufferUsageHint::StaticDraw },
 
       render::BufferDescriptor{ 3, render::BufferObjectType::vertex,
-                                render::BufferComponentDataType::float32, 0,
+                                render::BufferComponentDataType::float32, 1,
                                 render::BufferUsageHint::StaticDraw },
 
       render::BufferDescriptor{ 3, render::BufferObjectType::vertex,
-                                render::BufferComponentDataType::float32, 1,
+                                render::BufferComponentDataType::float32, 3,
                                 render::BufferUsageHint::StaticDraw },
   });
 
@@ -88,8 +89,9 @@ DebugRenderer::DebugRenderer(int32_t maxObjects, IRenderer* renderer,
   m_lines->Init();
   m_lineObjects.resize(m_maxObjects);
 
-  m_material             = m_resource_manager->LoadMaterial("resources/shaders/debug_renderer");
+  m_material             = m_resource_manager->LoadMaterial("resources/shaders/debug");
   m_material->RenderMode = material::MeshRenderMode::Lines;
+  m_material->UseDepthTest = true;
 }
 
 void DebugRenderer::Update(float deltaMs)
@@ -119,23 +121,36 @@ void DebugRenderer::Update(float deltaMs)
   }
 
   int currentExpiredToBeFilled = 0;
-  int firstExpiredIndex        = m_expiredObjects[currentExpiredToBeFilled];
+  int expiredIndex             = m_expiredObjects[currentExpiredToBeFilled];
+  int lastExpiredObj = m_expiredObjects.size() - 1;
 
   while (true) {
-    if (firstExpiredIndex >= lastActiveObjIndex) {
+    if (lastActiveObjIndex > 0) {
+      auto & lastActive = m_lineObjects[lastActiveObjIndex];
+
+      if(lastActive.Alive) {
+        auto& expired = m_lineObjects[expiredIndex];
+        expired       = m_lineObjects[lastActiveObjIndex];
+        expired.Index = expiredIndex;
+        lastActive.Alive = false;
+
+        UpdateBuffer(m_lines.get(), expired);
+
+        currentExpiredToBeFilled++;
+
+        if(currentExpiredToBeFilled > lastExpiredObj){
+          break;
+        }
+
+        expiredIndex = m_expiredObjects[currentExpiredToBeFilled];
+      }
+    }
+    
+    lastActiveObjIndex--;
+
+    if (expiredIndex >= lastActiveObjIndex) {
       break;
     }
-
-    if (lastActiveObjIndex > 0 && m_lineObjects[lastActiveObjIndex].Alive) {
-      auto& expired = m_lineObjects[firstExpiredIndex];
-      expired       = m_lineObjects[lastActiveObjIndex];
-      expired.Index = firstExpiredIndex;
-      UpdateBuffer(m_lines.get(), expired);
-
-      currentExpiredToBeFilled++;
-      firstExpiredIndex = m_expiredObjects[currentExpiredToBeFilled];
-    }
-    lastActiveObjIndex--;
   }
 
   m_lines->PartialUpdate(0, PrimiteCountPerObject<DebugLineObject>() * m_totalLineObjects);
@@ -143,7 +158,9 @@ void DebugRenderer::Update(float deltaMs)
 
 void DebugRenderer::Render()
 {
+  auto camera = m_renderer->GetRenderContext()->GetCurrentCamera();
   m_renderer->GetRenderContext()->SetCurrentMaterial(m_material.get());
+  m_material->SetMat4("MVP", camera->GetProjection() * camera->GetView() * glm::mat4(1));
   m_lines->Render(m_totalLineObjects * PrimiteCountPerObject<DebugLineObject>());
 }
 

@@ -188,6 +188,7 @@ void GLRenderer::BeginFrame()
 
 void GLRenderer::EndFrame()
 {
+
 }
 
 void GLRenderer::RenderMesh(BaseMesh* mesh, material::BaseMaterial* material,
