@@ -20,6 +20,22 @@ struct DebugLineObject
   }
 };
 
+struct DebugAABVObject
+{
+  int32_t Index;
+  glm::vec3 Start;
+  glm::vec3 End;
+  glm::vec3 Color;
+  float AbsTimeAdded;
+  float TimeToLive;
+  bool Alive;
+
+  DebugAABVObject()
+      : Alive(false)
+  {
+  }
+};
+
 class DebugMesh
 {
   public:
@@ -45,17 +61,21 @@ class DebugRenderer
   void Update(float deltaMs);
   void Render();
   void AddLine(glm::vec3 start, glm::vec3 end, float lifeTimeSeconds);
+  void AddAABV(glm::vec3 start, glm::vec3 end, float lifeTimeSeconds);
 
   private:
   core::Vector<DebugLineObject> m_lineObjects;
+  core::Vector<DebugAABVObject> m_aabvObjects;
   core::UniquePtr<DebugMesh> m_lines;
+  core::UniquePtr<DebugMesh> m_aabvs;
   core::SharedPtr<material::BaseMaterial> m_material;
 
   IRenderer* m_renderer;
   res::ResourceManager* m_resource_manager;
   float m_debuggerAbsTimeElapsed;
   int32_t m_maxObjects;
-  int32_t m_totalLineObjects;
+  int32_t m_totalActiveLineObjects;
+  int32_t m_totalActiveAABVObjects;
 };
 } // namespace render
 
