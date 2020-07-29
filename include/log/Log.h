@@ -6,7 +6,7 @@ namespace elog {
 void Log(const LogSource source, const LogSeverity severity, const core::String& log);
 void AddLogStream(const core::WeakPtr<ILogStream>& wlogStream);
 void CleanDeadStreams();
-
+void ClearStreams();
 // shorthand methods for engine logs
 inline void LogInfo(const core::String& log)
 {

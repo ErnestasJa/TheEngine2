@@ -8,15 +8,16 @@ class InputHandler;
 class [[nodiscard]] InputHandlerHandle
 {
   public:
-  InputHandlerHandle()
+  InputHandlerHandle(): m_handler(nullptr), m_device(nullptr)
   {
   }
   InputHandlerHandle(input::IInputDevice * device, InputHandler * handler);
 
+  void Disconnect();
+
   private:
   InputHandler* m_handler;
   IInputDevice* m_device;
-  core::SharedPtr<int> m_handleCount;
 };
 } // namespace input
 

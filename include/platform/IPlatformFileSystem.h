@@ -10,6 +10,7 @@ class IPlatformFileSystem
 {
   public:
   virtual io::Path GetExecutableDirectory() = 0;
+  virtual ~IPlatformFileSystem() = default;
 };
 
 core::UniquePtr<IPlatformFileSystem> GetPlatformFileSystem();

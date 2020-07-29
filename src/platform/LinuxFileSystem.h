@@ -7,6 +7,7 @@ namespace platform {
 class LinuxFileSystem : public IPlatformFileSystem
 {
   public:
+  virtual ~LinuxFileSystem() = default;
   virtual io::Path GetExecutableDirectory();
 };
 } // namespace platform

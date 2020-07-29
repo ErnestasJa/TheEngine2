@@ -12,12 +12,13 @@ namespace elog {
 class DefaultCoutLogPipe : public ILogStream
 {
   public:
-  void Log(const elog::LogSource source, const elog::LogSeverity severity,
-           const core::String& logStr)
-  {
+    ~DefaultCoutLogPipe() override = default;
+    void Log(const elog::LogSource source, const elog::LogSeverity severity,
+           const core::String& logStr) override
+    {
     if (source == elog::LogSource::Engine)
       std::cout << "Engine log: " << logStr << std::endl;
-  }
+    }
 };
 
 } // namespace elog

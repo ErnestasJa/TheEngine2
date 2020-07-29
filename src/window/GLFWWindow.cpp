@@ -15,6 +15,8 @@ GLFWWindow::GLFWWindow()
 
 GLFWWindow::~GLFWWindow()
 {
+  m_inputDevice = nullptr;
+
   if (m_window)
     glfwDestroyWindow(m_window);
 }

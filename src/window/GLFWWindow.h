@@ -39,7 +39,7 @@ class GLFWWindow : public IWindow
   std::function<void(core::pod::Vec2<uint32_t>)> m_onWindowResize;
   SWindowDefinition m_windowDefinition;
   GLFWwindow* m_window;
-  core::SharedPtr<input::IInputDevice> m_inputDevice;
+  core::UniquePtr<input::IInputDevice> m_inputDevice;
   bool m_close;
 };
 } // namespace render

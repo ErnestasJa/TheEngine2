@@ -38,7 +38,7 @@ IRendererDebugMessageMonitor* GLRenderer::GetDebugMessageMonitor()
   return m_debugMessageMonitor.get();
 }
 
-core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(const core::String& vertSource,
+core::UniquePtr<IGpuProgram> GLRenderer::CreateProgram(const core::String& vertSource,
                                                        const core::String& fragSource,
                                                        const core::String& geomSource)
 {
@@ -46,7 +46,7 @@ core::SharedPtr<IGpuProgram> GLRenderer::CreateProgram(const core::String& vertS
                                                     geomSource.c_str());
 
   if (gl::IsHandleValid(handle))
-    return core::MakeShared<GLGpuShaderProgram>(handle);
+    return core::MakeUnique<GLGpuShaderProgram>(handle);
   else
     return nullptr;
 }
@@ -226,7 +226,7 @@ void GLRenderer::RenderMesh(AnimatedMesh* mesh, material::BaseMaterial* material
 {
   auto camera = m_renderContext->GetCurrentCamera();
   auto mvp    = camera->GetProjection() * camera->GetView() * transform;
-  auto& anim  = mesh->GetAnimations();
+  //auto& anim  = mesh->GetAnimations();
 
   m_renderContext->SetCurrentMaterial(material);
   material->SetMat4("MVP", mvp);

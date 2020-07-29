@@ -15,15 +15,24 @@ class Logger
   void Log(const LogSource source, const LogSeverity severity, const core::String& str)
   {
     for (auto wlogStream : m_logStreams) {
-      if (auto logPipe = wlogStream.lock()) {
+      if (!wlogStream.expired()) {
+        auto logPipe = wlogStream.lock();
         logPipe->Log(source, severity, str);
       }
     }
   }
 
+  ~Logger(){
+      //m_logStreams.clear();
+  }
+
   void AttachStream(const core::WeakPtr<ILogStream>& wlogStream)
   {
     m_logStreams.push_back(wlogStream);
+  }
+
+  void ClearStreams(){
+      m_logStreams.clear();
   }
 
   void CleanDeadStreams()
@@ -56,5 +65,9 @@ void AddLogStream(const core::WeakPtr<ILogStream>& wlogStream)
 void CleanDeadStreams()
 {
   Logger::Get().CleanDeadStreams();
+}
+
+void ClearStreams(){
+    Logger::Get().ClearStreams();
 }
 } // namespace elog

@@ -1,10 +1,9 @@
 #ifndef THEPROJECT2_RESOURCEMANAGER_H_
 #define THEPROJECT2_RESOURCEMANAGER_H_
 
-#include <render/ITexture.h>
-
 namespace render {
 class IGpuProgram;
+class ITexture;
 }
 
 namespace material {
@@ -17,11 +16,10 @@ class AnimatedMeshActor;
 
 namespace res {
 class ImageLoader;
-class GpuProgramManager;
+
 namespace mesh {
 class AssimpImport;
 }
-
 
 template <class TResource> struct Resource
 {
@@ -33,13 +31,20 @@ template <class TResource> struct Resource
     Path = path;
     Res  = core::Move(res);
   }
+
+  Resource() = delete;
+  Resource(const Resource&) = delete;
+  Resource & operator=(const Resource &) = delete;
 };
 
 class ResourceManager
 {
-  public:
-  ResourceManager(ImageLoader* imgLoader, res::GpuProgramManager* gpuProgramManager,
+public:
+  ResourceManager(ImageLoader* imgLoader,
+                  render::IRenderer* renderer, io::IFileSystem* fileSystem,
                   res::mesh::AssimpImport* assimpImporter);
+
+  ~ResourceManager() = default;
 
   render::ITexture* LoadTexture(core::String path);
   /// todo: this should return UniquePtr.
@@ -48,11 +53,16 @@ class ResourceManager
                                                            core::String textureName,
                                                            core::String materialName);
 
-  private:
+private:
+    core::String LoadShaderSource(const core::String& path);
+    render::IGpuProgram* LoadProgram(const core::String& path);
+
+private:
   ImageLoader* m_imageLoader;
   core::UnorderedMap<core::String, Resource<render::ITexture>> m_textures;
   core::UnorderedMap<core::String, Resource<render::IGpuProgram>> m_shaders;
-  GpuProgramManager* m_gpuProgramManager;
+  render::IRenderer* m_renderer;
+  io::IFileSystem* m_fileSystem;
   res::mesh::AssimpImport* m_assimpImporter;
 };
 } // namespace res

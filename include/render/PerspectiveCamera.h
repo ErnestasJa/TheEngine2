@@ -28,30 +28,30 @@ class PerspectiveCamera : public ICamera
     m_projectionMatrix = glm::perspective(m_fov, m_aspectRatio, m_near, m_far);
   }
 
-  void SetAspectRatio(float aspectRatio)
+  void SetAspectRatio(float aspectRatio) override
   {
     m_aspectRatio = aspectRatio;
     RecalcProjection();
   }
 
-  void SetFOV(float fov)
+  void SetFOV(float fov) override
   {
     m_fov = fov;
     RecalcProjection();
   }
 
-  float GetFOV()
+  float GetFOV() override
   {
     return m_fov;
   }
 
-  void SetRotation(glm::vec3 rotation)
+  void SetRotation(glm::vec3 rotation) override
   {
     m_rotation = rotation;
     Update();
   }
 
-  void SetPosition(glm::vec3 position)
+  void SetPosition(glm::vec3 position) override
   {
     m_position = position;
     Update();
@@ -69,7 +69,7 @@ class PerspectiveCamera : public ICamera
     Update();
   }
 
-  glm::vec3 GetRotation() const
+  glm::vec3 GetRotation() const override
   {
     return m_rotation;
   }
@@ -79,27 +79,27 @@ class PerspectiveCamera : public ICamera
     return m_direction;
   }
 
-  glm::vec3 GetPosition() const
+  glm::vec3 GetPosition() const override
   {
     return m_position;
   }
 
-  glm::vec3 GetLocalZ() const
+  glm::vec3 GetLocalZ() const override
   {
     return m_direction;
   }
 
-  glm::vec3 GetLocalX() const
+  glm::vec3 GetLocalX() const override
   {
     return m_right;
   }
 
-  glm::mat4 GetView() const
+  glm::mat4 GetView() const override
   {
     return m_viewMatrix;
   }
 
-  glm::mat4 GetProjection() const
+  glm::mat4 GetProjection() const override
   {
     return m_projectionMatrix;
   }

@@ -31,7 +31,7 @@
 //#define IMGUI_IMPL_OPENGL_ES3     // Auto-detected on iOS/Android
 
 // Set default OpenGL3 loader to be gl3w
-class ImDrawData;
+struct ImDrawData;
 
 #if !defined(IMGUI_IMPL_OPENGL_LOADER_GL3W) && !defined(IMGUI_IMPL_OPENGL_LOADER_GLEW) &&          \
     !defined(IMGUI_IMPL_OPENGL_LOADER_GLAD) && !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)

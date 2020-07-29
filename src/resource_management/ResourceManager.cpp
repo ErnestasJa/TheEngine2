@@ -8,11 +8,13 @@
 #include <resource_management/ResourceManager.h>
 
 namespace res {
-ResourceManager::ResourceManager(ImageLoader* imgLoader, res::GpuProgramManager* gpuProgramManager,
+ResourceManager::ResourceManager(ImageLoader* imgLoader,
+                                 render::IRenderer* renderer, io::IFileSystem* fileSystem,
                                  res::mesh::AssimpImport* assimpImporter)
 {
   m_imageLoader       = imgLoader;
-  m_gpuProgramManager = gpuProgramManager;
+  m_renderer = renderer;
+  m_fileSystem = fileSystem;
   m_assimpImporter    = assimpImporter;
 }
 
@@ -40,15 +42,54 @@ core::SharedPtr<material::BaseMaterial> ResourceManager::LoadMaterial(core::Stri
     return core::MakeShared<material::BaseMaterial>(it->second.Res.get());
   }
 
-  auto shader = m_gpuProgramManager->LoadProgram(path);
+  auto shader = LoadProgram(path);
 
   if (shader) {
-    m_shaders.emplace(std::piecewise_construct, std::forward_as_tuple(path),
-                      std::forward_as_tuple(path, core::UniquePtr<render::IGpuProgram>(shader)));
     return core::MakeShared<material::BaseMaterial>(shader);
   }
 
   return nullptr;
+}
+
+render::IGpuProgram* ResourceManager::LoadProgram(const core::String& path)
+{
+    if (auto it = m_shaders.find(path); it != m_shaders.end()) {
+        return it->second.Res.get();
+    }
+
+    auto vertexSource   = LoadShaderSource(path + ".vert");
+    auto fragmentSource = LoadShaderSource(path + ".frag");
+    auto geometrySource = LoadShaderSource(path + ".geom");
+
+    auto gpuProgram = m_renderer->CreateProgram(vertexSource, fragmentSource, geometrySource);
+
+    if (gpuProgram) {
+        auto gpuProgramPtr = gpuProgram.get();
+
+        m_shaders.emplace(std::piecewise_construct, std::forward_as_tuple(path),
+                          std::forward_as_tuple(path, core::Move(gpuProgram)));
+
+        return gpuProgramPtr;
+    }
+
+    return nullptr;
+}
+
+core::String ResourceManager::LoadShaderSource(const core::String& path)
+{
+    core::String fileContents;
+
+    auto file = m_fileSystem->OpenRead(path);
+    if (file) {
+        file->Read(fileContents);
+        // elog::LogInfo(fileContents);
+        elog::LogInfo("Loaded shader: " + path);
+    }
+    else {
+        elog::LogInfo("Failed to read shader source: " + path);
+    }
+
+    return fileContents;
 }
 
 

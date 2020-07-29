@@ -8,6 +8,7 @@ namespace elog {
 class ILogStream
 {
   public:
+    virtual ~ILogStream() = default;
   virtual void Log(const LogSource source, const LogSeverity severity,
                    const core::String& logString) = 0;
 };

@@ -6,7 +6,10 @@ InputHandlerHandle::InputHandlerHandle(input::IInputDevice* device, InputHandler
     : m_device(device)
     , m_handler(handler)
 {
-  m_handleCount =
-      core::SharedPtr<int>(0, [&device, &handler](auto p) { device->RemoveInputHandler(handler); });
+}
+
+void InputHandlerHandle::Disconnect() {
+    if(m_device && m_handler)
+    m_device->RemoveInputHandler(m_handler);
 }
 } // namespace input

@@ -2,10 +2,10 @@
 #define THEPROJECT2_LIBS_THEENGINE2_INCLUDE_RENDER_ANIMATION_ANIMATIONFWD_H_
 
 namespace render::anim {
-class Animation;
+struct Animation;
 class Armature;
-class Bone;
-class BoneKeyCollection;
+struct Bone;
+struct BoneKeyCollection;
 class AnimationController;
 } // namespace render::anim
 

@@ -7,7 +7,7 @@ struct GLFWwindow;
 class GLFWInputDevice : public input::IInputDevice
 {
   public:
-  static core::SharedPtr<input::IInputDevice> Create(GLFWwindow* window);
+  static core::UniquePtr<input::IInputDevice> Create(GLFWwindow* window);
 
   public:
   GLFWInputDevice(GLFWwindow* window);

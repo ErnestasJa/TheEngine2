@@ -26,7 +26,7 @@ class BaseMaterial
 
   public:
   BaseMaterial(render::IGpuProgram* shader);
-  virtual void Use();
+  void Use();
 
   void SetI(const core::String& name, int i);
   void SetVec3(const core::String& name, glm::vec3 uniformValue);
@@ -38,7 +38,7 @@ class BaseMaterial
   void SetTexture(int slot, render::ITexture* texture);
   const core::Array<render::ITexture*, 8>& GetTextures();
 
-  virtual core::SharedPtr<BaseMaterial> Instance();
+  core::SharedPtr<BaseMaterial> Instance();
 
 
   protected:

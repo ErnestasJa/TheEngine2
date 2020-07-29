@@ -24,7 +24,8 @@ template <class Key, class Value> using UnorderedMap = std::unordered_map<Key, V
 template <class T, uint32_t N> using Array           = std::array<T, N>;
 template <class T> using SharedPtr                   = std::shared_ptr<T>;
 template <class T> using WeakPtr                     = std::weak_ptr<T>;
-template <class T> using UniquePtr                   = std::unique_ptr<T>;
+template <class T, class Deleter = std::default_delete<T>>
+using UniquePtr = std::unique_ptr<T, Deleter>;
 template <class T> using Optional                    = std::optional<T>;
 template <typename... TTypes> using tuple            = std::tuple<TTypes...>;
 

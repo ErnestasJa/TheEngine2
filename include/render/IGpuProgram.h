@@ -7,9 +7,7 @@ namespace render {
 class IGpuProgram
 {
   public:
-  virtual ~IGpuProgram()
-  {
-  }
+  virtual ~IGpuProgram() = default;
 
   virtual void Bind()                                                            = 0;
   virtual const core::Vector<core::UniquePtr<IGpuProgramUniform>>& GetUniforms() = 0;

@@ -17,7 +17,7 @@ class GLRenderer : public IRenderer
   GLRenderer(core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor);
   IRendererDebugMessageMonitor* GetDebugMessageMonitor() final;
 
-  core::SharedPtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
+  core::UniquePtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
                                              const core::String& fragSource = "",
                                              const core::String& geomSource = "") final;
 

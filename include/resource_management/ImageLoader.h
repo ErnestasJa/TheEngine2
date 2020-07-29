@@ -12,7 +12,8 @@ struct Image
 {
   int32_t channels;
   core::pod::Vec2<int32_t> size;
-  core::UniquePtr<uint8_t> data;
+  core::UniquePtr<uint8_t[], void(*)(void*)> data;
+  Image();
 };
 
 class ImageLoader

@@ -3,9 +3,9 @@
 #include "GLFWInputKeyMap.h"
 #include "input/InputHandler.h"
 
-core::SharedPtr<input::IInputDevice> GLFWInputDevice::Create(GLFWwindow* window)
+core::UniquePtr<input::IInputDevice> GLFWInputDevice::Create(GLFWwindow* window)
 {
-  auto ptr = core::MakeShared<GLFWInputDevice>(window);
+  auto ptr = core::MakeUnique<GLFWInputDevice>(window);
   ptr->BindEventHandlers();
   return ptr;
 }
@@ -43,6 +43,7 @@ void GLFWInputDevice::PollEvents(float deltaTime)
 input::InputHandlerHandle GLFWInputDevice::AddInputHandler(input::InputHandler* handler)
 {
   m_handlersToAdd.push_back(handler);
+  return input::InputHandlerHandle(this, handler);
 }
 
 void GLFWInputDevice::RemoveInputHandler(input::InputHandler* handler)

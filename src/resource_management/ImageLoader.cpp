@@ -38,12 +38,12 @@ core::UniquePtr<render::ITexture> ImageLoader::LoadTexture(const io::Path& path)
   return texture;
 }
 
-core::UniquePtr<uint8_t> PrepareImageAtlasData(uint8_t* originalData, int originalWidth,
+core::UniquePtr<uint8_t[]> PrepareImageAtlasData(uint8_t* originalData, int originalWidth,
                                                int originalHeight, int numChannels,
                                                int subImageSize)
 {
   auto dataPtr =
-      core::UniquePtr<uint8_t>(new uint8_t[originalWidth * originalHeight * numChannels]);
+      core::UniquePtr<uint8_t[]>(new uint8_t[originalWidth * originalHeight * numChannels]);
   uint8_t* data = dataPtr.get();
 
   if (originalWidth % subImageSize != 0 || originalHeight % subImageSize != 0) {
@@ -56,7 +56,6 @@ core::UniquePtr<uint8_t> PrepareImageAtlasData(uint8_t* originalData, int origin
 
   int columns        = originalWidth / subImageSize;
   int rows           = originalHeight / subImageSize;
-  int totalSubImages = columns * rows;
   int rowOffset      = originalWidth * numChannels;
 
   auto getImageStart = [&](int x, int y) -> int {
@@ -129,8 +128,8 @@ Image ImageLoader::LoadImage(const io::Path& path)
   elog::LogInfo(core::string::format("Image size bytes: {}\n", bytesRead));
   Image img;
   img.data =
-      core::UniquePtr<uint8_t>(stbi_load_from_memory((stbi_uc*)testByteArray.data(), bytesRead,
-                                                     &img.size.w, &img.size.h, &img.channels, 0));
+      core::UniquePtr<uint8_t[], void(*)(void*)>(stbi_load_from_memory((stbi_uc*)testByteArray.data(), bytesRead,
+                                                     &img.size.w, &img.size.h, &img.channels, 0), stbi_image_free);
 
   elog::LogInfo(core::string::format("Image size x: {}\n", img.size.x));
   elog::LogInfo(core::string::format("Image size y: {}\n", img.size.y));
@@ -138,4 +137,8 @@ Image ImageLoader::LoadImage(const io::Path& path)
   return img;
 }
 
+Image::Image() : data(nullptr, stbi_image_free)
+{
+
+}
 } // namespace res

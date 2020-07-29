@@ -41,7 +41,7 @@ class IRenderer
   {
   }
   virtual IRendererDebugMessageMonitor* GetDebugMessageMonitor()                          = 0;
-  virtual core::SharedPtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
+  virtual core::UniquePtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
                                                      const core::String& fragSource = "",
                                                      const core::String& geomSource = "") = 0;
   virtual core::UniquePtr<IGpuBufferArrayObject> CreateBufferArrayObject(
