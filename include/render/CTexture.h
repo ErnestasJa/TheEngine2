@@ -37,21 +37,30 @@ struct TextureDescriptor
   uint32_t height;
   uint32_t layerCount;
 
-  TextureDescriptor()
+  TextureDescriptor(uint32_t texWidth = 0, uint32_t texHeight = 0, TextureDataFormat dataFormat = TextureDataFormat::RGBA)
       : type(TextureType::T2D)
-      , DataFormat(TextureDataFormat::RGBA)
+      , DataFormat(dataFormat)
       , filterMode(TextureFilterMode::BILINEAR)
       , wrapModeS(TextureWrapMode::REPEAT)
       , wrapModeT(TextureWrapMode::REPEAT)
       , layerCount(1)
-      , width(0)
-      , height(0)
+      , width(texWidth)
+      , height(texHeight)
   {
   }
 };
 
 struct TextureDataDescriptor
 {
+  TextureDataDescriptor() = default;
+  TextureDataDescriptor(void* texData, core::pod::Vec2<uint32_t> texSize,
+                        TextureDataFormat texFormat = TextureDataFormat::RGB)
+  {
+    data   = texData;
+    size.x   = texSize.x;
+    size.y   = texSize.y;
+    format = texFormat;
+  }
   void* data;
   TextureDataFormat format;
   core::pod::Vec2<int32_t> size;

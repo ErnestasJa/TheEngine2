@@ -9,13 +9,13 @@ namespace gui {
 class GuiImpl : public IGui
 {
   public:
-  GuiImpl(core::SharedPtr<engine::IEngineContext> context);
+  GuiImpl(engine::IEngineContext* context);
   virtual ~GuiImpl();
   void BeginRender();
   void EndRender();
 
   private:
-  core::SharedPtr<engine::IEngineContext> m_context;
+  engine::IEngineContext* m_context;
   core::SharedPtr<input::InputHandler> m_inputHandler;
   input::InputHandlerHandle m_inputHandlerHandle;
 };

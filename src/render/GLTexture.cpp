@@ -161,4 +161,9 @@ void GLTexture::UploadData(const TextureDataDescriptor& descriptor)
 
   GLTexture::BindObject(nullptr, 0);
 }
+uint32_t GLTexture::GetId() const
+{
+  return m_handle.id;
+}
+
 } // namespace render

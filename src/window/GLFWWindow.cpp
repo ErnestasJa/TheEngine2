@@ -37,6 +37,28 @@ void SetWindowHints(const SWindowDefinition& wDef)
   glfwWindowHint(GLFW_RESIZABLE, wDef.Resizeable);
 }
 
+CursorMode GlfwToEngineCursorMode(uint32_t glfwCursorMode){
+  switch (glfwCursorMode) {
+  case GLFW_CURSOR_HIDDEN:
+    return CursorMode::Hidden;
+  case GLFW_CURSOR_DISABLED:
+    return CursorMode::HiddenCapture;
+  default:
+    return CursorMode::Normal;
+  }
+}
+
+uint32_t EngineToGlfwCursorMode(CursorMode cursorMode){
+  switch (cursorMode) {
+  case CursorMode::Hidden:
+    return GLFW_CURSOR_HIDDEN;
+  case CursorMode::HiddenCapture:
+    return GLFW_CURSOR_DISABLED;
+  default:
+    return GLFW_CURSOR_NORMAL;
+  }
+}
+
 void ReadBackContext(SWindowDefinition& def)
 {
   // int32_t flags = 0;
@@ -158,26 +180,18 @@ const SWindowDefinition& GLFWWindow::GetWindowDefinition()
 
 void GLFWWindow::SetCursorMode(CursorMode cursorMode)
 {
-  uint32_t glfwCursorMode = GLFW_CURSOR_NORMAL;
-
-  switch (cursorMode) {
-  case CursorMode::Normal:
-    glfwCursorMode = GLFW_CURSOR_NORMAL;
-    break;
-  case CursorMode::Hidden:
-    glfwCursorMode = GLFW_CURSOR_HIDDEN;
-    break;
-
-  case CursorMode::HiddenCapture:
-    glfwCursorMode = GLFW_CURSOR_DISABLED;
-    break;
-  }
-
+  uint32_t glfwCursorMode = EngineToGlfwCursorMode(cursorMode);
   glfwSetInputMode(m_window, GLFW_CURSOR, glfwCursorMode);
 }
 
 GLFWwindow* GLFWWindow::GetUnderlyingWindow()
 {
   return m_window;
+}
+
+CursorMode GLFWWindow::GetCursorMode()
+{
+  auto glfwCursorMode = glfwGetInputMode(m_window, GLFW_CURSOR);
+  return GlfwToEngineCursorMode(glfwCursorMode);
 }
 } // namespace render

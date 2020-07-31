@@ -27,6 +27,7 @@ class GLFWWindow : public IWindow
   virtual void UpdateContext(); /// this is to be called after creating
                                 /// window and loading extensions.
   virtual void SetCursorMode(CursorMode cursorMode);
+  virtual CursorMode GetCursorMode();
   GLFWwindow* GetUnderlyingWindow();
 
   /// todo: cleanup

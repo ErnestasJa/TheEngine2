@@ -6,6 +6,7 @@ namespace render {
 class BaseMesh;
 class AnimatedMesh;
 class ITexture;
+class Image;
 class IGpuBufferArrayObject;
 class IRenderer;
 class PerspectiveCamera;

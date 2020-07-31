@@ -117,7 +117,7 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/render/animation/AnimationController.cpp"
 	"${ENGINE_SRC_PATH}/render/OrbitCamera.cpp"
 	"${ENGINE_SRC_PATH}/render/debug/DebugRenderer.cpp"
-)
+        include/render/Image.h)
 
 add_subdirectory ("${LIB_PATH}/glad")
 add_subdirectory ("${LIB_PATH}/glfw")

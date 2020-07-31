@@ -14,6 +14,7 @@
 #include "IRenderer.h"
 #include "IRendererDebugMessageMonitor.h"
 #include "ITexture.h"
+#include "Image.h"
 #include "OrbitCamera.h"
 #include "PerspectiveCamera.h"
 #include "debug/DebugLineMesh.h"

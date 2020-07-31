@@ -33,7 +33,7 @@ class GLTexture : public ITexture, public gl::gpu_object<gl::gpu_texture_handle>
   GLTexture(const gl::gpu_texture_handle& handle);
   virtual ~GLTexture();
   virtual void UploadData(const TextureDataDescriptor& descriptor);
-
+  virtual uint32_t GetId() const;
   private:
 };
 } // namespace render

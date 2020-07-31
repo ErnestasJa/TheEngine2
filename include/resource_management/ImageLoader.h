@@ -7,15 +7,6 @@
 
 #include <render/IRenderer.h>
 namespace res {
-
-struct Image
-{
-  int32_t channels;
-  core::pod::Vec2<int32_t> size;
-  core::UniquePtr<uint8_t[], void(*)(void*)> data;
-  Image();
-};
-
 class ImageLoader
 {
   private:
@@ -25,10 +16,6 @@ class ImageLoader
   core::UniquePtr<render::ITexture> LoadTexture(const io::Path& path);
   core::UniquePtr<render::ITexture> LoadAtlasAs2DTexture(const io::Path& path,
                                                          uint32_t subImageSize);
-
-  private:
-  Image LoadImage(const io::Path& path);
-
 
   private:
   io::IFileSystem* m_fileSystem;

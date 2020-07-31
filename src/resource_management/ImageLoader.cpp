@@ -9,20 +9,55 @@
 #include "stb_image.h"
 namespace res {
 
+struct StbLoadedImage
+{
+  int32_t channels;
+  core::pod::Vec2<int32_t> size;
+  core::UniquePtr<uint8_t[], void(*)(void*)> data;
+
+  StbLoadedImage() : data(nullptr, stbi_image_free)
+  {
+  }
+};
+
+StbLoadedImage LoadImage(io::IFileSystem* fs, const io::Path& path)
+{
+  auto file = fs->OpenRead(path);
+
+  if (!file) {
+    elog::LogInfo(core::string::format("Failed to open {}\n", path.AsString().c_str()));
+    return StbLoadedImage();
+  }
+
+  core::TByteArray testByteArray;
+  auto bytesRead = file->Read(testByteArray);
+
+  elog::LogInfo(core::string::format("Image size bytes: {}\n", bytesRead));
+  StbLoadedImage img;
+  img.data =
+      core::UniquePtr<uint8_t[], void(*)(void*)>(stbi_load_from_memory((stbi_uc*)testByteArray.data(), bytesRead,
+                                                                       &img.size.w, &img.size.h, &img.channels, 0), stbi_image_free);
+
+  elog::LogInfo(core::string::format("Image size x: {}\n", img.size.x));
+  elog::LogInfo(core::string::format("Image size y: {}\n", img.size.y));
+
+  return img;
+}
+
 ImageLoader::ImageLoader(io::IFileSystem* fs, render::IRenderer* renderer)
     : m_fileSystem(fs)
     , m_renderer(renderer)
 {
 }
 
-inline render::TextureDataFormat GetImageDataFormat(const Image& img)
+inline render::TextureDataFormat GetImageDataFormat(const StbLoadedImage& img)
 {
   return img.channels == 3 ? render::TextureDataFormat::RGB : render::TextureDataFormat::RGBA;
 }
 
 core::UniquePtr<render::ITexture> ImageLoader::LoadTexture(const io::Path& path)
 {
-  auto img = LoadImage(path);
+  auto img = LoadImage(m_fileSystem, path);
 
   if (!img.data) {
     return nullptr;
@@ -33,7 +68,7 @@ core::UniquePtr<render::ITexture> ImageLoader::LoadTexture(const io::Path& path)
   desc.DataFormat = GetImageDataFormat(img);
   auto texture    = m_renderer->CreateTexture(desc);
   texture->UploadData(
-      render::TextureDataDescriptor{ (void*)img.data.get(), desc.DataFormat, img.size });
+      render::TextureDataDescriptor((void*)img.data.get(), core::pod::Vec2<uint32_t>(img.size.x, img.size.y), desc.DataFormat));
 
   return texture;
 }
@@ -85,7 +120,7 @@ core::UniquePtr<uint8_t[]> PrepareImageAtlasData(uint8_t* originalData, int orig
 core::UniquePtr<render::ITexture> ImageLoader::LoadAtlasAs2DTexture(const io::Path& path,
                                                                     uint32_t subImageSize)
 {
-  auto img = LoadImage(path);
+  auto img = LoadImage(m_fileSystem, path);
 
   if (!img.data) {
     return nullptr;
@@ -108,37 +143,9 @@ core::UniquePtr<render::ITexture> ImageLoader::LoadAtlasAs2DTexture(const io::Pa
 
   auto texture = m_renderer->CreateTexture(desc);
   texture->UploadData(
-      render::TextureDataDescriptor{ (void*)dataForUpload.get(), desc.DataFormat, img.size });
+      render::TextureDataDescriptor( (void*)dataForUpload.get(), core::pod::Vec2<uint32_t>(img.size.x, img.size.y), desc.DataFormat ));
 
   return texture;
 }
 
-Image ImageLoader::LoadImage(const io::Path& path)
-{
-  auto file = m_fileSystem->OpenRead(path);
-
-  if (!file) {
-    elog::LogInfo(core::string::format("Failed to open {}\n", path.AsString().c_str()));
-    return Image();
-  }
-
-  core::TByteArray testByteArray;
-  auto bytesRead = file->Read(testByteArray);
-
-  elog::LogInfo(core::string::format("Image size bytes: {}\n", bytesRead));
-  Image img;
-  img.data =
-      core::UniquePtr<uint8_t[], void(*)(void*)>(stbi_load_from_memory((stbi_uc*)testByteArray.data(), bytesRead,
-                                                     &img.size.w, &img.size.h, &img.channels, 0), stbi_image_free);
-
-  elog::LogInfo(core::string::format("Image size x: {}\n", img.size.x));
-  elog::LogInfo(core::string::format("Image size y: {}\n", img.size.y));
-
-  return img;
-}
-
-Image::Image() : data(nullptr, stbi_image_free)
-{
-
-}
 } // namespace res

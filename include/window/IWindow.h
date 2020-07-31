@@ -30,6 +30,7 @@ class IWindow
   virtual void Close()                                                   = 0;
   virtual input::IInputDevice* GetInputDevice()                          = 0;
   virtual void SetCursorMode(CursorMode cursorMode)                      = 0;
+  virtual CursorMode GetCursorMode()                                     = 0;
 };
 } // namespace render
 
