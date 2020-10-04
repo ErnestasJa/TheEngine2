@@ -14,7 +14,7 @@ class GLRenderer : public IRenderer
   public:
   ~GLRenderer();
 
-  GLRenderer(core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor);
+  GLRenderer(core::UniquePtr<IRendererDebugMessageMonitor>&& debugMessageMonitor);
   IRendererDebugMessageMonitor* GetDebugMessageMonitor() final;
 
   core::UniquePtr<IGpuProgram> CreateProgram(const core::String& vertSource = "",
@@ -55,11 +55,11 @@ class GLRenderer : public IRenderer
   private:
   core::UniquePtr<IRenderContext> m_renderContext;
   core::SharedPtr<GLFrameBufferObject> m_activeFrameBufferObject;
-  core::UniquePtr<GLRendererDebugMessageMonitor> m_debugMessageMonitor;
+  core::UniquePtr<IRendererDebugMessageMonitor> m_debugMessageMonitor;
 };
 
 core::UniquePtr<IRenderer> CreateRenderer(
-    core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor);
+    core::UniquePtr<IRendererDebugMessageMonitor>&& debugMessageMonitor);
 } // namespace render
 
 #endif

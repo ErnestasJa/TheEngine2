@@ -18,19 +18,22 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <queue>
 
 /*Third party headers*/
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/quaternion_float.hpp>
 
 /*Engine headers*/
+#include "Config.h"
+#include "Macro.h"
 #include "EngineForwardDeclares.h"
 #include "core/Algorithm.hpp"
-#include "core/Debug.h"
 #include "core/POD.h"
 #include "core/StringUtil.h"
 #include "core/TypeUtils.h"
 #include "filesystem/FileSystemInc.h"
 #include "log/LogInc.h"
+#include "util/Assert.h"
 
 #endif

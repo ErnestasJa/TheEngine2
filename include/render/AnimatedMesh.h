@@ -10,7 +10,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <render/BaseMesh.h>
 #include <render/BufferDescriptor.h>
-#include <utils/Math.h>
+#include <util/Math.h>
 
 namespace render {
 struct BufferDescriptor;

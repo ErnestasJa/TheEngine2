@@ -16,12 +16,12 @@
 
 namespace render {
 core::UniquePtr<IRenderer> CreateRenderer(
-    core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
+    core::UniquePtr<IRendererDebugMessageMonitor>&& debugMessageMonitor)
 {
   return core::MakeUnique<GLRenderer>(core::Move(debugMessageMonitor));
 }
 
-GLRenderer::GLRenderer(core::UniquePtr<GLRendererDebugMessageMonitor>&& debugMessageMonitor)
+GLRenderer::GLRenderer(core::UniquePtr<IRendererDebugMessageMonitor>&& debugMessageMonitor)
     : m_debugMessageMonitor(core::Move(debugMessageMonitor))
 {
   glEnable(GL_DEPTH_TEST);
@@ -188,7 +188,15 @@ void GLRenderer::BeginFrame()
 
 void GLRenderer::EndFrame()
 {
+  auto debugMsgMonitor = GetDebugMessageMonitor();
+  ASSERT(debugMsgMonitor != nullptr, "Debug message monitor is not initialized");
 
+  if (debugMsgMonitor->isDebuggingEnabled()) {
+    for (auto msg : debugMsgMonitor->GetMessages()) {
+      elog::LogInfo(msg->AsString());
+    }
+    debugMsgMonitor->ClearMessages();
+  }
 }
 
 void GLRenderer::RenderMesh(BaseMesh* mesh, material::BaseMaterial* material,

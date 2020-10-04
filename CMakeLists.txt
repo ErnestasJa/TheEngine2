@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 MESSAGE(STATUS "CMAKE_CXX_COMPILER_VERSION: " "${CMAKE_CXX_COMPILER_VERSION}")
 
-set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -glldb -Wall -Wno-reorder -std=c++17 -include EngineInc.h")
+set(CPP_GCC_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wno-reorder -std=c++17 -include EngineInc.h")
 set(CPP_NMAKE_COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /Gm- /MP /O2 /W3 /FIEngineInc.h")
 
 
@@ -117,7 +117,9 @@ set(CROSSPLATFORM_SOURCES
 	"${ENGINE_SRC_PATH}/render/animation/AnimationController.cpp"
 	"${ENGINE_SRC_PATH}/render/OrbitCamera.cpp"
 	"${ENGINE_SRC_PATH}/render/debug/DebugRenderer.cpp"
-        include/render/Image.h)
+
+	"${ENGINE_SRC_PATH}/util/Timer.cpp"
+		)
 
 add_subdirectory ("${LIB_PATH}/glad")
 add_subdirectory ("${LIB_PATH}/glfw")

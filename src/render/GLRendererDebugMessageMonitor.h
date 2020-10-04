@@ -22,7 +22,7 @@ class GLRendererDebugMessageMonitor : public IRendererDebugMessageMonitor
   core::Vector<core::SharedPtr<IRendererDebugMessage>> m_debugMessages;
 };
 
-core::UniquePtr<GLRendererDebugMessageMonitor> CreateRendererDebugMessageMonitor();
+core::UniquePtr<IRendererDebugMessageMonitor> CreateRendererDebugMessageMonitor();
 } // namespace render
 
 #endif

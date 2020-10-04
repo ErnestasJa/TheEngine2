@@ -1,7 +1,7 @@
 #ifndef THEPROJECT2_LIBS_THEENGINE2_SRC_RENDER_ANIMATEDMESH_CPP_BONEKEYCOLLECTION_H_
 #define THEPROJECT2_LIBS_THEENGINE2_SRC_RENDER_ANIMATEDMESH_CPP_BONEKEYCOLLECTION_H_
 #include <glm/ext/quaternion_float.hpp>
-#include <utils/Math.h>
+#include <util/Math.h>
 
 namespace render::anim {
 template <class TValue> struct AnimKey

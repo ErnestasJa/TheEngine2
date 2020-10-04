@@ -29,6 +29,7 @@ class BaseMaterial
   void Use();
 
   void SetI(const core::String& name, int i);
+  void SetF(const core::String& name, float i);
   void SetVec3(const core::String& name, glm::vec3 uniformValue);
   void SetMat3(const core::String& name, glm::mat3 uniformValue);
   void SetMat3x4(const core::String& name, glm::mat3x4* uniformValue, int count);

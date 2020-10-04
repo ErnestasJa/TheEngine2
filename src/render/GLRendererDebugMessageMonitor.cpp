@@ -1,16 +1,17 @@
 #include "GLRendererDebugMessageMonitor.h"
+#include "StubDebugMessageMonitor.h"
 #include "GLRendererDebugMessage.h"
 #include "OpenGL.hpp"
 #include <iostream>
 
 namespace render {
-core::UniquePtr<GLRendererDebugMessageMonitor> CreateRendererDebugMessageMonitor()
+core::UniquePtr<IRendererDebugMessageMonitor> CreateRendererDebugMessageMonitor()
 {
   if (GLRendererDebugMessageMonitor::IsDebugOutputSupported()) {
     return core::MakeUnique<GLRendererDebugMessageMonitor>();
   }
 
-  return nullptr;
+  return core::MakeUnique<StubDebugMessageMonitor>();
 }
 
 bool GLRendererDebugMessageMonitor::IsDebugOutputSupported()

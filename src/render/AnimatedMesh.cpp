@@ -1,7 +1,7 @@
 #include "render/AnimatedMesh.h"
 #include "render/IGpuBufferArrayObject.h"
 #include "render/IGpuBufferObject.h"
-#include "utils/Math.h"
+#include "util/Math.h"
 
 namespace render {
 AnimatedMesh::AnimatedMesh()

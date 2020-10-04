@@ -39,7 +39,20 @@ void BaseMaterial::Use()
     }
   }
 }
+
 void BaseMaterial::SetI(const core::String& name, int i)
+{
+  auto uniform = m_shader->GetUniform(name);
+
+  if (uniform) {
+    uniform->Set(i);
+  }
+  else {
+    elog::LogError("Failed to set uniform: " + name);
+  }
+}
+
+void BaseMaterial::SetF(const core::String& name, float i)
 {
   auto uniform = m_shader->GetUniform(name);
 
