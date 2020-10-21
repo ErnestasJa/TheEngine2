@@ -10,6 +10,7 @@ class OrbitCamera : public ICamera
       : m_fov(FOV)
       , m_far(farPlane)
       , m_near(nearPlane)
+      , m_aspectRatio(16.f/9.f)
       , m_position(0, 0, 0)
       , m_rotation(0, 0, 0)
       , m_distance(2.f)

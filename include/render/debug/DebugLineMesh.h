@@ -13,7 +13,7 @@ class DebugLineMesh
   DebugLineMesh(core::SharedPtr<BaseMesh> mesh, core::SharedPtr<material::BaseMaterial> material);
   void AddLine(glm::vec3 start, glm::vec3 end,
                glm::tvec3<uint8_t> color = glm::tvec3<uint8_t>(0, 0, 0));
-  void AddGrid(int count, int spacing, glm::tvec3<uint8_t> color);
+  void AddGrid(int count, int spacing, glm::tvec3<uint8_t> color, glm::vec3 offset = glm::vec3(0,0,0));
   void Clear();
 
   void Upload();
