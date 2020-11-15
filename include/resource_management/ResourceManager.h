@@ -10,10 +10,6 @@ namespace material {
 class BaseMaterial;
 }
 
-namespace game::obj {
-class AnimatedMeshActor;
-}
-
 namespace res {
 class ImageLoader;
 
@@ -49,9 +45,6 @@ public:
   render::ITexture* LoadTexture(core::String path);
   /// todo: this should return UniquePtr.
   core::SharedPtr<material::BaseMaterial> LoadMaterial(core::String path);
-  core::UniquePtr<game::obj::AnimatedMeshActor> LoadAssimp(core::String meshName,
-                                                           core::String textureName,
-                                                           core::String materialName);
 
 private:
     core::String LoadShaderSource(const core::String& path);

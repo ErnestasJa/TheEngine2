@@ -19,6 +19,12 @@ bool FileWriter::Open(const Path& filePath)
   return m_fileHandle != nullptr;
 }
 
+bool FileWriter::OpenAppend(const Path& filePath)
+{
+  m_fileHandle = PHYSFS_openAppend(filePath.AsString().c_str());
+  return m_fileHandle != nullptr;
+}
+
 std::intmax_t FileWriter::GetPosition() const
 {
   return PHYSFS_tell(m_fileHandle);

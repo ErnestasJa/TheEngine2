@@ -88,12 +88,19 @@ bool FileSystem::Delete(const Path& path)
   return PHYSFS_delete(path.AsString().c_str());
 }
 
-core::UniquePtr<IFileWriter> FileSystem::OpenWrite(const Path& path)
+core::UniquePtr<IFileWriter> FileSystem::OpenWrite(const Path& path, bool append)
 {
   auto fileWriter = core::MakeUnique<FileWriter>();
 
-  if (fileWriter->Open(path)) {
-    return fileWriter;
+  if(append){
+    if (fileWriter->OpenAppend(path)) {
+      return fileWriter;
+    }
+  }
+  else {
+    if (fileWriter->Open(path)) {
+      return fileWriter;
+    }
   }
 
   elog::LogWarning(

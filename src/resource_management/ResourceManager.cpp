@@ -1,4 +1,3 @@
-#include "object/AnimatedMeshActor.h"
 #include "render/AnimatedMesh.h"
 #include "render/BaseMaterial.h"
 #include "render/IGpuProgram.h"
@@ -90,39 +89,6 @@ core::String ResourceManager::LoadShaderSource(const core::String& path)
     }
 
     return fileContents;
-}
-
-
-core::UniquePtr<game::obj::AnimatedMeshActor> ResourceManager::LoadAssimp(core::String meshName,
-                                                                          core::String textureName,
-                                                                          core::String materialName)
-{
-  auto texture = LoadTexture("resources/textures/" + textureName);
-
-  if (!texture) {
-    elog::LogError(core::string::format("Could not load texture: {}", textureName.c_str()));
-    return nullptr;
-  }
-
-  auto material = LoadMaterial("resources/shaders/" + materialName);
-
-  if (!material) {
-    elog::LogError(core::string::format("Could not load material: {}", materialName.c_str()));
-    return nullptr;
-  }
-
-  material->SetTexture(0, texture);
-
-  auto mesh = m_assimpImporter->LoadMesh("resources/models/" + meshName);
-
-  if (!mesh) {
-    elog::LogError(core::string::format("Could not load mesh: {}", meshName.c_str()));
-    return nullptr;
-  }
-
-  auto actor = core::MakeUnique<game::obj::AnimatedMeshActor>(meshName, std::move(mesh));
-  actor->SetMaterial(material);
-  return actor;
 }
 
 } // namespace res

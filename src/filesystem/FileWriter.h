@@ -11,6 +11,7 @@ class FileWriter : public IFileWriter
   FileWriter();
   virtual ~FileWriter();
   bool Open(const Path& filePath);
+  bool OpenAppend(const Path& filePath);
   virtual std::intmax_t GetPosition() const;
   virtual std::intmax_t Write(const core::TByteArray& array,
                               std::intmax_t size = std::numeric_limits<std::uintmax_t>::max());

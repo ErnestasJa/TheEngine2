@@ -18,7 +18,7 @@ class FileSystem : public IFileSystem
   virtual bool FileExists(const Path& path);
   virtual bool CreateDirectory(const Path& path);
   virtual bool Delete(const Path& path);
-  virtual core::UniquePtr<IFileWriter> OpenWrite(const Path& path);
+  virtual core::UniquePtr<IFileWriter> OpenWrite(const Path& path, bool append = false);
   virtual core::UniquePtr<IFileReader> OpenRead(const Path& path);
   virtual core::Vector<Path> GetFilesInDirectory(const Path& directory);
 };
