@@ -17,6 +17,8 @@ class FileReader : public IFileReader
                              std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max());
   virtual std::intmax_t Read(std::string& string,
                              std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max());
+  virtual std::intmax_t Read(void* buffer,
+                             std::uintmax_t size = std::numeric_limits<std::uintmax_t>::max());
   virtual bool Seek(std::uintmax_t position);
 
   private:

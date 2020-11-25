@@ -32,6 +32,7 @@
 #include "core/POD.h"
 #include "core/StringUtil.h"
 #include "core/TypeUtils.h"
+#include "core/memory/Memory.h"
 #include "filesystem/FileSystemInc.h"
 #include "log/LogInc.h"
 #include "util/Assert.h"

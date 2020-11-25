@@ -145,6 +145,8 @@ add_library(engine STATIC
 )
 set_target_properties(engine PROPERTIES COMPILE_FLAGS "${CPP_GCC_COMPILE_FLAGS}")
 
+target_compile_definitions(imgui PUBLIC IMGUI_USE_WCHAR32)
+
 #target_precompile_headers(engine
 #		PUBLIC
 #		"${ENGINE_INC_PATH}/EngineInc.h"

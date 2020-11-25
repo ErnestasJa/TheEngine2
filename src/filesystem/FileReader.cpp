@@ -64,6 +64,27 @@ std::intmax_t FileReader::Read(std::string& string, std::uintmax_t size)
   return ReadFile(string, size);
 }
 
+std::intmax_t FileReader::Read(void* buffer,
+                           std::uintmax_t size){
+    if (m_fileHandle) {
+        std::intmax_t fileLength   = GetLength();
+        std::intmax_t filePosition = GetPosition();
+
+        if (filePosition > -1 && fileLength > -1) {
+            std::uintmax_t readSize = fileLength - filePosition;
+            if (size < readSize)
+                readSize = size;
+
+            std::intmax_t bytesRead = PHYSFS_readBytes(m_fileHandle, buffer, readSize);
+
+            if (bytesRead > -1)
+                return bytesRead;
+        }
+    }
+
+    return -1;
+}
+
 bool FileReader::Seek(std::uintmax_t position)
 {
   return PHYSFS_seek(m_fileHandle, position) != 0;
