@@ -3,6 +3,6 @@
 
 #include "Config.h"
 
-#define if_debug if constexpr(config::EngineDebug)
+#define if_debug if constexpr(::config::EngineDebug)
 
 #endif // THEPROJECT2_MACROS_H
